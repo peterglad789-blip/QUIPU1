@@ -965,6 +965,8 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
 .cm-badge[data-s=limited] i{background:var(--caution)}
 .cm-badge[data-s=offline] i{background:var(--abort)}
 .cm-badge[data-s=sync-pending] i{background:var(--sel)}
+.cm-badge[data-s=syncing] i{background:var(--sel);animation:cm-pulse 1s infinite}.cm-badge[data-s=sync-failed] i{background:var(--abort)}.cm-badge[data-s=outdated] i{background:var(--caution)}
+@keyframes cm-pulse{50%{opacity:.3}}@media (prefers-reduced-motion:reduce){.cm-badge[data-s=syncing] i{animation:none}}
 .cm-badge small{font-weight:500;color:var(--muted);font-size:12px}
 .cm-badge:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
 
@@ -1224,31 +1226,90 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
 @media (prefers-reduced-motion:reduce){.yb-typing i,.yb-rec i,.yb-alarm{animation:none}.yb-timer i{transition:none}}
 @media (max-width:600px){.yb-drawer{right:8px;left:8px;top:8px;bottom:8px;width:auto}.yb-fab{right:12px;bottom:12px}}
 @media print{.yb-fab,.yb-drawer,.yb-alarm{display:none!important}}
-.intro{position:fixed;inset:0;z-index:5000;background:radial-gradient(120% 90% at 70% 50%,#1d1612 0%,#0e0f11 60%);color:#ECEAE6;display:flex;flex-direction:column;justify-content:center;overflow:auto;transition:opacity .45s ease,transform .45s ease}
-.intro[hidden]{display:none}
-.intro.leaving{opacity:0;transform:scale(1.04);pointer-events:none}
-.in-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 12% 22%,#fff8 50%,transparent 51%),radial-gradient(1px 1px at 33% 71%,#fff6 50%,transparent 51%),radial-gradient(1.5px 1.5px at 58% 14%,#fff9 50%,transparent 51%),radial-gradient(1px 1px at 81% 83%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 91% 31%,#fff7 50%,transparent 51%),radial-gradient(1px 1px at 6% 88%,#fff6 50%,transparent 51%),radial-gradient(1px 1px at 46% 47%,#fff4 50%,transparent 51%);pointer-events:none}
-.in-wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:center;max-width:1240px;margin:0 auto;padding:40px 48px;width:100%}
-.in-team{color:#A2A9B2;font-size:14px;margin:0 0 14px}
-.intro h1{font:800 clamp(56px,9vw,120px)/.9 var(--font);letter-spacing:.04em;margin:0;color:#E08A4F;font-stretch:125%}
-.in-sub{font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:#D8D4CE;max-width:30ch;margin:18px 0 0}
-.in-q{font:650 clamp(20px,2.2vw,28px)/1.25 var(--font);margin:26px 0 0;color:#fff}
-.in-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
-.in-cta .btn{min-height:52px;padding:0 24px;font-size:16.5px}
-.in-facts{display:grid;grid-template-columns:repeat(3,auto);gap:6px 28px;margin:34px 0 0;justify-content:start}
-.in-facts div{display:flex;flex-direction:column-reverse}
-.in-facts dt{color:#A2A9B2;font-size:12.5px;margin-top:2px}
-.in-facts dd{margin:0;font:700 19px var(--font);color:#ECEAE6}
-.in-mars{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px}
-.in-planet{position:relative;width:min(44vw,560px);aspect-ratio:1;border-radius:50%;background:#B4532A radial-gradient(circle at 35% 35%,#D9824F,#9C3F1E 60%,#5A2210);background-size:auto 100%;background-repeat:repeat-x;box-shadow:0 0 90px rgba(224,138,79,.22),0 0 0 1px rgba(255,200,160,.08);animation:in-spin 90s linear infinite;overflow:hidden}
-.in-shade{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 30%,rgba(255,235,210,.22),transparent 38%),radial-gradient(circle at 70% 70%,transparent 35%,rgba(0,0,0,.72) 75%);box-shadow:inset -30px -20px 60px rgba(0,0,0,.6),inset 8px 6px 30px rgba(255,220,190,.08)}
-.in-pin{position:absolute;width:12px;height:12px;border-radius:50%;left:54%;top:40%;background:#5FB8D6;box-shadow:0 0 0 4px rgba(95,184,214,.3);opacity:0;transition:opacity .3s}
-.in-planet.textured .in-pin{opacity:1}
-.in-mars figcaption{color:#737B86;font-size:12px;text-align:center;max-width:44ch}
-.in-note{position:relative;text-align:center;color:#737B86;font-size:12.5px;margin:0 0 18px}
-@keyframes in-spin{from{background-position-x:0}to{background-position-x:var(--tex,-1120px)}}
-@media (max-width:900px){.in-wrap{grid-template-columns:1fr;padding:28px 22px;gap:24px}.in-mars{order:-1}.in-planet{width:min(70vw,360px)}.in-facts{grid-template-columns:repeat(3,auto);gap:6px 18px}}
-@media (prefers-reduced-motion:reduce){.in-planet{animation:none}.intro{transition:none}}
+/* ===== Survival envelope, simulation, science, offline mode (Marswalk side panel + Comms) ===== */
+.sidetabs button{padding-left:6px;padding-right:6px;font-size:14px}
+.esls{display:grid;gap:10px;margin:12px 0}
+.esl{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.esl>span{display:flex;justify-content:space-between;gap:8px;color:var(--text);font-weight:600}
+.esl>span b{font-weight:700;color:var(--sel);font-variant-numeric:tabular-nums}
+.esl input[type=range]{width:100%;accent-color:var(--sel);min-height:28px}
+.esl small{color:var(--faint);font-size:12px}
+.esl input:not([type]),.esl input[type=password],#envDest{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:9px;font:500 14px var(--font);min-height:40px;width:100%}
+#envDest{width:auto;flex:1}
+.switch{display:flex;align-items:center;gap:10px;min-height:40px;font-weight:600;font-size:14px;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:var(--sel)}
+.envleg{display:grid;gap:6px;margin:10px 0}
+.envleg>div{display:grid;grid-template-columns:18px auto 1fr;gap:8px;align-items:center;font-size:13px}
+.envleg i{width:16px;height:16px;border-radius:4px}
+.envleg .z1 i{background:rgba(92,201,138,.55);border:2px solid #5CC98A}.envleg .z2 i{background:rgba(242,165,65,.6)}
+.envleg .z3 i{background:repeating-linear-gradient(45deg,rgba(242,165,65,.8) 0 2px,transparent 2px 5px);border:1px solid rgba(242,165,65,.5)}
+.envleg .z4 i{background:rgba(240,84,79,.4)}
+.envleg b{font-variant-numeric:tabular-nums}.envleg span{color:var(--muted)}
+.ebar{display:grid;grid-template-columns:76px 1fr 42px;gap:8px;align-items:center;font-size:13px;margin:4px 0}
+.ebar i{height:8px;border-radius:4px;background:var(--line-soft);position:relative;overflow:hidden}
+.ebar i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--sel);border-radius:4px;transition:width .4s}
+.ebar b{text-align:right;font-variant-numeric:tabular-nums}
+.envpop{margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.verdict.sm{font-size:15px;padding:6px 10px;margin:6px 0}.verdict.sm small{font-size:12px}
+.simline{font-size:13px;color:var(--muted);margin:10px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.simctl{display:grid;gap:12px;margin:8px 0 12px}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;min-height:40px;background:var(--bg);color:var(--muted);border:0;border-right:1px solid var(--line);font:600 13.5px var(--font);cursor:pointer}
+.seg button:last-child{border-right:0}.seg button[aria-pressed=true]{background:var(--sel);color:#0b1a20}
+.recs{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.recs li{font-size:13.5px;line-height:1.45;padding:8px 10px;background:var(--raised);border-radius:8px}
+.recs li>span{margin-right:6px}
+td.bad,.cmp2 td.bad{color:var(--abort);font-weight:650}
+hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
+.sciT{margin:10px 0}.sciT summary{cursor:pointer;font-weight:650;min-height:36px;display:flex;align-items:center}
+#sciList{list-style:none;margin:6px 0;padding:0;display:grid;gap:4px;max-height:240px;overflow:auto}
+#sciList li{display:flex;justify-content:space-between;gap:8px;font-size:13px;align-items:center}
+#sciList label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}#sciList small{display:block;color:var(--faint)}
+#sciList input{width:18px;height:18px;accent-color:var(--sel);flex:none;margin-top:1px}
+.scicmp th.c1,.scicmp th.c2{cursor:pointer}.scicmp th.c1{color:#5CC98A}.scicmp th.c2{color:#B48EF0}
+.vt{font-weight:750}.vt.go{color:var(--go)}.vt.caution{color:var(--caution)}.vt.nogo{color:var(--abort)}
+.stops{margin:4px 0;padding-left:20px;font-size:13.5px;line-height:1.6}.stops small{color:var(--faint)}
+.frontier{width:100%;height:auto}.frontier text{font:600 11px var(--font);fill:var(--muted)}
+.warnline{color:var(--caution)!important}
+.scipin{width:24px;height:24px;border-radius:50%;background:#121417;border:3px solid;color:#ECEAE6;font:700 12px/18px var(--font);text-align:center}
+.sync-card h2{margin:0 0 4px}.sync-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:12px}
+.sync-state{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:16px}.sync-state i{width:10px;height:10px;border-radius:50%;background:var(--faint)}
+.sync-state[data-s=ok] i{background:var(--go)}.sync-state[data-s=busy] i{background:var(--sel)}.sync-state[data-s=fail] i,.sync-state[data-s=off] i{background:var(--abort)}.sync-state[data-s=local] i{background:var(--caution)}
+.sync-dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px;margin:10px 0}.sync-dl dt{color:var(--muted)}.sync-dl dd{margin:0;font-variant-numeric:tabular-nums}
+.filebtn{display:inline-flex;align-items:center;cursor:pointer}
+@media (max-width:900px){.sync-grid{grid-template-columns:1fr}}
+.intro{position:fixed;inset:0;z-index:5000;background:#0B0C0E;color:#ECEAE6;overflow:auto;transition:opacity .5s ease}
+.intro[hidden]{display:none}.intro.leaving{opacity:0;pointer-events:none}
+.in-gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.in-fallback{position:absolute;right:-8vw;top:50%;width:min(78vh,62vw);aspect-ratio:1;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 35% 35%,#D9824F,#9C3F1E 60%,#3A160A);box-shadow:0 0 120px rgba(224,138,79,.18);display:none}
+.intro.nogl .in-fallback{display:block}.intro.nogl .in-gl{display:none}
+.intro::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(11,12,14,.96) 0%,rgba(11,12,14,.82) 34%,rgba(11,12,14,0) 62%)}
+.in-panel{position:relative;z-index:2;max-width:640px;padding:clamp(20px,4vh,56px) 0 64px clamp(24px,6vw,96px);min-height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:0}
+.in-brand{margin:0 0 22px;font-size:14px;color:#A2A9B2}.in-brand b{color:#E08A4F;font-weight:800;letter-spacing:.06em;margin-right:8px;font-stretch:125%}
+.intro h1{margin:0;font:750 clamp(32px,min(4.4vw,7.2vh),64px)/1.04 var(--font);letter-spacing:-.01em;color:#F4F1EC}
+.intro h1 em{font-style:normal;color:#E08A4F}
+.in-sub{margin:18px 0 0;font-size:clamp(15.5px,1.25vw,18px);line-height:1.55;color:#C9C5BF;max-width:46ch}
+.in-caps{display:grid;grid-template-columns:1fr 1fr;gap:12px 26px;margin:22px 0 0;max-width:520px}
+.in-caps div{border-left:2px solid #2E333B;padding-left:12px}.in-caps dt{font-weight:700;font-size:15px;color:#ECEAE6}.in-caps dd{margin:2px 0 0;font-size:13.5px;color:#A2A9B2;line-height:1.4}
+.in-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.in-cta .btn{min-height:54px;padding:0 28px;font-size:17px}
+.in-cta #inStart{box-shadow:0 0 0 0 rgba(224,138,79,.5);animation:in-call 2.6s ease-out 1.2s 2}
+@keyframes in-call{0%{box-shadow:0 0 0 0 rgba(224,138,79,.45)}100%{box-shadow:0 0 0 18px rgba(224,138,79,0)}}
+.in-facts{margin:22px 0 0;color:#8E959E;font-size:13.5px}.in-facts b{color:#ECEAE6;font-weight:650}
+.in-reticle{position:absolute;z-index:1;left:0;top:0;pointer-events:none;opacity:0;transition:opacity .6s}
+.in-reticle.on{opacity:1}
+.in-reticle i{position:absolute;left:-22px;top:-22px;width:44px;height:44px;border:2px solid #5FB8D6;border-radius:50%;box-shadow:0 0 0 1px rgba(11,12,14,.6),inset 0 0 0 1px rgba(11,12,14,.5)}
+.in-reticle i::before,.in-reticle i::after{content:"";position:absolute;background:#5FB8D6}
+.in-reticle i::before{left:50%;top:-9px;width:2px;height:8px;margin-left:-1px;box-shadow:0 52px 0 #5FB8D6}
+.in-reticle i::after{top:50%;left:-9px;height:2px;width:8px;margin-top:-1px;box-shadow:52px 0 0 #5FB8D6}
+.in-reticle span{position:absolute;left:36px;top:-30px;white-space:nowrap;font-size:12.5px;line-height:1.4;color:#C9C5BF;background:rgba(11,12,14,.72);padding:6px 10px;border-radius:8px;border:1px solid #2E333B}
+.in-reticle span b{display:block;color:#ECEAE6;font-size:14px}
+.in-foot{position:fixed;z-index:2;pointer-events:none;background:linear-gradient(0deg,#0B0C0E 40%,rgba(11,12,14,0));left:0;right:0;bottom:0;margin:0;padding:14px clamp(24px,6vw,96px);display:flex;gap:24px;justify-content:space-between;flex-wrap:wrap;color:#737B86;font-size:12px}
+@media (max-width:900px){.intro{overflow:auto}.intro::after{background:linear-gradient(180deg,rgba(11,12,14,0) 0%,rgba(11,12,14,.75) 38%,rgba(11,12,14,.96) 55%)}
+  .in-gl{position:fixed;height:52vh}.in-panel{height:auto;padding:46vh 22px 90px;max-width:none}.in-caps{grid-template-columns:1fr 1fr}.in-foot{position:relative;flex-direction:column;gap:6px;padding:0 22px 22px}
+  .in-fallback{right:50%;top:24vh;transform:translate(50%,-50%);width:min(70vw,44vh)}.in-reticle span{display:none}}
+@media (prefers-reduced-motion:reduce){.intro,.in-reticle{transition:none}.in-cta #inStart{animation:none}}
 </style>
 </head>
 <body>
@@ -1291,6 +1352,8 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
       <div class="body">
         <label><input type="checkbox" data-l="corridor" checked><span class="sw" style="border-color:var(--sel)"></span>Ground Perseverance drove</label>
         <label><input type="checkbox" data-l="route" checked><span class="sw" style="border-color:var(--accent)"></span>Planned walk</label>
+        <label><input type="checkbox" data-l="envelope" checked><span class="sw" style="border-image:linear-gradient(90deg,var(--go),var(--caution),var(--abort)) 1"></span>Survival envelope</label>
+        <label><input type="checkbox" data-l="sci" checked><span class="sw" style="border-color:#B48EF0"></span>Science expeditions</label>
         <label><input type="checkbox" data-l="qroute" checked><span class="sw" style="border-color:var(--go)"></span>Calculated route</label>
         <label><input type="checkbox" data-l="ring" checked><span class="sw" style="border-color:var(--abort);border-top-style:dashed"></span>Walkback limit now</label>
         <label><input type="checkbox" data-l="samples" checked><span class="sw" style="border-color:var(--text);border-top-width:2px"></span>Rover sample sites</label>
@@ -1318,7 +1381,7 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
   </section>
 
   <aside class="side" aria-label="Plan, route and survival">
-    <div class="sidetabs" role="tablist"><button data-t="plan" aria-selected="true">Plan</button><button data-t="route" aria-selected="false">Route</button><button data-t="surv" aria-selected="false">Survival</button></div>
+    <div class="sidetabs" role="tablist"><button data-t="plan" aria-selected="true">Plan</button><button data-t="route" aria-selected="false">Route</button><button data-t="env" aria-selected="false">Envelope</button><button data-t="sci" aria-selected="false">Science</button><button data-t="sim" aria-selected="false">Simulate</button></div>
 
     <div class="sidepane" data-p="plan">
       <div class="sidehead"><div><h1>Marswalk 1: Three Forks traverse</h1><p>Two crew on foot across the Jezero delta front: collect Perseverance's depot tubes, then sample three outcrops the rover could only core.</p></div>
@@ -1345,17 +1408,14 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
         <div class="rrow"><span class="rlab">To</span><b id="rTo">Not chosen</b><button class="btn" id="rPick" aria-pressed="false">Pick on map</button></div>
         <div class="ctl2"><label>Time at destination (min)<input type="number" id="rWork" value="20" min="0" max="180" step="5"></label>
           <label>Penalty for terrain without data<input type="number" id="rUnk" value="3" min="1" max="10" step="0.5"></label></div>
-        <div class="what"><div class="wh">What if <span class="tagsim">simulation</span></div>
-          <label><input type="checkbox" data-s="o2">O₂ supply −20%</label><label><input type="checkbox" data-s="bat">Battery −20%</label>
-          <label><input type="checkbox" data-s="extra">+15 min sampling</label><label><input type="checkbox" data-s="dust">Dust storm: 30% slower</label>
-          <label><input type="checkbox" data-s="comm">Lose radio relay</label><label><input type="checkbox" data-s="block">Route blocked midway</label></div>
+        <div class="simline" id="rSim"></div>
         <div id="rOut" class="rout"><p class="empty">No route yet. Press “Pick on map”, then tap where you want to go.</p></div>
       </div>
     </div>
 
-    <div class="sidepane" data-p="surv" hidden>
-      <div class="pad2" id="survOut"></div>
-    </div>
+    <div class="sidepane" data-p="env" hidden><div class="pad2" id="envPane"></div></div>
+    <div class="sidepane" data-p="sci" hidden><div class="pad2" id="sciPane"></div></div>
+    <div class="sidepane" data-p="sim" hidden><div class="pad2"><div id="simPane"></div><div id="survOut"></div></div></div>
   </aside>
 
   <section class="dock" aria-label="Markers, notebook, timeline and profile">
@@ -1735,25 +1795,23 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <div id="intro" class="intro" role="dialog" aria-modal="true" aria-labelledby="inTitle">
-  <div class="in-stars" aria-hidden="true"></div>
-  <div class="in-wrap">
-    <div class="in-text">
-      <p class="in-team">NASA Space Apps Challenge 2026 · Kervin Espaze Program</p>
-      <h1 id="inTitle">QUIPU</h1>
-      <p class="in-sub">Interplanetary Survival Guide for a crewed walk across Jezero crater, Mars.</p>
-      <p class="in-q">Can the astronaut get back safely?</p>
-      <div class="in-cta">
-        <button class="btn" id="inStart">Start the Marswalk</button>
-        <button class="btn ghost" id="inGlobe">Explore the Mars globe</button>
-      </div>
-      <dl class="in-facts" id="inFacts"></dl>
-    </div>
-    <figure class="in-mars">
-      <div class="in-planet" id="inPlanet"><i class="in-shade"></i></div>
-      <figcaption id="inCap">Viking Orbiter colour mosaic, NASA/USGS via Mars Trek. Rotation speeded up.</figcaption>
-    </figure>
+  <canvas id="inGl" class="in-gl" aria-hidden="true"></canvas>
+  <div class="in-fallback" id="inFallback" aria-hidden="true"></div>
+  <div class="in-reticle" id="inRet" aria-hidden="true"><i></i><span><b>Jezero crater</b>18.44°N, 77.45°E<br>Perseverance landing site, Marswalk area</span></div>
+  <div class="in-panel">
+    <p class="in-brand"><b>QUIPU</b> Interplanetary Survival Guide</p>
+    <h1 id="inTitle">Explore further.<br>Discover more.<br><em>Always make it back.</em></h1>
+    <p class="in-sub">A field tablet for crewed walks in Jezero crater. It brings together navigation on rover-measured terrain, the science worth the walk, the environment overhead and a survival check that always counts the way back.</p>
+    <dl class="in-caps">
+      <div><dt>Navigate</dt><dd>Terrain-aware routes and markers</dd></div>
+      <div><dt>Discover</dt><dd>Science weighed against survival</dd></div>
+      <div><dt>Understand</dt><dd>Sun, moons, comms, space weather</dd></div>
+      <div><dt>Return</dt><dd>Survival envelope and emergency return</dd></div>
+    </dl>
+    <div class="in-cta"><button class="btn" id="inStart">Begin mission</button><button class="btn ghost" id="inGlobe">Explore the Mars globe</button></div>
+    <p class="in-facts" id="inFacts"></p>
   </div>
-  <p class="in-note">A demonstration and decision-support concept, not a certified flight system.</p>
+  <p class="in-foot"><span>NASA Space Apps Challenge 2026, Kervin Espaze Program</span><span id="inCap">Mars: Viking Orbiter colour mosaic and MOLA relief, NASA/USGS via Mars Trek. Phobos orbit to scale.</span><span>Demonstration concept, not a certified flight system.</span></p>
 </div>
 <div id="helmet" class="hm" hidden role="dialog" aria-modal="true" aria-label="Helmet view">
   <header class="hm-top">
@@ -2498,7 +2556,7 @@ window.Q=window.Q||{};
   /* ---------- mission config (suit, crew, safety thresholds) — persisted offline ---------- */
   const DEF={bodyKg:75,suitKg:50,loadKg:10,o2CapacityL:null,batteryWh:2000,suitPowerW:190,
     reservePct:20,maxSlopeDeg:15,cautionSlopeDeg:8,unknownTerrainCautionPct:20,minSunDeg:10,
-    walkSpeedKmh:2.2,returnFactor:0.8,suitFactor:1.6,terrainEta:1.2,yarbisEndpoint:''};
+    walkSpeedKmh:2.2,returnFactor:0.8,suitFactor:1.6,terrainEta:1.2,yarbisEndpoint:'',doseCautionUSv:500,syncEndpoint:'',missionKey:''};
   let saved={};try{saved=JSON.parse(localStorage.getItem('quipu-cfg')||'{}');}catch(e){}
   const cfg=Object.assign({},DEF,saved);const cfgSubs=[];
   Q.cfg=cfg;Q.cfgDefaults=DEF;
@@ -2542,6 +2600,9 @@ window.Q=window.Q||{};
     if(Q.astro)ctx.astronaut=Q.astro;
     if(Q.markers)ctx.markers=Q.markers.list().map(m=>({type:m.type,name:m.name,lat:+m.lat.toFixed(5),lon:+m.lon.toFixed(5)}));
     if(Q.selected)ctx.selected=Q.selected;
+    try{if(Q.envelope){const e=Q.envelope.summary();if(e)ctx.survivalEnvelope={safeKm2:+e.safeKm2.toFixed(3),cautionKm2:+(e.cautionKm2+e.unconfirmedKm2).toFixed(3),farthestSafeM:e.farthestSafeM,limiting:e.limiting,returnTo:e.returnTo,start:e.start,resources:e.params};}
+      if(Q.sim&&Q.sim.active())ctx.simulation=Q.sim.describe();if(Q.science&&Q.science.result())ctx.scienceOptions=Q.science.result();
+      if(Q.syncInfo)ctx.sync={state:Q.syncInfo.state,lastSync:Q.syncInfo.lastSync,online:navigator.onLine};}catch(e){}
     document.querySelectorAll('.chip').forEach(c=>{(ctx.status=ctx.status||{})[c.querySelector('.k').textContent]=c.querySelector('.v span').textContent;});
     return ctx;};
 })();
@@ -2560,6 +2621,14 @@ const fmt1=(x,d=0)=>Number.isFinite(x)?x.toLocaleString('en',{maximumFractionDig
 const km=m=>m>=1000?fmt1(m/1000,2)+' km':Math.round(m)+' m';
 function toast(msg,ms=2600){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,ms);}
 Q.toast=toast;
+/* ---------------- contingency simulation state (shared by routes, plan check, envelope, science) ---------------- */
+const SIM0={batLoss:0,o2Up:0,slow:0,extraMin:0,delayMin:0,radX:1,comm:false,block:false};
+let SIM={...SIM0};try{Object.assign(SIM,JSON.parse(localStorage.getItem('quipu-sim')||'{}'));}catch(e){}
+const simSubs=[];const fx=s=>({k:1-(+s.slow||0)/100,o2:1+(+s.o2Up||0)/100,bat:1-(+s.batLoss||0)/100,extra:(+s.extraMin||0)+(+s.delayMin||0),rad:+s.radX||1});
+Q.sim={get:()=>({...SIM}),neutral:()=>({...SIM0}),fx,active:(x=SIM)=>Object.keys(SIM0).some(k=>x[k]!==SIM0[k]),
+  set(p){Object.assign(SIM,p);try{localStorage.setItem('quipu-sim',JSON.stringify(SIM));}catch(e){}simSubs.forEach(f=>{try{f(SIM);}catch(e){console.error(e);}});},
+  reset(){this.set({...SIM0});},on:f=>simSubs.push(f),
+  describe(x=SIM){const o=[];if(x.batLoss)o.push(`battery −${x.batLoss}%`);if(x.o2Up)o.push(`O₂ use +${x.o2Up}%`);if(x.slow)o.push(`walking ${x.slow}% slower`);if(x.extraMin)o.push(`+${x.extraMin} min sampling`);if(x.delayMin)o.push(`${x.delayMin} min delay`);if(x.radX>1)o.push(`radiation ×${x.radX}`);if(x.comm)o.push('relay lost');if(x.block)o.push('route blocked');return o;}};
 
 /* ---------------- navigation: six sections, Marswalk is home ---------------- */
 const VIEWS=['walk','globe','sky','comms','solar','ready','sources'];let cur=null;const seen=new Set();
@@ -2583,7 +2652,7 @@ tb.onclick=()=>{const on=document.documentElement.classList.toggle('sun');try{lo
 $('#hudBtn').onclick=()=>{if(Q.helmet&&Q.helmet.open){if(cur!=='walk')go('walk');Q.helmet.open();}else toast('Helmet view module is not loaded.');};
 
 /* side tabs and dock tabs */
-function sideTab(t){$$('.sidetabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));$$('.sidepane').forEach(p=>p.hidden=p.dataset.p!==t);if(t==='surv')drawSurvival();}
+function sideTab(t){$$('.sidetabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));$$('.sidepane').forEach(p=>p.hidden=p.dataset.p!==t);if(t==='sim')drawSurvival();(Q.onSideTab||[]).forEach(f=>{try{f(t);}catch(e){console.error(e);}});}
 $$('.sidetabs button').forEach(b=>b.onclick=()=>sideTab(b.dataset.t));Q.sideTab=sideTab;
 function dockTab(d){$('.dock').classList.remove('min');$$('.docktabs button[data-d]').forEach(b=>b.setAttribute('aria-selected',b.dataset.d===d));$$('.dockpane').forEach(p=>p.hidden=p.dataset.d!==d);
   if(d==='pf')setTimeout(drawProfile,20);if(d==='tl')setTimeout(drawTimeline,20);setTimeout(()=>map.invalidateSize(),60);}
@@ -2669,25 +2738,25 @@ function legStats(pts,speedK){let t=0,o2=0,up=0,down=0,maxS=0,unk=0,corr=0,bl=0;
     const w=metab(v,g*100);t+=dt;o2+=w*dt*60/1000/KJ_PER_L;const de=(b.known&&a.known)?b.e-a.e:0;if(de>0)up+=de;else down-=de;
     const sd=Math.abs(Math.atan(g)/D2R);if(b.known&&sd>maxS)maxS=sd;if(!b.known&&!b.corr)unk+=dd;if(b.corr)corr+=dd;W.push(w);}
   return {t,o2,up,down,maxS,unk,corr,len:pts.length?pts[pts.length-1].d:0};}
-function scen(){const s={};$$('.what input').forEach(i=>s[i.dataset.s]=i.checked);return s;}
-function analyze(path,opt){const S=scen(),p=P();const out=densify(path),back=densify([...path].reverse());const k=S.dust?0.7:1;
-  const A=legStats(out,k),Bk=legStats(back,k);const work=(+$('#rWork').value||0)+(S.extra?15:0);const oW=W_WORK*work*60/1000/KJ_PER_L;
-  const total=A.t+work+Bk.t,o2Need=A.o2+oW+Bk.o2;let cap=CFG.o2CapacityL||p.plss*60*W_SIZE/1000/KJ_PER_L;if(S.o2)cap*=0.8;
-  let batCap=CFG.batteryWh;if(S.bat)batCap*=0.8;const batUse=CFG.suitPowerW*total/60;const budget=p.plss,res=CFG.reservePct/100; /* P().plss is already in minutes */
-  /* turnaround: furthest outbound point from which a conservative return still fits time and O2 with reserve */
-  const vr=p.vr||CFG.returnFactor;let turn=null,tAcc=0,o2Acc=0;const backT=[];{let tb=0,ob=0;const rev=[...out].reverse();for(let i=1;i<rev.length;i++){const a=rev[i-1],b=rev[i],dd=a.d-b.d;const v=Math.max(.12,((+$('#pV').value||2.2)/3.6)*k*vr*tob(-b.s)/tob(0));const dt=dd/v/60;tb+=dt;ob+=metab(v,-b.s*100)*dt*60/1000/KJ_PER_L;backT[rev.length-1-i]=[tb,ob];}backT[out.length-1]=[0,0];}
-  for(let i=1;i<out.length;i++){const a=out[i-1],b=out[i],dd=b.d-a.d,v=Math.max(.12,((+$('#pV').value||2.2)/3.6)*k*tob(b.s)/tob(0)),dt=dd/v/60;tAcc+=dt;o2Acc+=metab(v,b.s*100)*dt*60/1000/KJ_PER_L;
-    const [rt,ro]=backT[i]||[0,0];if(tAcc+rt<=budget*(1-res)&&o2Acc+ro<=cap*(1-res))turn={i,lat:b.lat,lon:b.lon,d:b.d,t:tAcc};}
-  const reachable=turn&&turn.i===out.length-1;const destLeaveBy=reachable?budget*(1-res)-(backT[0]?backT[0][0]:Bk.t)/vr*vr:null;
-  /* radio line of sight from the habitat mast */
+function analyze(path,sim=SIM){const S=sim,f=fx(S),p=P();const out=densify(path),back=densify([...path].reverse());const k=f.k,m=f.o2;
+  const A=legStats(out,k),Bk=legStats(back,k);const work=(+$('#rWork').value||0)+f.extra;const oW=W_WORK*work*60/1000/KJ_PER_L;
+  const total=A.t+work+Bk.t,o2Need=(A.o2+oW+Bk.o2)*m;const cap=CFG.o2CapacityL||p.plss*60*W_SIZE/1000/KJ_PER_L;
+  const batCap=CFG.batteryWh*f.bat;const batUse=CFG.suitPowerW*total/60;const budget=p.plss,res=CFG.reservePct/100; /* P().plss is already in minutes */
+  /* turnaround: furthest outbound point from which a conservative return still fits time, O2 and battery with reserve */
+  const vr=p.vr||CFG.returnFactor,v0=(+$('#pV').value||2.2)/3.6;let turn=null,tAcc=0,o2Acc=0;const backT=[];{let tb=0,ob=0;const rev=[...out].reverse();for(let i=1;i<rev.length;i++){const a=rev[i-1],b=rev[i],dd=a.d-b.d;const v=Math.max(.12,v0*k*vr*tob(-b.s)/tob(0));const dt=dd/v/60;tb+=dt;ob+=metab(v,-b.s*100)*dt*60/1000/KJ_PER_L*m;backT[rev.length-1-i]=[tb,ob];}backT[out.length-1]=[0,0];}
+  const batTmax=batCap*(1-res)/CFG.suitPowerW*60;
+  for(let i=1;i<out.length;i++){const a=out[i-1],b=out[i],dd=b.d-a.d,v=Math.max(.12,v0*k*tob(b.s)/tob(0)),dt=dd/v/60;tAcc+=dt;o2Acc+=metab(v,b.s*100)*dt*60/1000/KJ_PER_L*m;
+    const [rt,ro]=backT[i]||[0,0];const tt=tAcc+rt+(i===out.length-1?work:0),oo=o2Acc+ro+(i===out.length-1?oW*m:0);if(tt<=budget*(1-res)&&tt<=batTmax&&oo<=cap*(1-res))turn={i,lat:b.lat,lon:b.lon,d:b.d,t:tAcc};}
+  const reachable=!!turn&&turn.i===out.length-1;
   let rs=0,rn=0;for(let i=0;i<out.length;i+=4){const r=los(stations[0],out[i]);if(r.ok===false)rs++;if(r.ok!==null)rn++;}
   const radioPct=rn?100*(1-rs/rn):null;
   const ltRet=p.start?ltstAt0(total):null;const sunRet=ltRet!=null?sunElev(PLAN.sun.dec,ltRet):null;
-  const hazNear=(Q.markers?Q.markers.list():[]).filter(m=>m.type==='hazard'&&out.some(q=>dist(q,m)<(+m.radius||30)+30)).length;
-  const sciSites=sampleSites().filter(s=>out.some(q=>dist(q,s)<40));const sci=new Set(sciSites.map(s=>s.rock).filter(r=>r!=='unknown')).size;
+  const hazNear=(Q.markers?Q.markers.list():[]).filter(mk=>mk.type==='hazard'&&out.some(q=>dist(q,mk)<(+mk.radius||30)+30)).length;
+  const sciSites=sampleSites().filter(x=>out.some(q=>dist(q,x)<40));const sci=new Set(sciSites.map(x=>x.rock).filter(r=>r!=='unknown')).size;
   const R0={path,out,A,B:Bk,work,total,o2Need,cap,batUse,batCap,budget,res,turn,reachable,radioPct,sunRet,ltRet,hazNear,sciSites,sci,
-    unkPct:100*(A.unk)/Math.max(1,A.len),dose:0.64*total/1440*1000,S};
-  R0.checks=checks(R0);R0.verdict=R0.checks.some(c=>c.s==='nogo')?'nogo':R0.checks.some(c=>c.s==='caution')?'caution':'go';return R0;}
+    unkPct:100*(A.unk)/Math.max(1,A.len),dose:0.64*total/1440*1000*f.rad,S};
+  R0.checks=checks(R0);R0.verdict=verdictOf(R0.checks);return R0;}
+const verdictOf=c=>c.some(x=>x.s==='nogo')?'nogo':c.some(x=>x.s==='caution')?'caution':'go';
 const ltstAt0=t=>{const [h,m]=$('#pStart').value.split(':').map(Number);return h+m/60+t/60/SOL_RATIO;};
 function checks(r){const c=[],res=CFG.reservePct;const o2Left=100*(1-r.o2Need/r.cap),batLeft=100*(1-r.batUse/r.batCap),tLeft=100*(1-r.total/r.budget);
   const lvl=(v,thr)=>v<thr?'nogo':v<thr+10?'caution':'go';
@@ -2700,6 +2769,7 @@ function checks(r){const c=[],res=CFG.reservePct;const o2Left=100*(1-r.o2Need/r.
   if(r.hazNear)c.push({s:'caution',t:'Hazard markers within 30 m of the route',v:String(r.hazNear),h:'route keeps outside their radius'});
   if(r.sunRet!=null)c.push({s:r.sunRet<0?'nogo':r.sunRet<CFG.minSunDeg?'caution':'go',t:'Sun when back at the start',v:`${fmt1(r.sunRet)}° at ${fmtL(r.ltRet)}`,h:`needs ≥ ${CFG.minSunDeg}°`});
   const wx=$('#cWx')?.dataset.s;c.push({s:wx==='nogo'?'nogo':'go',t:'Space weather',v:$('#cWx .v span')?.textContent||'—',h:'DONKI WSA-Enlil arrivals at Mars'});
+  c.push({s:r.dose>CFG.doseCautionUSv?'caution':'go',t:'Radiation dose for the walk',v:`${fmt1(r.dose)} µSv${r.S.radX>1?` (×${r.S.radX}, simulation)`:''}`,h:`caution above ${CFG.doseCautionUSv} µSv (your planning limit)`});
   const comm=r.S.comm;c.push({s:(r.radioPct!=null&&r.radioPct<100)?(comm?'nogo':'caution'):(comm?'caution':'go'),t:'Radio to habitat along the route',v:r.radioPct==null?'unknown':`${fmt1(r.radioPct)}% in line of sight`,h:comm?'relay lost (simulation)':'gaps need an orbiter relay'});
   return c;}
 function sampleSites(){const out=[];layers.samples.eachLayer(l=>{const ll=l.getLatLng(),tt=l.getTooltip()?l.getTooltip().getContent():'';const m=String(tt).match(/\(([^)]*)\)/);out.push({lat:ll.lat,lon:ll.lng,name:String(tt).replace(/\s*\(.*\)/,''),rock:(m&&m[1])||'unknown'});});return out;}
@@ -2710,18 +2780,20 @@ const origin=()=>Q.astro||{lat:stations[0].lat,lon:stations[0].lon,name:'Habitat
 function setPick(on){ROUTE.picking=on;$('#rPick').setAttribute('aria-pressed',on);$('#rPick').textContent=on?'Tap the map…':'Pick on map';map.getContainer().style.cursor=on?'crosshair':'';}
 $('#rPick').onclick=()=>{setPick(!ROUTE.picking);if(ROUTE.picking){sideTab('route');toast('Tap the map or a marker to choose the destination.');}};
 $('#rWork').onchange=$('#rUnk').onchange=()=>ROUTE.dest&&computeRoutes();
-$$('.what input').forEach(i=>i.onchange=()=>{if(ROUTE.dest)computeRoutes();drawSurvival();logEvent(`Scenario ${i.checked?'on':'off'}: ${i.parentElement.textContent.trim()}`,'sys');});
+Q.sim.on(()=>{if(ROUTE.dest)computeRoutes();drawSurvival();drawSimLine();});
+function drawSimLine(){const el=$('#rSim');if(!el)return;const d=Q.sim.describe();el.innerHTML=d.length?`<span class="tagsim">simulation</span> ${esc(d.join(', '))} <button class="mini ghost" id="rSimEdit">Edit</button>`:`No contingency scenario applied. <button class="mini ghost" id="rSimEdit">Simulate</button>`;$('#rSimEdit').onclick=()=>sideTab('sim');}
 function setDest(p,name){ROUTE.dest={lat:p.lat,lon:p.lon,name:name||`${p.lat.toFixed(4)}°N, ${p.lon.toFixed(4)}°E`};$('#rTo').textContent=ROUTE.dest.name;setPick(false);sideTab('route');computeRoutes();}
 Q.route={setDest,summary(){const r=ROUTE.alts[ROUTE.sel];if(!r)return null;return {to:ROUTE.dest.name,verdict:r.verdict,label:r.label,oneWayM:Math.round(r.A.len),totalMin:Math.round(r.total),o2NeedL:Math.round(r.o2Need),o2CapL:Math.round(r.cap),
   reachable:r.reachable,turnaroundM:r.turn?Math.round(r.turn.d):0,unknownPct:Math.round(r.unkPct),maxSlopeDeg:+r.A.maxS.toFixed(1),checks:r.checks.map(c=>`${c.t}: ${c.v} (${c.s})`)};},plan:()=>ROUTE};
 function computeRoutes(){const o=origin(),d=ROUTE.dest;$('#rFrom').textContent=o.name||(Q.astro?'Astronaut position':'Habitat');
-  const S=scen();let extra=[];const unk=+$('#rUnk').value||3;
+  const S=SIM;let extra=[];const unk=+$('#rUnk').value||3;
   const variants=[{label:'Safest',unk},{label:'Shortest',unk:1},{label:'Rover tracks only',unk:25}];
-  if(S.block){const first=astar(o,d,{unk,block:blocked()});if(first&&first.length>2){const mid=densify(first,10);const m=mid[Math.floor(mid.length/2)];extra=[{lat:m.lat,lon:m.lon,r:25}];}}
+  if(S.block){const first=astar(o,d,{unk,block:blocked()});if(first&&first.length>2){const mid=densify(first,10);const m=mid[Math.floor(mid.length/2)];extra=[{lat:m.lat,lon:m.lon,r:40}];}}
   const B=blocked(extra);ROUTE.block=extra;
   const inGrid=cellOf(o)>=0&&cellOf(d)>=0;ROUTE.alts=[];
   for(const v of variants){let path=inGrid?astar(o,d,{unk:v.unk,block:B}):[o,d];if(!path)continue;const r=analyze(path);r.label=v.label;r.inGrid=inGrid;
     if(!ROUTE.alts.some(x=>Math.abs(x.A.len-r.A.len)<5))ROUTE.alts.push(r);}
+  ROUTE.base=null;if(Q.sim.active()&&inGrid){const bp=astar(o,d,{unk,block:blocked()});if(bp){ROUTE.base=analyze(bp,Q.sim.neutral());}}
   ROUTE.sel=0;drawRoutes();logEvent(`Route to ${d.name}: ${ROUTE.alts.length} option(s), best ${ROUTE.alts[0]?ROUTE.alts[0].verdict.toUpperCase():'none'}`,'sys');}
 function drawRoutes(){const g=layers.qroute;g.clearLayers();const box=$('#rOut');
   if(!ROUTE.alts.length){box.innerHTML=`<div class="verdict nogo">No safe path found<small>Every way there crosses a hazard or a slope above ${CFG.maxSlopeDeg}°. Move the destination or relax limits in Readiness.</small></div>`;return;}
@@ -2732,7 +2804,7 @@ function drawRoutes(){const g=layers.qroute;g.clearLayers();const box=$('#rOut')
   L.circleMarker([ROUTE.dest.lat,ROUTE.dest.lon],{radius:8,color:'#121417',weight:3,fillColor:col,fillOpacity:1}).bindTooltip(esc(ROUTE.dest.name),{className:'lbl'}).addTo(g);
   if(r.turn&&!r.reachable)L.circleMarker([r.turn.lat,r.turn.lon],{radius:9,color:'#F0544F',weight:3,fillColor:'#121417',fillOpacity:1}).bindTooltip(`Turn back here: ${km(r.turn.d)} out`,{className:'lbl',permanent:true,direction:'right'}).addTo(g);
   const vt={go:['GO','Every configured constraint is met, there and back.'],caution:['CAUTION','Feasible, but with a thin margin or terrain we cannot confirm.'],nogo:['NO-GO','At least one critical constraint fails.']}[r.verdict];
-  const S=r.S,simOn=Object.values(S).some(Boolean);
+  const S=r.S,simOn=Q.sim.active(S);
   box.innerHTML=`<div class="verdict ${r.verdict}">${vt[0]}<small>${vt[1]}${simOn?' Scenario simulation active.':''}${r.inGrid?'':' Destination is outside the 3.5 km planning grid: straight line only, terrain not analysed.'}</small></div>
    <div class="vgroup"><h3>Route</h3><div class="kv2"><div><b>${km(r.A.len)}</b><span>one way (${r.label.toLowerCase()})</span></div><div><b>${fmtT(r.total)}</b><span>out ${fmtT(r.A.t)}, work ${r.work} min, back ${fmtT(r.B.t)}</span></div>
      <div><b>+${fmt1(r.A.up)} / −${fmt1(r.A.down)} m</b><span>climb / descent out</span></div><div><b>${fmt1(r.A.maxS,1)}°</b><span>steepest measured slope</span></div>
@@ -2760,25 +2832,40 @@ function miniProfile(svg,pts){if(!svg||!pts.length)return;const W=svg.clientWidt
   svg.innerHTML=g+`<path d="${d}" fill="none" stroke="var(--text)" stroke-width="2"/><text x="4" y="12" fill="var(--faint)" style="font:11px var(--font)">${Math.round(hi)} m</text><text x="4" y="${H-8}" fill="var(--faint)" style="font:11px var(--font)">${Math.round(lo)} m · amber = no data</text>`;}
 
 /* ---------------- predictive survival for the whole walk plan ---------------- */
-function drawSurvival(){const pl=PLAN;if(!pl)return;const S=scen(),c=consumables(pl);let cap=c.cap*(S.o2?0.8:1),bat=CFG.batteryWh*(S.bat?0.8:1);
-  const sci=stations.filter(s=>s.kind!=='hab').length,extra=S.extra?15*sci:0,walkT=pl.tl.reduce((a,x,i)=>i&&dist(pl.tl[i-1],x)>0.5?a+(x.t-pl.tl[i-1].t):a,0);
-  const total=pl.total+extra+(S.dust?walkT*(1/0.7-1):0),o2=c.o2+extra*60*W_WORK/1000/KJ_PER_L+(S.dust?c.o2*0.18:0),batUse=CFG.suitPowerW*total/60;
-  const res=CFG.reservePct,o2L=100*(1-o2/cap),bL=100*(1-batUse/bat),tL=100*(1-total/pl.p.plss);
-  const crit=[];for(let i=1;i<pl.samples.length;i++){const s=pl.samples[i];const sd=Math.abs(Math.atan(s.s)/D2R);if(sd>CFG.cautionSlopeDeg&&!(crit.length&&crit[crit.length-1].leg===s.leg&&crit[crit.length-1].k==='slope'))crit.push({k:'slope',leg:s.leg,txt:`Leg ${s.leg+1}: slope ${sd.toFixed(1)}° near ${s.lat.toFixed(4)}°N ${s.lon.toFixed(4)}°E`});}
+function planCheck(sim=SIM){const pl=PLAN;if(!pl)return null;const f=fx(sim),c=consumables(pl),cap=c.cap,bat=CFG.batteryWh*f.bat;
+  let walkT=0,o2=0;for(let i=1;i<pl.tl.length;i++){const a=pl.tl[i-1],b=pl.tl[i],dt=b.t-a.t;if(dt<=0)continue;const dd=dist(a,b);
+    if(dd>0.5){const v=dd/(dt*60)*f.k,dt2=dt/f.k;walkT+=dt2;o2+=metab(v,(b.e-a.e)/dd*100)*dt2*60/1000/KJ_PER_L;}else o2+=W_WORK*dt*60/1000/KJ_PER_L;}
+  const baseWalk=pl.tl.reduce((x,b,i)=>i&&dist(pl.tl[i-1],b)>0.5?x+(b.t-pl.tl[i-1].t):x,0);
+  const total=pl.total-baseWalk+walkT+f.extra;o2=(o2+f.extra*60*W_WORK/1000/KJ_PER_L)*f.o2;const batUse=CFG.suitPowerW*total/60;
+  const res=CFG.reservePct,o2L=100*(1-o2/cap),bL=100*(1-batUse/bat),tL=100*(1-total/pl.p.plss),dose=0.64*total/1440*1000*f.rad;
+  const wp=pl.tl.find(x=>x.t>=pl.worst.t)||pl.tl[pl.tl.length-1];const worstM=pl.worst.m-(total-pl.total)-(wp.ret||0)*(1/f.k-1);
+  const crit=[];for(let i=1;i<pl.samples.length;i++){const x=pl.samples[i];const sd=Math.abs(Math.atan(x.s)/D2R);if(sd>CFG.cautionSlopeDeg&&!(crit.length&&crit[crit.length-1].leg===x.leg&&crit[crit.length-1].k==='slope'))crit.push({k:'slope',leg:x.leg,txt:`Leg ${x.leg+1}: slope ${sd.toFixed(1)}° near ${x.lat.toFixed(4)}°N ${x.lon.toFixed(4)}°E`});}
   pl.legs.forEach((l,i)=>{if(!l.verified)crit.push({k:'unk',txt:`Leg ${i+1}: crosses ground no rover has driven`});});
-  let shadow=null;pl.tl.forEach(x=>{if(x.radio===false){if(!shadow)shadow=[x.t,x.t];else shadow[1]=x.t;}else if(shadow){crit.push({k:'radio',txt:`No direct radio ${fmtT(shadow[0])}–${fmtT(shadow[1])} into the walk (relay needed)`});shadow=null;}});
-  const lvl=(v)=>v<res?'nogo':v<res+10?'caution':'go';const wx=$('#cWx')?.dataset.s==='nogo';
-  const v=[lvl(o2L),lvl(bL),lvl(tL),pl.worst.m<0?'nogo':'go',wx?'nogo':'go',pl.minSun<0?'nogo':pl.minSun<CFG.minSunDeg?'caution':'go',crit.length?'caution':'go'];
-  const verdict=v.includes('nogo')?'nogo':v.includes('caution')?'caution':'go';const vt={go:'GO',caution:'CAUTION',nogo:'NO-GO'}[verdict];
+  let shadow=null,shadowMin=0;pl.tl.forEach(x=>{if(x.radio===false){if(!shadow)shadow=[x.t,x.t];else shadow[1]=x.t;}else if(shadow){shadowMin+=shadow[1]-shadow[0];crit.push({k:'radio',txt:`No direct radio ${fmtT(shadow[0])}–${fmtT(shadow[1])} into the walk (${sim.comm?'no relay: crew is out of contact':'relay needed'})`});shadow=null;}});
+  const lvl=v=>v<res?'nogo':v<res+10?'caution':'go';const wx=$('#cWx')?.dataset.s==='nogo';
+  const items=[['O₂ after return',lvl(o2L)],['Battery after return',lvl(bL)],['Suit time after return',lvl(tL)],['Walkback margin',worstM<0?'nogo':worstM<15?'caution':'go'],['Space weather',wx?'nogo':'go'],
+    ['Sun',pl.minSun<0?'nogo':pl.minSun<CFG.minSunDeg?'caution':'go'],['Critical segments',crit.length?'caution':'go'],['Radiation dose',dose>CFG.doseCautionUSv?'caution':'go'],['Communication',sim.comm&&shadowMin>0?'caution':'go']];
+  const verdict=items.some(x=>x[1]==='nogo')?'nogo':items.some(x=>x[1]==='caution')?'caution':'go';
+  return {sim,f,total,o2,cap,o2L,bat,batUse,bL,tL,dose,worstM,crit,items,verdict,backAt:pl.ltstAt(total),shadowMin};}
+Q.planCheck=planCheck;
+function drawSurvival(){const pl=PLAN;if(!pl||!$('#survOut'))return;const B=planCheck(Q.sim.neutral()),on=Q.sim.active(),S=on?planCheck(SIM):null,X=S||B;
+  const vt={go:'GO',caution:'CAUTION',nogo:'NO-GO'};const row=(l,fb,fs,bad)=>`<tr><td>${l}</td><td>${fb}</td>${on?`<td class="${bad?'bad':''}">${fs}</td>`:''}</tr>`;
   const lastTurn=Math.min(...stations.map((s,i)=>i&&s.id!=='ret'?pl.arr[i].turn-pl.arr[i].leave:Infinity));
-  $('#survOut').innerHTML=`<h2>Can the crew get home?</h2><p class="note">Whole Marswalk 1 plan, outbound, stations and return, checked before anyone leaves the habitat${Object.values(S).some(Boolean)?'. <span class="tagsim">scenario simulation active</span>':''}.</p>
-   <div class="verdict ${verdict}">${vt}<small>${verdict==='go'?'All limits met with reserve.':verdict==='caution'?'Feasible, review the critical segments.':'Do not start this walk as planned.'}</small></div>
-   <div class="kv2"><div><b>${fmtL(pl.ltstAt(total))}</b><span>back at the habitat (local)</span></div><div><b>${Number.isFinite(lastTurn)?Math.round(lastTurn)+' min':'—'}</b><span>tightest spare before a leave-by time</span></div>
-     <div><b>${fmt1(o2)} L</b><span>O₂ needed, ${fmt1(o2L)}% of ${fmt1(cap)} L left</span></div><div><b>${fmt1(bL)}%</b><span>battery left (${fmt1(batUse)} of ${fmt1(bat)} Wh)</span></div>
-     <div><b>${fmt1(tL)}%</b><span>suit time left at the end</span></div><div><b>${fmt1(0.64*total/1440*1000)} µSv</b><span>dose estimate</span></div></div>
-   <div class="vgroup"><h3>Critical segments</h3>${crit.length?`<ul class="checks">${crit.slice(0,10).map(x=>`<li class="caution"><i></i><div>${x.txt}</div><b></b></li>`).join('')}</ul>`:'<p class="note">None found.</p>'}</div>
-   <div class="vgroup"><h3>Leave-by times</h3><ul class="checks">${stations.map((s,i)=>i&&s.id!=='ret'?`<li class="${pl.arr[i].turn-pl.arr[i].leave<0?'nogo':pl.arr[i].turn-pl.arr[i].leave<20?'caution':'go'}"><i></i><div>${esc(s.name)}<br><small>planned departure ${fmtL(pl.ltstAt(pl.arr[i].leave))}</small></div><b>${fmtL(pl.ltstAt(pl.arr[i].turn))}</b></li>`:'').join('')}</ul></div>
-   <p class="note">Scenarios on the whole plan are scaled estimates (dust: walking 30% slower; extra sampling: +15 min per science station). For exact effects use the Route tab, which recomputes the walk.</p>`;}
+  $('#survOut').innerHTML=`<h2>Can the crew get home?</h2><p class="note">Whole walk plan: outbound, stations and return, checked before anyone leaves the habitat.${on?' <span class="tagsim">scenario simulation active</span>':''}</p>
+   <div class="verdict ${X.verdict}">${vt[X.verdict]}<small>${X.verdict==='go'?'All limits met with reserve.':X.verdict==='caution'?'Feasible, review the flagged items.':'Do not start this walk as planned.'}${on?` Planned mission: ${vt[B.verdict]}.`:''}</small></div>
+   <table class="cmp2 simcmp"><tr><th></th><th>Planned</th>${on?'<th>Scenario</th>':''}</tr>
+    ${row('Back at habitat (local)',fmtL(B.backAt),S&&fmtL(S.backAt))}
+    ${row('Walk duration',fmtT(B.total),S&&fmtT(S.total),S&&S.tL<CFG.reservePct)}
+    ${row('O₂ used / left',`${fmt1(B.o2)} L / ${fmt1(B.o2L)}%`,S&&`${fmt1(S.o2)} L / ${fmt1(S.o2L)}%`,S&&S.o2L<CFG.reservePct)}
+    ${row('Battery left',`${fmt1(B.bL)}%`,S&&`${fmt1(S.bL)}%`,S&&S.bL<CFG.reservePct)}
+    ${row('Suit time left',`${fmt1(B.tL)}%`,S&&`${fmt1(S.tL)}%`,S&&S.tL<CFG.reservePct)}
+    ${row('Tightest walkback margin',`${Math.round(B.worstM)} min`,S&&`${Math.round(S.worstM)} min`,S&&S.worstM<0)}
+    ${row('Radiation dose',`${fmt1(B.dose)} µSv`,S&&`${fmt1(S.dose)} µSv`,S&&S.dose>CFG.doseCautionUSv)}
+    ${row('Verdict',vt[B.verdict],S&&vt[S.verdict],S&&S.verdict==='nogo')}</table>
+   <ul class="checks">${X.items.map(([t,st])=>`<li class="${st}"><i></i><div>${t}</div><b>${vt[st]}</b></li>`).join('')}</ul>
+   <div class="vgroup"><h3>Critical segments</h3>${X.crit.length?`<ul class="checks">${X.crit.slice(0,8).map(x=>`<li class="caution"><i></i><div>${x.txt}</div><b></b></li>`).join('')}</ul>`:'<p class="note">None found.</p>'}</div>
+   <div class="vgroup"><h3>Leave-by times</h3><p class="note">Tightest spare before a leave-by time: ${Number.isFinite(lastTurn)?Math.round(lastTurn)+' min':'—'} (planned mission).</p><ul class="checks">${stations.map((s,i)=>i&&s.id!=='ret'?`<li class="${pl.arr[i].turn-pl.arr[i].leave<0?'nogo':pl.arr[i].turn-pl.arr[i].leave<20?'caution':'go'}"><i></i><div>${esc(s.name)}<br><small>planned departure ${fmtL(pl.ltstAt(pl.arr[i].leave))}</small></div><b>${fmtL(pl.ltstAt(pl.arr[i].turn))}</b></li>`:'').join('')}</ul></div>
+   <p class="note">Scenario model for the whole plan: walking legs ${'re-timed at the slower speed with the Pandolf power at that speed'}, extra and delay minutes at 270 W station work, O₂ use multiplied by the extra consumption, battery capacity reduced by the loss, dose scaled by the radiation factor. Walkback margin is shifted by the extra time and the slower return; for exact routes use the Route tab.</p>`;}
 Q.survival={draw:drawSurvival};
 const _render0=render;render=function(){_render0();try{drawSurvival();drawTimeline();}catch(e){console.error(e);}};
 
@@ -2798,12 +2885,14 @@ const svgIcon=(t,sz=22)=>{const [c,,g]=ICON[t];return `<svg viewBox="0 0 24 24" 
 let MK=[];try{MK=JSON.parse(localStorage.getItem('quipu-markers')||'[]');}catch(e){}
 const mkLayer={};const mkSubs=[];
 const saveMk=()=>{try{localStorage.setItem('quipu-markers',JSON.stringify(MK));}catch(e){}mkSubs.forEach(f=>f(MK));if(Q.sync)Q.sync.enqueue('markers',{count:MK.length});};
-Q.markers={list:()=>MK.slice(),get:id=>MK.find(m=>m.id===id),add,remove,update,on:f=>mkSubs.push(f),icon:svgIcon,types:ICON};
+function tomb(kind,id){try{const t=JSON.parse(localStorage.getItem('quipu-tomb')||'[]');t.push({kind,id,deleted:true,updatedAt:Date.now()});localStorage.setItem('quipu-tomb',JSON.stringify(t.slice(-300)));}catch(e){}}
+Q.tomb=tomb;
+Q.markers={list:()=>MK.slice(),importAll(list){for(const id of Object.keys(mkLayer)){layers.mk.removeLayer(mkLayer[id]);delete mkLayer[id];}MK=list.slice();MK.forEach(drawMk);try{localStorage.setItem('quipu-markers',JSON.stringify(MK));}catch(e){}mkSubs.forEach(f=>f(MK));listMk();},get:id=>MK.find(m=>m.id===id),add,remove,update,on:f=>mkSubs.push(f),icon:svgIcon,types:ICON};
 function add(type,p,props={}){if(type==='astro'){setAstro(p);return null;}const n=MK.filter(m=>m.type===type).length+1;
-  const m={id:'m'+Date.now()+Math.random().toString(36).slice(2,5),type,name:`${ICON[type][1]} ${n}`,lat:p.lat,lon:p.lon,desc:'',sci:'',radius:type==='hazard'?30:undefined,created:new Date().toISOString(),...props};
+  const m={id:'m'+Date.now()+Math.random().toString(36).slice(2,5),type,name:`${ICON[type][1]} ${n}`,lat:p.lat,lon:p.lon,desc:'',sci:'',radius:type==='hazard'?30:undefined,created:new Date().toISOString(),updatedAt:Date.now(),...props};
   MK.push(m);drawMk(m);saveMk();listMk();logEvent(`Marker placed: ${m.name} at ${m.lat.toFixed(5)}°N ${m.lon.toFixed(5)}°E`,type==='hazard'?'warn':'sys');if(type==='hazard'&&ROUTE.dest)computeRoutes();return m;}
-function remove(id){const m=MK.find(x=>x.id===id);if(!m)return;MK=MK.filter(x=>x.id!==id);if(mkLayer[id]){layers.mk.removeLayer(mkLayer[id]);delete mkLayer[id];}saveMk();listMk();if(m.type==='hazard'&&ROUTE.dest)computeRoutes();}
-function update(id,patch){const m=MK.find(x=>x.id===id);if(!m)return;Object.assign(m,patch);if(mkLayer[id]){mkLayer[id].setLatLng([m.lat,m.lon]);mkLayer[id].setTooltipContent(esc(m.name));if(patch.type)mkLayer[id].setIcon(mkIcon(m.type));}saveMk();listMk();}
+function remove(id){const m=MK.find(x=>x.id===id);if(!m)return;tomb('marker',id);MK=MK.filter(x=>x.id!==id);if(mkLayer[id]){layers.mk.removeLayer(mkLayer[id]);delete mkLayer[id];}saveMk();listMk();if(m.type==='hazard'&&ROUTE.dest)computeRoutes();}
+function update(id,patch){const m=MK.find(x=>x.id===id);if(!m)return;Object.assign(m,patch,{updatedAt:Date.now()});if(mkLayer[id]){mkLayer[id].setLatLng([m.lat,m.lon]);mkLayer[id].setTooltipContent(esc(m.name));if(patch.type)mkLayer[id].setIcon(mkIcon(m.type));}saveMk();listMk();}
 const mkIcon=t=>L.divIcon({className:'',html:`<div class="mkic" style="width:30px;height:30px;border-radius:50%;background:#121417;border:2px solid ${ICON[t][0]};box-shadow:0 2px 6px rgba(0,0,0,.6)">${svgIcon(t,20)}</div>`,iconSize:[30,30],iconAnchor:[15,15]});
 function drawMk(m){const mk=L.marker([m.lat,m.lon],{icon:mkIcon(m.type),draggable:true,zIndexOffset:900,keyboard:true,title:m.name}).addTo(layers.mk);mkLayer[m.id]=mk;
   mk.bindTooltip(esc(m.name),{className:'lbl',direction:'top',offset:[0,-16]});
@@ -2874,6 +2963,7 @@ function inspect(p,ll){const e=elevAt(p),c=cellOf(p),corr=c>=0&&CORR[c];let nTr=
    ${mk?`<dt>Nearest marker</dt><dd>${esc(mk.m.name)}, ${km(mk.d)}</dd>`:''}
    ${hz.length?`<dt>Hazard</dt><dd class="bad">Inside the keep-out radius of ${esc(hz[0].name)}</dd>`:''}
    <dt>Imagery</dt><dd>HiRISE 25 cm/pixel orbital mosaic</dd></dl>
+   ${Q.envelope?Q.envelope.describe(p):''}
    <div class="prow" style="display:flex;gap:6px;flex-wrap:wrap"><button class="mini" data-a="route">Route here</button><button class="mini ghost" data-a="mk">Add marker</button><button class="mini ghost" data-a="me">I am here</button></div>`;
   wireCopy(d);d.querySelector('[data-a=route]').onclick=()=>{map.closePopup();setDest(p);};
   d.querySelector('[data-a=me]').onclick=()=>{map.closePopup();setAstro(p);};
@@ -2927,21 +3017,23 @@ let NB=[];try{NB=JSON.parse(localStorage.getItem('quipu-notes')||'[]');}catch(e)
 const saveNB=()=>{try{localStorage.setItem('quipu-notes',JSON.stringify(NB));return true;}catch(e){toast('Device storage is full: remove some photos.');return false;}};
 $('#nbPhoto').onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const s=Math.min(1,640/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=img.width*s;c.height=img.height*s;c.getContext('2d').drawImage(img,0,0,c.width,c.height);nbPhoto=c.toDataURL('image/jpeg',.7);toast('Photo attached.');};img.src=URL.createObjectURL(f);};
 $('#nbForm').onsubmit=e=>{e.preventDefault();const text=$('#nbText').value.trim();if(!text&&!nbPhoto){toast('Write an observation or attach a photo.');return;}const p=Q.astro||crewPos();
-  const n={id:'n'+Date.now(),text,sample:$('#nbSample').checked,photo:nbPhoto,lat:p.lat,lon:p.lon,t:C.t,ltst:fmtL(C.ltst()),utc:new Date().toISOString(),synced:false};
+  const n={id:'n'+Date.now(),updatedAt:Date.now(),text,sample:$('#nbSample').checked,photo:nbPhoto,lat:p.lat,lon:p.lon,t:C.t,ltst:fmtL(C.ltst()),utc:new Date().toISOString(),synced:false};
   NB.unshift(n);if(!saveNB()){NB.shift();return;}if(Q.sync)Q.sync.enqueue('note',{id:n.id,text:n.text,lat:n.lat,lon:n.lon});nbPhoto=null;$('#nbText').value='';$('#nbSample').checked=false;drawNB();logEvent(`Field note at ${p.lat.toFixed(5)}°N ${p.lon.toFixed(5)}°E: ${text.slice(0,60)}`,'sys');};
 const nbLayer=L.layerGroup().addTo(layers.mk);
 function drawNB(){$('#nbList').innerHTML=NB.length?NB.map(n=>`<li data-id="${n.id}">${n.photo?`<img src="${n.photo}" alt="Field photo">`:''}<div><div>${esc(n.text)||'<i>Photo</i>'}${n.sample?' <span class="tagm">sample</span>':''}</div><div class="m">${n.lat.toFixed(5)}°N ${n.lon.toFixed(5)}°E · walk ${fmtT(n.t)} · Jezero ${n.ltst} · ${n.utc.slice(0,16).replace('T',' ')} UTC</div><button class="copy" data-del="${n.id}">Delete</button></div></li>`).join(''):'<li style="color:var(--faint)">No notes yet. Notes are stamped with your position and the mission time, and stay on this device without a connection.</li>';
-  $$('#nbList [data-del]').forEach(b=>b.onclick=()=>{NB=NB.filter(n=>n.id!==b.dataset.del);saveNB();drawNB();});
+  $$('#nbList [data-del]').forEach(b=>b.onclick=()=>{tomb('note',b.dataset.del);NB=NB.filter(n=>n.id!==b.dataset.del);saveNB();drawNB();});
   nbLayer.clearLayers();NB.forEach(n=>L.circleMarker([n.lat,n.lon],{radius:5,color:'#121417',weight:2,fillColor:'#B48EF0',fillOpacity:1}).bindTooltip(esc(n.text.slice(0,60))||'Photo note',{className:'lbl'}).addTo(nbLayer));
   const pend=Q.sync?Q.sync.pending().length:NB.filter(n=>!n.synced).length;$('#nbSync').textContent=`${NB.length} note${NB.length===1?'':'s'} on this device, ${pend} waiting for a sync server`;}
-drawNB();Q.notebook={list:()=>NB.slice()};
+drawNB();Q.notebook={list:()=>NB.slice(),importAll(list){NB=list.slice().sort((a,b)=>(b.utc||'').localeCompare(a.utc||''));saveNB();drawNB();}};
 
 /* report uses the marker system */
 Q.reportMarkers=()=>MK;
+Q._w={GR,N,ELEV,CORR,cellOf,centre,mLat,mLon,blocked,metab,tob,origin,setDest,computeRoutes,densify,legStats,astar,analyze,checks,verdictOf,ROUTE,sampleSites,km,fmt1,esc,svgIcon,ICON,crewPos,simplify,drawSimLine,
+  get MK(){return MK;},wireCopy,marsCircle:typeof marsCircle!=='undefined'?marsCircle:null};
 Q.planCons=()=>{const c=consumables(PLAN);return {o2:c.o2,cap:c.cap,batt:c.batt,battWh:CFG.suitPowerW*PLAN.total/60};};
 
 /* ---------------- boot ---------------- */
-$('#scrub').max=PLAN.total;C.seek(0);setTimeout(()=>{drawSurvival();},0);
+$('#scrub').max=PLAN.total;C.seek(0);setTimeout(()=>{drawSurvival();drawSimLine();},0);
 go(location.hash.slice(1)||'walk');
 })();
 </script>
@@ -3904,14 +3996,18 @@ go(location.hash.slice(1)||'walk');
   /* ---------- Q.comms status ---------- */
   const ago=ms=>{if(!ms)return 'never';const s=(now()-ms)/1000;if(s<60)return 'just now';if(s<3600)return Math.round(s/60)+' min ago';if(s<86400)return Math.round(s/3600)+' h ago';return Math.round(s/86400)+' d ago';};
   function status(){
-    const pend=Q.sync.pending().length;const online=navigator.onLine;
+    const pend=Q.sync.pending().length;const online=navigator.onLine;const SI=Q.syncInfo||{};
+    if(online&&SI.state==='syncing')return {state:'syncing',lastSync:NET.lastOk,detail:'Sending crew records to the mission server and receiving updates.',pending:pend};
+    if(online&&SI.state==='failed')return {state:'sync-failed',lastSync:NET.lastOk,detail:`Last sync attempt failed (${SI.error||'no answer'}). Records stay on this tablet; QUIPU retries automatically.`,pending:pend};
     if(!online)return {state:'offline',lastSync:NET.lastOk,detail:`No network. Working from data saved on this tablet; last successful download ${ago(NET.lastOk)}.`,pending:pend};
     const okRecent=NET.lastOk&&now()-NET.lastOk<10*60000;const failRecent=NET.lastFail&&(!NET.lastOk||NET.lastFail>NET.lastOk)&&now()-NET.lastFail<10*60000;
     const failedHosts=Object.entries(NET.hosts).filter(([h,v])=>v.fail&&(!v.ok||v.fail>v.ok)).map(([h])=>h);
     if(failRecent||(!okRecent&&NET.lastFail))return {state:'limited',lastSync:NET.lastOk,detail:`Online, but ${failedHosts.length||'some'} NASA service${failedHosts.length===1?'':'s'} did not answer (${failedHosts.join(', ')||'unknown'}). Snapshots are in use where a live call failed.`,pending:pend};
-    if(pend)return {state:'sync-pending',lastSync:NET.lastOk,detail:`${pend} crew item${pend>1?'s':''} saved on this tablet, not uploaded: no sync server is configured in this prototype.`,pending:pend};
+    if(pend)return {state:'sync-pending',lastSync:NET.lastOk,detail:`${pend} crew item${pend>1?'s':''} saved on this tablet, not uploaded yet${Q.cfg.syncEndpoint?'':': no sync server is configured'}.`,pending:pend};
+    const lastNet=Math.max(NET.lastOk||0,+localStorage.getItem('quipu-last-online')||0);
+    if(!okRecent&&lastNet&&now()-lastNet>6*3600000)return {state:'outdated',lastSync:lastNet,detail:`Online, but the newest NASA data on this tablet is from ${ago(lastNet)}. Treat it as archived until it refreshes.`,pending:pend};
     return {state:'connected',lastSync:NET.lastOk,detail:NET.lastOk?`NASA data downloaded ${ago(NET.lastOk)}.`:'Online. No NASA request has completed yet.',pending:pend};}
-  const LABEL={connected:'Connected',limited:'Limited connectivity',offline:'No connection','sync-pending':'Sync pending'};
+  const LABEL={connected:'Online',limited:'Limited connectivity',offline:'Offline','sync-pending':'Sync pending',syncing:'Synchronizing','sync-failed':'Sync failed',outdated:'Data may be outdated'};
   let badgeEl=null;
   function renderBadge(el){badgeEl=el||badgeEl||$q('#commStatus');if(!badgeEl)return;const s=status();
     badgeEl.innerHTML=`<button class="cm-badge" data-s="${s.state}" title="${s.detail.replace(/"/g,'&quot;')}" aria-label="Communications: ${LABEL[s.state]}. ${s.detail.replace(/"/g,'&quot;')}"><i></i>${LABEL[s.state]}${s.state==='sync-pending'?` (${s.pending})`:''}<small>${s.lastSync?'updated '+ago(s.lastSync):''}</small></button>`;
@@ -4830,7 +4926,21 @@ function command(q){const n=norm(q);
   if(/\b(emergencia|emergency)\b.*\b(regreso|return|modo|mode)\b/.test(n)&&Qn.emergency&&Qn.emergency.open){Qn.emergency.open();return {segs:[seg('guide',T('Modo de regreso de emergencia activado.','Emergency return mode on.'))],sugg:[]};}
   return null;}
 
-function offlineAnswer(q){const n=norm(q);
+function extAnswer(n){const fm=(x,d=0)=>Number(x).toFixed(d);
+  if(Q.envelope&&/(que tan lejos|hasta donde|how far|envolvente|envelope|zona segura|safe zone|area segura|safe area|explorar.*segur)/.test(n)){const e=Q.envelope.summary();if(!e)return null;
+    const lim=Object.entries(e.limiting).sort((a,b)=>b[1]-a[1])[0];const ln={oxygen:T('el oxígeno','oxygen'),time:T('el tiempo del traje','suit time'),battery:T('la batería','battery')}[lim[0]];
+    return {segs:[seg('calc',T(`Con lo que tienes (${fm(e.params.o2L)} L de O₂, ${fm(e.params.batPct)}% de batería, ${fm(e.params.timeMin)} min de traje, reserva ${e.params.res}%), puedes ir y volver a <b>${e.returnTo}</b> dentro de <b>${fm(e.safeKm2,2)} km²</b> seguros. El punto seguro más lejano está a <b>${fm(e.farthestSafeM)} m</b>. En el borde limita sobre todo ${ln} (${lim[1]}%).`,
+      `With what you have (${fm(e.params.o2L)} L O₂, ${fm(e.params.batPct)}% battery, ${fm(e.params.timeMin)} min suit time, ${e.params.res}% reserve) you can go and come back to <b>${e.returnTo}</b> within <b>${fm(e.safeKm2,2)} km²</b> of safe ground. The farthest safe point is <b>${fm(e.farthestSafeM)} m</b> away. At the edge, ${ln} is the main limit (${lim[1]}%).`)),
+      seg('estimate',T(`Además hay ${fm(e.cautionKm2+e.unconfirmedKm2,2)} km² en precaución: margen justo o terreno sin datos de elevación. Cada celda se calcula con ida y vuelta por el terreno, no por distancia en línea recta.`,`Another ${fm(e.cautionKm2+e.unconfirmedKm2,2)} km² is caution: thin margin or ground with no elevation data. Every cell is a round trip over the terrain, not a straight-line radius.`))],sugg:T(['¿Qué pasa si la batería baja 20%?','¿Cuánta ciencia puedo hacer sin arriesgar el regreso?'],['What if the battery drops 20%?','How much science can I do without risking the return?'])};}
+  if(Q.science&&/(ciencia|science).*(segur|riesg|survival|supervivencia|safe|return|regres)|cuanta ciencia|how much science/.test(n)){const r=Q.science.result();if(!r){Q.go&&Q.go('walk');Q.sideTab&&Q.sideTab('sci');return {segs:[seg('guide',T('Abrí la pestaña Science del Marswalk: estoy calculando las expediciones. Pregúntame de nuevo en unos segundos.','I opened the Science tab in Marswalk and I am computing the expeditions. Ask me again in a few seconds.'))],sugg:[]};}
+    const s=r.safe,c=r.sci,f=r.frontier;return {segs:[seg('calc',T(`Plan seguro primero: <b>${s?s.points:0} puntos</b> (${s?s.stops.join(', '):'ninguno cabe'}). Plan de máxima ciencia: <b>${c?c.points:0} puntos</b>${c?`, reserva mínima ${c.minReservePct}%`:''}. Ninguno rompe la reserva de O₂, batería o tiempo.`,
+      `Safety-first: <b>${s?s.points:0} points</b> (${s?s.stops.join(', '):'none fits'}). Science-optimised: <b>${c?c.points:0} points</b>${c?`, smallest reserve ${c.minReservePct}%`:''}. Neither breaks the O₂, battery or suit-time reserve.`)),
+      seg('calc',T(`Guardando margen extra: ${f.map(x=>`+${x.b}% → ${x.pts} pts`).join(', ')}.`,`Keeping extra margin: ${f.map(x=>`+${x.b}% → ${x.pts} pts`).join(', ')}.`))],sugg:[]};}
+  if(Q.sim&&/(simul|escenario|scenario)/.test(n)&&Q.sim.active()){const S=Q.planCheck(Q.sim.get()),B=Q.planCheck(Q.sim.neutral());const V={go:'GO',caution:'CAUTION',nogo:'NO-GO'};
+    return {segs:[seg('sim',T(`Escenario activo: ${Q.sim.describe().join(', ')}. El plan pasa de <b>${V[B.verdict]}</b> a <b>${V[S.verdict]}</b>: O₂ al final ${fm(S.o2L)}% (antes ${fm(B.o2L)}%), batería ${fm(S.bL)}%, margen de regreso ${fm(S.worstM)} min.`,`Active scenario: ${Q.sim.describe().join(', ')}. The plan goes from <b>${V[B.verdict]}</b> to <b>${V[S.verdict]}</b>: O₂ at the end ${fm(S.o2L)}% (was ${fm(B.o2L)}%), battery ${fm(S.bL)}%, walkback margin ${fm(S.worstM)} min.`))],sugg:[]};}
+  if(Q.syncInfo&&/(sincroniz|sync|offline|sin conexion|sin internet)/.test(n)){const s=Q.syncInfo;return {segs:[seg('verified',T(`${navigator.onLine?'Hay red':'Sin red'}. Última sincronización: ${s.lastSync?new Date(s.lastSync).toLocaleString():'nunca'}. ${Q.cfg.syncEndpoint?'':'No hay servidor de misión configurado: todo queda en esta tableta.'} Las rutas, la envolvente y el plan se calculan aquí mismo sin conexión.`,`${navigator.onLine?'Online':'Offline'}. Last sync: ${s.lastSync?new Date(s.lastSync).toLocaleString():'never'}. ${Q.cfg.syncEndpoint?'':'No mission server configured: everything stays on this tablet.'} Routes, the envelope and the plan are computed here with no connection.`))],sugg:[]};}
+  return null;}
+function offlineAnswer(q){const n=norm(q);const ext=extAnswer(n);if(ext)return ext;
   if(/^(hola|hi|hello|buenas|hey)\b|que puedes|what can you|ayuda$|^help$/.test(n))return {segs:[seg('guide',T('Soy Yarbis. Puedo calcular si llegas y vuelves con tu oxígeno, simular escenarios ("¿y si la batería baja 20%?"), revisar el estado, explicar datos y fuentes, y mover la app. Pregunta con tus palabras.','I\'m Yarbis. I can work out whether you can reach a place and return on your oxygen, simulate scenarios ("what if the battery drops 20%?"), review status, explain data and sources, and drive the app. Ask in your own words.'))],
     sugg:T(['¿Puedo llegar a Wildcat Ridge y volver con mi oxígeno?','¿Qué pasa si la batería baja 20%?','¿Qué reviso antes de salir?'],['Can I reach Wildcat Ridge and return on my oxygen?','What if the battery drops 20%?','What should I check before starting?'])};
   if(/(que pasa si|y si|que tal si|what if|suppose|supon)/.test(n)){const r=whatIf(q);if(r)return r;}
@@ -5011,29 +5121,513 @@ W.openYarbis=open;
 if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',mount);else mount();
 })();
 </script>
+<script>/* module: envelope */
+/* ======================================================================
+   QUIPU: Survival envelope
+   Every cell on the 10 m Jezero planning grid is classified by a full round
+   trip: cheapest path out from the start (Dijkstra over terrain-derived walking
+   time), time at the site, cheapest conservative path back to the chosen return
+   point, then oxygen, battery and suit time are checked against the reserve.
+   Never radial distance: slopes, hazards and missing terrain data bend the edge.
+   ====================================================================== */
+(function(){const W=Q._w;if(!W)return;
+const {mLat,mLon}=W;
+/* Envelope grid: 11 km x 11 km around the habitat at 25 m, so the whole suit range fits.
+   Elevation and rover ground are sampled from the 10 m Marswalk grid (rover-measured);
+   everywhere else is honestly "no data". */
+const CELL=25,HALF=5500,H0=stations[0];const GR={lon0:H0.lon-HALF/mLon,lat0:H0.lat-HALF/mLat,cell:CELL};const nx=Math.round(2*HALF/CELL),ny=nx,N=nx*ny;
+const cellOf=p=>{const x=Math.floor((p.lon-GR.lon0)*mLon/CELL),y=Math.floor((p.lat-GR.lat0)*mLat/CELL);return (x<0||y<0||x>=nx||y>=ny)?-1:y*nx+x;};
+const centre=i=>({lon:GR.lon0+((i%nx)+.5)*CELL/mLon,lat:GR.lat0+(Math.floor(i/nx)+.5)*CELL/mLat});
+const ELEV=new Float32Array(N).fill(NaN),CORR=new Uint8Array(N);
+(function(){const fine=W.GR,dl=fine.cell/mLon,dt=fine.cell/mLat;for(let i=0;i<N;i++){const c=centre(i);if(W.cellOf(c)<0)continue;let s=0,n=0,cor=0;
+  for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const j=W.cellOf({lon:c.lon+dx*dl,lat:c.lat+dy*dt});if(j<0)continue;if(!isNaN(W.ELEV[j])){s+=W.ELEV[j];n++;}if(W.CORR[j])cor=1;}
+  if(n>=5)ELEV[i]=s/n;CORR[i]=cor;}})();
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];const C=Q.clock,CFG=Q.cfg;
+const esc=W.esc,fmt1=W.fmt1,km=W.km;const UNK_SLOW=0.85,BAND=10;
+const cap=()=>Q.planCons?Q.planCons().cap:376,plss=()=>(PLAN&&PLAN.p?PLAN.p.plss:420);
+let ENV={o2L:null,batPct:100,timeMin:null,speedKmh:null,dwell:15,dest:'hab',src:'auto',show:true};
+try{Object.assign(ENV,JSON.parse(localStorage.getItem('quipu-env')||'{}'));}catch(e){}
+const saveEnv=()=>{try{localStorage.setItem('quipu-env',JSON.stringify(ENV));}catch(e){}};
+const P=()=>({o2L:ENV.o2L??cap(),batPct:ENV.batPct??100,timeMin:ENV.timeMin??plss(),speed:ENV.speedKmh??(+$('#pV').value||CFG.walkSpeedKmh),dwell:+ENV.dwell||0,res:+CFG.reservePct||20});
+
+/* ---------- Dijkstra over the terrain grid ---------- */
+function field(src,reverse,k,speedKmh,block,maxT=1e9){const T=new Float32Array(N).fill(Infinity),O=new Float32Array(N),U=new Float32Array(N),D=new Float32Array(N),prev=new Int32Array(N).fill(-1),done=new Uint8Array(N);
+  if(src<0)return {T,O,U,D,prev};const v0=speedKmh/3.6*k*(reverse?(+CFG.returnFactor||0.8):1),maxS=+CFG.maxSlopeDeg||15;
+  const hk=[],hv=[];const push=(f,i)=>{hk.push(f);hv.push(i);let c=hk.length-1;while(c>0){const p=(c-1)>>1;if(hk[p]<=hk[c])break;[hk[p],hk[c]]=[hk[c],hk[p]];[hv[p],hv[c]]=[hv[c],hv[p]];c=p;}};
+  const pop=()=>{const r=hv[0],lk=hk.pop(),lv=hv.pop();if(hk.length){hk[0]=lk;hv[0]=lv;let c=0;for(;;){const l=2*c+1,rr=l+1;let m=c;if(l<hk.length&&hk[l]<hk[m])m=l;if(rr<hk.length&&hk[rr]<hk[m])m=rr;if(m===c)break;[hk[m],hk[c]]=[hk[c],hk[m]];[hv[m],hv[c]]=[hv[c],hv[m]];c=m;}}return r;};
+  T[src]=0;push(0,src);
+  while(hk.length){const u=pop();if(done[u])continue;done[u]=1;if(T[u]>maxT)break;const ux=u%nx,uy=(u/nx)|0;
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;const X=ux+dx,Y=uy+dy;if(X<0||Y<0||X>=nx||Y>=ny)continue;const v=Y*nx+X;if(done[v]||block[v])continue;
+      const len=CELL*(dx&&dy?Math.SQRT2:1);const a=reverse?v:u,b=reverse?u:v;/* walking direction a -> b */
+      const ka=!isNaN(ELEV[a]),kb=!isNaN(ELEV[b]);let g=0,known=ka&&kb;
+      if(known){g=(ELEV[b]-ELEV[a])/len;if(Math.atan(Math.abs(g))/D2R>maxS)continue;}
+      const sp=Math.max(0.12,v0*(known?W.tob(g)/W.tob(0):UNK_SLOW)),dt=len/sp/60,nt=T[u]+dt;
+      if(nt<T[v]){T[v]=nt;O[v]=O[u]+W.metab(sp,g*100)*dt*60/1000/KJ_PER_L;U[v]=U[u]+(known?0:len);D[v]=D[u]+len;prev[v]=u;push(nt,v);}}}
+  return {T,O,U,D,prev};}
+
+/* ---------- inputs: start, return point, obstacles ---------- */
+function startPt(){if(ENV.src==='clock'&&Q.crewPos){const p=Q.crewPos();return {lat:p.lat,lon:p.lon,name:'Crew position on the walk clock'};}const o=W.origin();return {lat:o.lat,lon:o.lon,name:Q.astro?'Astronaut position':'Habitat'};}
+function dests(){const out=[{id:'hab',name:'Main habitat (plan)',lat:stations[0].lat,lon:stations[0].lon}];
+  for(const m of W.MK)if(m.type==='hab'||m.type==='temp')out.push({id:m.id,name:m.name,lat:m.lat,lon:m.lon});
+  out.push({id:'start',name:'Back to the start point',...startPt()});return out;}
+function destPt(){const d=dests();return d.find(x=>x.id===ENV.dest)||d[0];}
+function blockMask(sim){const hz=W.MK.filter(m=>m.type==='hazard').map(m=>({lat:m.lat,lon:m.lon,r:+m.radius||30}));if(sim.block&&W.ROUTE.block&&W.ROUTE.block.length)hz.push(...W.ROUTE.block);
+  const B=new Uint8Array(N);for(const h of hz){const c=cellOf(h);if(c<0)continue;const r=Math.ceil(h.r/CELL)+1,cx=c%nx,cy=(c/nx)|0;
+    for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const X=cx+dx,Y=cy+dy;if(X<0||Y<0||X>=nx||Y>=ny)continue;const i=Y*nx+X;if(dist(centre(i),h)<=h.r+CELL*.5)B[i]=1;}}return B;}
+
+/* ---------- cache fields; classify per cell ---------- */
+const cache={};
+function fields(sim){const s=startPt(),d=destPt(),pp=P(),f=Q.sim.fx(sim),bm=blockMask(sim);let sig=0;for(let i=0;i<N;i+=1)if(bm[i])sig=(sig*31+i)|0;
+  const key=[cellOf(s),cellOf(d),f.k,pp.speed,CFG.maxSlopeDeg,CFG.returnFactor,CFG.bodyKg,CFG.suitKg,CFG.loadKg,CFG.suitFactor,CFG.terrainEta,sig].join('|');
+  const slot=Q.sim.active(sim)?'sim':'base';if(cache[slot]&&cache[slot].key===key)return cache[slot];
+  const t0=performance.now();const mt=Math.max(plss(),pp.timeMin)+5;const Fo=field(cellOf(s),false,f.k,pp.speed,bm,mt),Fb=field(cellOf(d),true,f.k,pp.speed,bm,mt);
+  cache[slot]={key,Fo,Fb,s,d,block:bm,ms:Math.round(performance.now()-t0)};return cache[slot];}
+function classify(F,pp,sim){const f=Q.sim.fx(sim),Cp=cap(),Pl=plss(),dwell=pp.dwell+f.extra,dwO2=W_WORK*dwell*60/1000/KJ_PER_L;
+  const st=new Uint8Array(N),mg=new Float32Array(N).fill(-100),bind=new Uint8Array(N);const batAvail=pp.batPct*f.bat;
+  /* 0 none(outside/unreachable) 1 safe 2 caution-margin 3 caution-unknown-terrain 4 restricted 5 blocked */
+  for(let i=0;i<N;i++){if(F.block[i]){st[i]=5;continue;}const to=F.Fo.T[i],tb=F.Fb.T[i];if(!isFinite(to)||!isFinite(tb)){st[i]=0;continue;}
+    const t=to+dwell+tb,o2=(F.Fo.O[i]+dwO2+F.Fb.O[i])*f.o2;
+    const oL=(pp.o2L-o2)/Cp*100,tL=(pp.timeMin-t)/Pl*100,bL=batAvail-CFG.suitPowerW*t/60/CFG.batteryWh*100;
+    let m=oL,b=1;if(tL<m){m=tL;b=2;}if(bL<m){m=bL;b=3;}mg[i]=m-pp.res;bind[i]=b;
+    st[i]=m<pp.res?4:m<pp.res+BAND?2:(F.Fo.U[i]+F.Fb.U[i]>CELL*1.5?3:1);}
+  return {st,mg,bind};}
+
+/* ---------- rendering: soft zones + crisp contour lines on one canvas overlay ---------- */
+const SC=3,big=document.createElement('canvas');big.width=nx*SC;big.height=ny*SC;const small=document.createElement('canvas');small.width=nx;small.height=ny;
+const tmp=document.createElement('canvas');tmp.width=big.width;tmp.height=big.height;
+const hatch=(()=>{const c=document.createElement('canvas');c.width=c.height=14;const g=c.getContext('2d');g.strokeStyle='rgba(242,165,65,.28)';g.lineWidth=1.5;g.beginPath();g.moveTo(-2,16);g.lineTo(16,-2);g.moveTo(-2,2);g.lineTo(2,-2);g.moveTo(12,16);g.lineTo(16,12);g.stroke();return c;})();
+const COL={1:[92,201,138,.42],2:[242,165,65,.46],3:[242,165,65,.09],4:[240,84,79,.16],5:[240,84,79,.45]};
+const Ov=L.ImageOverlay.extend({_initImage(){const el=this._image=big;L.DomUtil.addClass(el,'leaflet-image-layer');if(this._zoomAnimated)L.DomUtil.addClass(el,'leaflet-zoom-animated');el.style.pointerEvents='none';}});
+const bounds=[[GR.lat0,GR.lon0],[GR.lat0+ny*CELL/mLat,GR.lon0+nx*CELL/mLon]];
+layers.envelope=L.layerGroup();const ov=new Ov('',bounds,{interactive:false,opacity:1});ov.addTo(layers.envelope);const pins=L.layerGroup().addTo(layers.envelope);
+function contour(g,val,thr,style){/* marching squares on a smoothed field, in big-canvas pixels */
+  const sm=new Float32Array(N);for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){let s=0,n=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const X=x+dx,Y=y+dy;if(X<0||Y<0||X>=nx||Y>=ny)continue;s+=val[Y*nx+X];n++;}sm[y*nx+x]=s/n;}
+  g.save();Object.assign(g,style);if(style.dash)g.setLineDash(style.dash);g.beginPath();
+  const P=(x,y)=>[(x+.5)*SC,(ny-1-y+.5)*SC];
+  for(let y=0;y<ny-1;y++)for(let x=0;x<nx-1;x++){const a=sm[y*nx+x]-thr,b=sm[y*nx+x+1]-thr,c=sm[(y+1)*nx+x+1]-thr,d=sm[(y+1)*nx+x]-thr;
+    const code=(a>0?1:0)|(b>0?2:0)|(c>0?4:0)|(d>0?8:0);if(code===0||code===15)continue;
+    const e=[[x+a/(a-b),y],[x+1,y+b/(b-c)],[x+d/(d-c),y+1],[x,y+a/(a-d)]];/* bottom,right,top,left */
+    const segs={1:[[0,3]],2:[[0,1]],3:[[1,3]],4:[[1,2]],5:[[0,1],[2,3]],6:[[0,2]],7:[[2,3]],8:[[2,3]],9:[[0,2]],10:[[0,3],[1,2]],11:[[1,2]],12:[[1,3]],13:[[0,1]],14:[[0,3]]}[code];
+    for(const [i,j] of segs){const p=P(...e[i]),q=P(...e[j]);g.moveTo(p[0],p[1]);g.lineTo(q[0],q[1]);}}
+  if(style.halo){g.save();g.strokeStyle=style.halo;g.lineWidth=style.lineWidth+3;g.setLineDash([]);g.stroke();g.restore();}g.stroke();g.restore();}
+function render(R,baseR){const sg=small.getContext('2d'),img=sg.createImageData(nx,ny);
+  for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){const s=R.st[y*nx+x],c=COL[s];if(!c)continue;const o=((ny-1-y)*nx+x)*4;img.data[o]=c[0];img.data[o+1]=c[1];img.data[o+2]=c[2];img.data[o+3]=c[3]*255;}
+  sg.putImageData(img,0,0);const g=big.getContext('2d');g.clearRect(0,0,big.width,big.height);g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(small,0,0,big.width,big.height);
+  /* hatch the cells whose path crosses ground with no elevation data */
+  const tg=tmp.getContext('2d');tg.clearRect(0,0,tmp.width,tmp.height);const mk=sg.createImageData(nx,ny);for(let i=0;i<N;i++)if(R.st[i]===3){const x=i%nx,y=(i/nx)|0,o=((ny-1-y)*nx+x)*4;mk.data[o+3]=255;}
+  sg.putImageData(mk,0,0);tg.imageSmoothingEnabled=true;tg.drawImage(small,0,0,tmp.width,tmp.height);tg.globalCompositeOperation='source-in';tg.fillStyle=tg.createPattern(hatch,'repeat');tg.fillRect(0,0,tmp.width,tmp.height);tg.globalCompositeOperation='source-over';g.drawImage(tmp,0,0);
+  const mg=R.mg;contour(g,mg,0,{strokeStyle:'#ECEAE6',lineWidth:2.2,halo:'rgba(18,20,23,.85)'});
+  const safeV=new Float32Array(N);for(let i=0;i<N;i++)safeV[i]=R.st[i]===1?1:0;contour(g,safeV,.5,{strokeStyle:'#5CC98A',lineWidth:1.8,halo:'rgba(18,20,23,.6)'});
+  if(baseR)contour(g,baseR.mg,0,{strokeStyle:'rgba(236,234,230,.9)',lineWidth:1.6,dash:[7,6]});
+}
+
+/* ---------- compute, animate, summarise ---------- */
+let LAST=null,BASE=null,shown=null,anim=0,lastParams=null;
+function areaKm2(st,v){let n=0;for(let i=0;i<N;i++)if(st[i]===v)n++;return n*CELL*CELL/1e6;}
+function summarise(F,R,pp,sim){const s=F.s;let far=0,farPt=null;const bc=[0,0,0,0];
+  for(let i=0;i<N;i++){if(R.st[i]===1){const c=centre(i),d=dist(s,c);if(d>far){far=d;farPt=c;}}
+    if(R.st[i]&&R.st[i]<=4&&R.mg[i]>=-2&&R.mg[i]<2)bc[R.bind[i]]++;}
+  const tb=bc[1]+bc[2]+bc[3]||1;
+  return {safeKm2:areaKm2(R.st,1),cautionKm2:areaKm2(R.st,2),unconfirmedKm2:areaKm2(R.st,3),restrictedKm2:areaKm2(R.st,4),farthestSafeM:Math.round(far),farthestSafe:farPt,
+    limiting:{oxygen:Math.round(100*bc[1]/tb),time:Math.round(100*bc[2]/tb),battery:Math.round(100*bc[3]/tb)},start:s.name,returnTo:F.d.name,params:pp,sim:Q.sim.describe(sim),computedAt:new Date().toISOString(),ms:F.ms};}
+function compute(animate=true){if(!PLAN)return;const sim=Q.sim.get(),pp=P(),F=fields(sim);
+  const from=lastParams&&animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches?lastParams:null;lastParams=pp;
+  const baseR=Q.sim.active(sim)?(()=>{const FB=fields(Q.sim.neutral());BASE={F:FB,R:classify(FB,pp,Q.sim.neutral())};return BASE.R;})():(BASE=null,null);
+  cancelAnimationFrame(anim);const t0=performance.now(),dur=520;
+  const step=()=>{const u=from?Math.min(1,(performance.now()-t0)/dur):1,e=1-Math.pow(1-u,3);const q={...pp};
+    if(from)for(const k of ['o2L','batPct','timeMin','dwell','res'])q[k]=from[k]+(pp[k]-from[k])*e;
+    const R=classify(F,q,sim);if(isShown())render(R,baseR);if(u<1){anim=requestAnimationFrame(step);return;}
+    LAST={F,R,pp,sim,sum:summarise(F,R,pp,sim)};if(BASE)BASE.sum=summarise(BASE.F,BASE.R,pp,Q.sim.neutral());
+    try{localStorage.setItem('quipu-env-last',JSON.stringify(LAST.sum));}catch(e){}drawPins();drawPane();(Q.onEnvelope||[]).forEach(fn=>{try{fn(LAST.sum);}catch(err){console.error(err);}});};
+  step();}
+let tq=0;const queue=(anim=true)=>{clearTimeout(tq);tq=setTimeout(()=>compute(anim),60);};
+function isShown(){return map.hasLayer(layers.envelope);}
+function drawPins(){pins.clearLayers();if(!LAST)return;const s=LAST.F.s,d=LAST.F.d;
+  if(dist(s,d)>8)L.circleMarker([d.lat,d.lon],{radius:9,color:'#5CC98A',weight:3,fillColor:'#121417',fillOpacity:1}).bindTooltip('Return point: '+esc(d.name),{className:'lbl'}).addTo(pins);
+  if(LAST.sum.farthestSafe){const p=LAST.sum.farthestSafe;L.circleMarker([p.lat,p.lon],{radius:5,color:'#121417',weight:2,fillColor:'#5CC98A',fillOpacity:1}).bindTooltip(`Farthest safe point: ${km(LAST.sum.farthestSafeM)} from the start`,{className:'lbl'}).addTo(pins);}}
+
+/* ---------- any point: full round-trip breakdown ---------- */
+function at(p){if(!LAST)return null;const i=cellOf(p);if(i<0)return {outside:true};const {F,R,pp,sim}=LAST,f=Q.sim.fx(sim);const to=F.Fo.T[i],tb=F.Fb.T[i];
+  if(F.block[i])return {i,status:'blocked',reason:'Inside a hazard keep-out radius or a simulated blocked segment.'};
+  if(!isFinite(to)||!isFinite(tb))return {i,status:'unreachable',reason:`No path: every way in or out crosses a slope above ${CFG.maxSlopeDeg}° or a hazard.`};
+  const dwell=pp.dwell+f.extra,t=to+dwell+tb,o2=(F.Fo.O[i]+W_WORK*dwell*60/1000/KJ_PER_L+F.Fb.O[i])*f.o2,batUse=CFG.suitPowerW*t/60;
+  const oL=(pp.o2L-o2)/cap()*100,tL=(pp.timeMin-t)/plss()*100,bL=pp.batPct*f.bat-batUse/CFG.batteryWh*100,st=R.st[i];
+  const lim=[['oxygen',oL],['suit time',tL],['battery',bL]].sort((a,b)=>a[1]-b[1])[0];
+  const status=st===1?'safe':st===2||st===3?'caution':'restricted';
+  const reason=st===1?'Round trip keeps every reserve.':st===2?`Reachable and back, but ${lim[0]} would end at ${fmt1(lim[1])}%, within ${BAND} points of the ${pp.res}% reserve.`:
+    st===3?`Resources suffice, but ${km(F.Fo.U[i]+F.Fb.U[i])} of the round trip crosses ground with no elevation data, so slopes there are not confirmed.`:
+    `Not enough ${lim[0]} for the return: it would end at ${fmt1(lim[1])}% against a ${pp.res}% reserve. Reaching it is not the test; getting back is.`;
+  return {i,status,reason,outMin:to,backMin:tb,dwell,total:t,o2,batWh:batUse,o2LeftPct:oL,timeLeftPct:tL,batLeftPct:bL,outM:F.Fo.D[i],backM:F.Fb.D[i],unknownM:F.Fo.U[i]+F.Fb.U[i],returnTo:F.d.name};}
+function describe(p){if(!LAST||!isShown())return '';const a=at(p);if(!a||a.outside)return '<div class="envpop"><b>Survival envelope</b><p>Outside the 11 km planning area: not analysed.</p></div>';
+  const cls={safe:'go',caution:'caution',restricted:'nogo',blocked:'nogo',unreachable:'nogo'}[a.status],lab={safe:'Safe round trip',caution:'Caution',restricted:'Restricted',blocked:'Blocked',unreachable:'Unreachable'}[a.status];
+  if(a.outMin==null)return `<div class="envpop"><b>Survival envelope</b><div class="verdict ${cls} sm">${lab}<small>${a.reason}</small></div></div>`;
+  return `<div class="envpop"><b>Survival envelope</b><div class="verdict ${cls} sm">${lab}<small>${esc(a.reason)}</small></div>
+   <dl><dt>Out</dt><dd>${fmtT(a.outMin)}, ${km(a.outM)}</dd><dt>At the site</dt><dd>${Math.round(a.dwell)} min</dd><dt>Back to ${esc(a.returnTo)}</dt><dd>${fmtT(a.backMin)}, ${km(a.backM)}</dd>
+   <dt>O₂ round trip</dt><dd>${fmt1(a.o2)} L, ${fmt1(a.o2LeftPct)}% left</dd><dt>Battery</dt><dd>${fmt1(a.batWh)} Wh, ${fmt1(a.batLeftPct)}% left</dd><dt>Suit time left</dt><dd>${fmt1(a.timeLeftPct)}%</dd>
+   ${a.unknownM>CELL*1.5?`<dt>No terrain data</dt><dd>${km(a.unknownM)} of the trip</dd>`:''}</dl><p class="note" style="margin:4px 0 0">Model estimate on cheapest-time paths. “Route here” checks the exact route.</p></div>`;}
+
+/* ---------- side panel ---------- */
+const sl=(id,lab,min,max,step,val,unit,hint)=>`<label class="esl"><span>${lab}<b id="${id}V">${val}${unit}</b></span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}" aria-describedby="${id}H"><small id="${id}H">${hint}</small></label>`;
+function drawPane(){const el=$('#envPane');if(!el)return;const pp=P(),s=LAST&&LAST.sum,b=BASE&&BASE.sum,ds=dests();
+  if(!el.dataset.built){el.dataset.built=1;
+    el.innerHTML=`<h2>Survival envelope</h2><p class="note">Every coloured cell is a full round trip: the cheapest path over the terrain to that spot, time at the site, and a conservative walk back to the return point, keeping your reserve. Slopes, hazards and missing data bend the edge.</p>
+     <label class="switch"><input type="checkbox" id="envShow" ${isShown()?'checked':''}> Show on the map</label>
+     <div class="rrow"><span class="rlab">Start</span><b id="envFrom"></b><button class="mini ghost" id="envSrc"></button></div>
+     <div class="rrow"><span class="rlab">Return to</span><select id="envDest"></select></div>
+     <div class="esls">${sl('eO2','O₂ available',0,Math.round(cap()),5,Math.round(pp.o2L),' L','Full suit: '+Math.round(cap())+' L')}${sl('eBat','Battery available',0,100,1,Math.round(pp.batPct),'%',CFG.batteryWh+' Wh at '+CFG.suitPowerW+' W')}
+      ${sl('eTime','Suit time left',0,plss(),5,Math.round(pp.timeMin),' min','Life-support limit '+plss()+' min')}${sl('eSpd','Walking speed on flat',0.5,4,0.1,pp.speed.toFixed(1),' km/h','Slope slows it (Tobler)')}
+      ${sl('eRes','Reserve kept at return',0,50,1,pp.res,'%','Shared with every safety check')}${sl('eDw','Time at the site',0,120,5,pp.dwell,' min','Sampling, photos, rest')}</div>
+     <div class="prow"><button class="mini" id="envClock">Use what is left on the walk clock</button><button class="mini ghost" id="envFull">Full suit</button></div>
+     <div id="envOut"></div>`;
+    $('#envShow').onchange=e=>{const cb=$('#legend input[data-l=envelope]');if(cb&&cb.checked!==e.target.checked)cb.click();else{e.target.checked?map.addLayer(layers.envelope):map.removeLayer(layers.envelope);}ENV.show=e.target.checked;saveEnv();if(e.target.checked)compute(false);};
+    const bind=(id,key,conv=Number)=>{const i=$('#'+id);i.oninput=()=>{const v=conv(i.value);$('#'+id+'V').textContent=i.value+i.closest('label').querySelector('b').textContent.replace(/^[\d.]+/,'');
+      if(key==='res'){Q.setCfg({reservePct:v});}else{ENV[key]=v;saveEnv();}queue(true);};};
+    bind('eO2','o2L');bind('eBat','batPct');bind('eTime','timeMin');bind('eSpd','speedKmh');bind('eRes','res');bind('eDw','dwell');
+    $('#envDest').onchange=e=>{ENV.dest=e.target.value;saveEnv();queue(false);};
+    $('#envSrc').onclick=()=>{ENV.src=ENV.src==='clock'?'auto':'clock';saveEnv();drawPane();queue(false);};
+    $('#envClock').onclick=()=>{const u=usedUntil(C.t),t=C.t;ENV.o2L=Math.max(0,Math.round(cap()-u.o2));ENV.batPct=Math.max(0,Math.round(100-CFG.suitPowerW*t/60/CFG.batteryWh*100));ENV.timeMin=Math.max(0,Math.round(plss()-t));ENV.src='clock';saveEnv();syncSliders();queue(true);Q.toast(`Envelope from ${fmtT(t)} into the walk: what the crew has left there.`);};
+    $('#envFull').onclick=()=>{ENV.o2L=null;ENV.batPct=100;ENV.timeMin=null;ENV.src='auto';saveEnv();syncSliders();queue(true);};}
+  $('#envFrom').textContent=startPt().name;$('#envSrc').textContent=ENV.src==='clock'?'Use astronaut / habitat':'Use walk clock position';
+  $('#envDest').innerHTML=ds.map(d=>`<option value="${d.id}" ${d.id===(destPt().id)?'selected':''}>${esc(d.name)}</option>`).join('');
+  const o=$('#envOut');if(!s){o.innerHTML='<p class="empty">Computing…</p>';return;}
+  const pct=(a,c)=>c?Math.round(100*(a-c)/c):0,simOn=b&&Q.sim.active(LAST.sim);
+  o.innerHTML=`<div class="envleg"><div class="z1"><i></i><b>${fmt1(s.safeKm2,2)} km²</b><span>safe: all reserves kept, terrain measured</span></div>
+     <div class="z2"><i></i><b>${fmt1(s.cautionKm2,2)} km²</b><span>caution: within ${BAND} points of the reserve</span></div>
+     <div class="z3"><i></i><b>${fmt1(s.unconfirmedKm2,2)} km²</b><span>caution: resources suffice, terrain not measured</span></div>
+     <div class="z4"><i></i><b>${fmt1(s.restrictedKm2,2)} km²</b><span>restricted: no safe return</span></div></div>
+   <div class="kv2"><div><b>${km(s.farthestSafeM)}</b><span>farthest safe point from the start</span></div><div><b>${esc(s.returnTo)}</b><span>return point</span></div></div>
+   <div class="vgroup"><h3>What limits the edge</h3>${bar('Oxygen',s.limiting.oxygen)}${bar('Suit time',s.limiting.time)}${bar('Battery',s.limiting.battery)}</div>
+   ${simOn?`<div class="vgroup"><h3>Scenario against the plan <span class="tagsim">simulation</span></h3><p class="note">${esc(s.sim.join(', '))}. Dashed line on the map: the planned limit.</p>
+     <table class="cmp2"><tr><th></th><th>Planned</th><th>Scenario</th></tr><tr><td>Safe area</td><td>${fmt1(b.safeKm2,2)} km²</td><td class="${s.safeKm2<b.safeKm2?'bad':''}">${fmt1(s.safeKm2,2)} km² (${pct(s.safeKm2,b.safeKm2)}%)</td></tr>
+     <tr><td>Reachable with any margin</td><td>${fmt1(b.safeKm2+b.cautionKm2+b.unconfirmedKm2,2)} km²</td><td>${fmt1(s.safeKm2+s.cautionKm2+s.unconfirmedKm2,2)} km²</td></tr><tr><td>Farthest safe point</td><td>${km(b.farthestSafeM)}</td><td>${km(s.farthestSafeM)}</td></tr></table></div>`:''}
+   <p class="note">Computed on this tablet in ${s.ms} ms on an 11 km grid of 25 m cells. Elevations are rover-measured (±150 m around Perseverance waypoints); everywhere else there is no terrain data. Cells without data are walked at ${Math.round(UNK_SLOW*100)}% speed and never marked safe. O₂ from the Pandolf model, return at ${Math.round((CFG.returnFactor||.8)*100)}% speed, battery at a constant ${CFG.suitPowerW} W. Saved for offline use ${new Date(s.computedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}.</p>`;}
+const bar=(l,v)=>`<div class="ebar"><span>${l}</span><i style="--w:${v}%"></i><b>${v}%</b></div>`;
+function syncSliders(){const pp=P();for(const [id,v] of [['eO2',Math.round(pp.o2L)],['eBat',Math.round(pp.batPct)],['eTime',Math.round(pp.timeMin)],['eSpd',pp.speed.toFixed(1)],['eRes',pp.res],['eDw',pp.dwell]]){const i=$('#'+id);if(!i)continue;i.value=v;i.dispatchEvent(new Event('input'));}}
+
+/* ---------- wiring ---------- */
+const lg=$('#legend input[data-l=envelope]');if(lg){lg.checked=ENV.show!==false;if(ENV.show!==false)map.addLayer(layers.envelope);
+  lg.addEventListener('change',()=>{ENV.show=lg.checked;saveEnv();const s=$('#envShow');if(s)s.checked=lg.checked;if(lg.checked)compute(false);});}
+else if(ENV.show!==false)map.addLayer(layers.envelope);
+Q.sim.on(()=>queue(true));Q.onCfg(()=>queue(true));if(Q.markers&&Q.markers.on)Q.markers.on(()=>queue(false));
+(Q.onSideTab=Q.onSideTab||[]).push(t=>{if(t==='env'){drawPane();if(!isShown()){const cb=$('#legend input[data-l=envelope]');if(cb&&!cb.checked)cb.click();else map.addLayer(layers.envelope);}compute(false);}});
+let astroSig='';setInterval(()=>{const s=Q.astro?Q.astro.lat+','+Q.astro.lon:'';if(s!==astroSig){astroSig=s;queue(false);}},1500);
+C.on((t,src)=>{if(ENV.src==='clock'&&(src==='scrub'||src==='seek'||!C.playing))queue(false);});
+Q.envelope={summary:()=>LAST?LAST.sum:(()=>{try{return JSON.parse(localStorage.getItem('quipu-env-last')||'null');}catch(e){return null;}})(),at,describe,recompute:()=>compute(false),dests,
+  baseline:()=>BASE?BASE.sum:null,_field:field,_block:blockMask,cellOf,centre,grid:{GR,nx,ny,N,CELL,ELEV,CORR},params:P,startPt,destPt,cap,plss,UNK_SLOW,setDest(id){ENV.dest=id;saveEnv();queue(false);}};
+setTimeout(()=>compute(false),300);
+})();
+</script>
+<script>/* module: sim */
+/* QUIPU: contingency simulation. One scenario state (Q.sim) drives the plan check,
+   the route planner, the survival envelope and the science optimiser. */
+(function(){const W=Q._w;if(!W||!Q.sim)return;const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const CFG=Q.cfg,esc=W.esc,fmt1=W.fmt1,km=W.km;const vt={go:'GO',caution:'CAUTION',nogo:'NO-GO'};
+const PRESETS=[['Dust storm',{slow:30,o2Up:10}],['Suit power fault',{batLoss:30}],['Solar storm warning',{radX:10,comm:true}],['Sampling runs long',{extraMin:45}],['Twisted ankle',{slow:50,delayMin:20}]];
+const seg=(key,vals,fmt)=>`<div class="seg" data-k="${key}">${vals.map(v=>`<button data-v="${v}">${fmt(v)}</button>`).join('')}</div>`;
+const rng=(key,lab,max,unit,hint)=>`<label class="esl"><span>${lab}<b data-o="${key}"></b></span><input type="range" data-k="${key}" min="0" max="${max}" step="5"><small>${hint}</small></label>`;
+function build(){const el=$('#simPane');if(!el||el.dataset.built)return;el.dataset.built=1;
+  el.innerHTML=`<h2>What if something goes wrong?</h2><p class="note">Change the conditions and every calculation reruns: the plan check, the route, the survival envelope and the science options. Nothing here changes your mission settings. <span class="tagsim">simulation</span></p>
+   <div class="presets">${PRESETS.map(([n],i)=>`<button class="mini ghost" data-p="${i}">${n}</button>`).join('')}</div>
+   <div class="simctl">
+    <div class="esl"><span>Battery capacity lost</span>${seg('batLoss',[0,10,20,30],v=>v?`−${v}%`:'None')}</div>
+    ${rng('o2Up','Extra O₂ consumption',50,'%','Leak, harder work, cooling problem')}
+    ${rng('slow','Walking speed reduced',50,'%','Dust, fatigue, soft ground, suit stiffness')}
+    ${rng('extraMin','Extra time sampling',60,' min','Added at the destination or across stations')}
+    ${rng('delayMin','Unexpected delay',60,' min','Equipment problem, waiting with the suit running')}
+    <div class="esl"><span>Radiation environment</span>${seg('radX',[1,2,5,10],v=>v===1?'Normal':'×'+v)}<small>×10 is the order of a solar particle event</small></div>
+    <label class="switch"><input type="checkbox" data-k="comm"> Lose the orbiter relay</label>
+    <label class="switch"><input type="checkbox" data-k="block"> Block the calculated route halfway</label>
+   </div>
+   <div class="prow"><button class="btn ghost" id="simReset">Reset to the planned mission</button></div>
+   <div id="simOut"></div><hr class="sep">`;
+  $$('#simPane .seg button').forEach(b=>b.onclick=()=>Q.sim.set({[b.parentElement.dataset.k]:+b.dataset.v}));
+  $$('#simPane input[type=range]').forEach(i=>i.oninput=()=>Q.sim.set({[i.dataset.k]:+i.value}));
+  $$('#simPane input[type=checkbox][data-k]').forEach(i=>i.onchange=()=>{if(i.dataset.k==='block'&&i.checked&&!W.ROUTE.dest){Q.toast('Calculate a route first (Route tab): the block is placed halfway along it.');}Q.sim.set({[i.dataset.k]:i.checked});});
+  $$('#simPane .presets button').forEach(b=>b.onclick=()=>{Q.sim.reset();Q.sim.set(PRESETS[+b.dataset.p][1]);logEvent(`Simulation preset: ${PRESETS[+b.dataset.p][0]}`,'sys');});
+  $('#simReset').onclick=()=>{Q.sim.reset();logEvent('Simulation reset to the planned mission','sys');};}
+function sync(){const s=Q.sim.get();$$('#simPane .seg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+s[g.dataset.k])));
+  $$('#simPane input[type=range]').forEach(i=>{i.value=s[i.dataset.k];const o=$(`#simPane b[data-o=${i.dataset.k}]`);o.textContent=s[i.dataset.k]?(i.dataset.k==='o2Up'?'+':i.dataset.k==='slow'?'−':'+')+s[i.dataset.k]+(/Min/.test(i.dataset.k)?' min':'%'):'none';});
+  $$('#simPane input[type=checkbox][data-k]').forEach(i=>i.checked=!!s[i.dataset.k]);}
+function recs(B,S){const out=[],res=CFG.reservePct,pl=PLAN,cap=S.cap;const o2Def=res-S.o2L,tDef=res-S.tL,bDef=res-S.bL;
+  const cutMin=Math.max(tDef>0?tDef/100*pl.p.plss:0,o2Def>0?o2Def/100*cap/(W_WORK*60/1000/KJ_PER_L):0,S.worstM<0?-S.worstM:0);
+  if(cutMin>0){const work=stations.reduce((a,s)=>a+(+s.work||0),0);const far=stations.filter(s=>s.kind!=='hab'&&s.id!=='ret').map(s=>({s,d:typeof returnMeters==='function'?returnMeters(s):dist(stations[0],s)})).sort((a,b)=>b.d-a.d)[0];
+    if(work>=cutMin+10)out.push(['calc',`Cut ${Math.ceil(cutMin/5)*5} min of station work. That restores the ${res}% reserve and the walkback margin.`]);
+    else if(far)out.push(['calc',`Drop the farthest stop, ${far.s.name} (${km(far.d)} from the habitat). Shortening station work alone cannot recover ${Math.round(cutMin)} min.`]);
+    if(S.worstM<0)out.push(['calc',`As planned, the crew would pass the walkback limit by ${Math.round(-S.worstM)} min: set an earlier hard turnaround.`]);}
+  if(bDef>0)out.push(['calc',`Battery ends ${fmt1(bDef)} points under the reserve: carry a spare of at least ${Math.ceil(bDef/100*CFG.batteryWh/50)*50} Wh or lower suit power draw.`]);
+  if(S.sim.comm){const last=stations.map((s,i)=>i&&s.id!=='ret'?pl.arr[i]:null).filter(Boolean).pop();out.push(['guide',`Without the relay, agree a hard turnaround before leaving${last?`: leave the last station by ${fmtL(pl.ltstAt(Math.max(0,last.turn-S.f.extra)))} local`:''}. ${S.shadowMin>0?`${Math.round(S.shadowMin)} min of the walk has no direct radio to the habitat: stay in line of sight or shorten those legs.`:'The whole walk keeps direct radio to the habitat mast.'}`]);}
+  if(S.dose>CFG.doseCautionUSv){const maxMin=CFG.doseCautionUSv/(0.64*S.f.rad/1440*1000);out.push(['calc',`Dose ${fmt1(S.dose)} µSv passes your ${CFG.doseCautionUSv} µSv planning limit. At this rate the walk must stay under ${fmtT(maxMin)}.`]);}
+  if(S.sim.radX>=5)out.push(['guide','If a real solar particle event is forecast, go back to the habitat and shelter: the suit gives little protection against energetic protons.']);
+  const R=W.ROUTE.alts[W.ROUTE.sel];if(R&&W.ROUTE.base&&R.verdict!=='go'){const ok=W.ROUTE.alts.find(a=>a.verdict==='go');
+    if(ok&&ok!==R)out.push(['calc',`Route to ${W.ROUTE.dest.name}: the “${ok.label}” option stays GO under this scenario.`]);
+    else if(!R.reachable&&R.turn)out.push(['calc',`Route to ${W.ROUTE.dest.name}: turn back after ${km(R.turn.d)} (${fmtT(R.turn.t)} out) to keep the reserve.`]);}
+  if(!out.length)out.push(['calc',`The plan stays ${vt[S.verdict]} under this scenario. Smallest margin: O₂ ${fmt1(S.o2L)}%, battery ${fmt1(S.bL)}%, suit time ${fmt1(S.tL)}% (reserve ${res}%).`]);
+  return out;}
+function draw(){build();sync();const o=$('#simOut');if(!o)return;const on=Q.sim.active();
+  if(!on){o.innerHTML='<p class="note">No scenario applied: every number in the app is the planned mission. Pick a preset or move a control.</p>';return;}
+  const B=Q.planCheck(Q.sim.neutral()),S=Q.planCheck(Q.sim.get());const R=W.ROUTE.alts[W.ROUTE.sel],RB=W.ROUTE.base;const E=Q.envelope&&Q.envelope.summary(),EB=Q.envelope&&Q.envelope.baseline();
+  const tr=(l,a,b,bad)=>`<tr><td>${l}</td><td>${a}</td><td class="${bad?'bad':''}">${b}</td></tr>`;
+  o.innerHTML=`<div class="verdict ${S.verdict}">${vt[S.verdict]}<small>Whole plan under: ${esc(Q.sim.describe().join(', '))}. Planned mission: ${vt[B.verdict]}.</small></div>
+   <div class="vgroup"><h3>Recommended actions</h3><ul class="recs">${recs(B,S).map(([k,t])=>`<li><span class="${k==='calc'?'tagc':'tage'}">${k==='calc'?'calculation':'guidance'}</span>${esc(t)}</li>`).join('')}</ul></div>
+   <div class="vgroup"><h3>Plan against scenario</h3><table class="cmp2"><tr><th></th><th>Planned</th><th>Scenario</th></tr>
+    ${tr('Duration',fmtT(B.total),fmtT(S.total),S.tL<CFG.reservePct)}${tr('O₂ used',`${fmt1(B.o2)} L`,`${fmt1(S.o2)} L (${fmt1(S.o2L)}% left)`,S.o2L<CFG.reservePct)}
+    ${tr('Battery used',`${fmt1(B.batUse)} Wh`,`${fmt1(S.batUse)} Wh (${fmt1(S.bL)}% left)`,S.bL<CFG.reservePct)}${tr('Radiation',`${fmt1(B.dose)} µSv`,`${fmt1(S.dose)} µSv`,S.dose>CFG.doseCautionUSv)}
+    ${tr('Walkback margin',`${Math.round(B.worstM)} min`,`${Math.round(S.worstM)} min`,S.worstM<0)}${tr('Return feasible',B.worstM>=0&&B.o2L>=0?'yes':'no',S.worstM>=0&&S.o2L>=0?'yes':'no',!(S.worstM>=0&&S.o2L>=0))}</table></div>
+   ${R?`<div class="vgroup"><h3>Route to ${esc(W.ROUTE.dest.name)}</h3><table class="cmp2"><tr><th></th><th>Planned</th><th>Scenario</th></tr>
+    ${RB?tr('Path',km(RB.A.len),km(R.A.len)+(S.sim.block?' (rerouted around the block)':''),false)+tr('Round trip',fmtT(RB.total),fmtT(R.total),false)+tr('O₂ left',fmt1(100*(1-RB.o2Need/RB.cap))+'%',fmt1(100*(1-R.o2Need/R.cap))+'%',R.o2Need/R.cap>1-CFG.reservePct/100)+tr('Verdict',vt[RB.verdict],vt[R.verdict],R.verdict==='nogo'):'<tr><td colspan="3">Recalculating…</td></tr>'}</table></div>`:'<p class="note">Calculate a route in the Route tab to see how the scenario changes it.</p>'}
+   ${E&&EB?`<div class="vgroup"><h3>Survival envelope</h3><table class="cmp2"><tr><th></th><th>Planned</th><th>Scenario</th></tr>${tr('Safe area',fmt1(EB.safeKm2,2)+' km²',fmt1(E.safeKm2,2)+' km²',E.safeKm2<EB.safeKm2)}${tr('Farthest safe point',km(EB.farthestSafeM),km(E.farthestSafeM),E.farthestSafeM<EB.farthestSafeM)}</table><p class="note">Open the Envelope tab to see both limits on the map.</p></div>`:''}`;}
+Q.sim.on(()=>setTimeout(draw,30));(Q.onEnvelope=Q.onEnvelope||[]).push(()=>{if(!$('[data-p=sim]').hidden)draw();});
+(Q.onSideTab=Q.onSideTab||[]).push(t=>{if(t==='sim')draw();});Q.simulate={draw};
+})();
+</script>
+<script>/* module: science */
+/* QUIPU: science vs survival. Builds multi-stop expeditions on the same terrain
+   costs and survival limits as the envelope; preferences rank, constraints decide. */
+(function(){const W=Q._w;if(!W||!Q.envelope)return;const E=Q.envelope;const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const CFG=Q.cfg,esc=W.esc,fmt1=W.fmt1,km=W.km,vt={go:'GO',caution:'CAUTION',nogo:'NO-GO'};
+const PTS={sample:[3,'Perseverance sample site: rock already cored, context known'],station:[2,'Planned science station'],geology:[2,'Geological formation marker'],
+  ice:[3,'Possible water ice (candidate, not confirmed)'],experiment:[2,'Experiment site marker'],smk:[2,'Sampling site marker']};
+let OPT={w:70,dwell:15,maxStops:5,off:{}};try{Object.assign(OPT,JSON.parse(localStorage.getItem('quipu-sci')||'{}'));}catch(e){}
+const save=()=>{try{localStorage.setItem('quipu-sci',JSON.stringify(OPT));}catch(e){}};
+layers.sci=L.layerGroup().addTo(map);let RES=null,stale=true,busy=false,showSel=1,undo=null;
+function targets(){const raw=[];for(const s of W.sampleSites())raw.push({kind:'sample',name:s.name,lat:s.lat,lon:s.lon,rock:s.rock});
+  stations.forEach(s=>{if(s.kind!=='hab'&&s.id!=='ret'&&!s.fromSci)raw.push({kind:'station',name:s.name,lat:s.lat,lon:s.lon});});
+  for(const m of W.MK){const k={geology:'geology',ice:'ice',experiment:'experiment',sample:'smk'}[m.type];if(k)raw.push({kind:k,name:m.name,lat:m.lat,lon:m.lon,id:m.id});}
+  const out=[];for(const t of raw){if(E.cellOf(t)<0)continue;const near=out.find(o=>dist(o,t)<25);if(near){near.parts.push(t);continue;}out.push({...t,parts:[t]});}
+  out.forEach((t,i)=>{t.key=t.kind+':'+t.name;t.i=i;t.pts=t.parts.reduce((a,p)=>a+PTS[p.kind][0],0);const c=E.cellOf(t);t.offRover=!E.grid.CORR[c];if(t.offRover)t.pts+=1;});return out;}
+function sciScore(seq,T){let p=0;const kinds=new Set(),rocks=new Set();for(const i of seq){const t=T[i];p+=t.pts;t.parts.forEach(x=>{kinds.add(x.kind);if(x.rock&&x.rock!=='unknown')rocks.add(x.rock);});}
+  return {total:p+kinds.size+rocks.size,base:p,diversity:kinds.size,rocks:rocks.size};}
+function legPath(F,to){const cells=[];for(let c=to;c!==-1;c=F.prev[c])cells.push(c);return cells.reverse().map(E.centre);}
+
+let runP=null;function run(){if(busy&&runP)return runP;runP=run0();return runP;}
+async function run0(){busy=true;const out=$('#sciOut');const sim=Q.sim.get(),f=Q.sim.fx(sim),pp=E.params(),T=targets().filter(t=>!OPT.off[t.key]);
+  if(!T.length){out.innerHTML='<p class="empty">No science targets in the planning grid. Place geology, water-ice, experiment or sampling markers on the map.</p>';busy=false;return;}
+  const s=E.startPt(),d=E.destPt(),bm=E._block(sim),sp=pp.speed;out.innerHTML=`<p class="empty">Measuring terrain costs between ${T.length+1} points…</p>`;
+  const tick=()=>new Promise(r=>setTimeout(r,0)),mt=pp.timeMin+5;const F0=E._field(E.cellOf(s),false,f.k,sp,bm,mt);await tick();const FB=E._field(E.cellOf(d),true,f.k,sp,bm,mt);const FT=[];
+  for(const t of T){FT.push(E._field(E.cellOf(t),false,f.k,sp,bm,mt));out.innerHTML=`<p class="empty">Measuring terrain costs: ${FT.length} of ${T.length} targets…</p>`;await tick();}
+  const n=T.length,cell=T.map(t=>E.cellOf(t)),dw=OPT.dwell,dwO2=W_WORK*dw*60/1000/KJ_PER_L,cap=E.cap(),pl=E.plss(),res=pp.res;
+  const leg=(a,b)=>{const F=a<0?F0:FT[a],c=cell[b];return {t:F.T[c],o:F.O[c],u:F.U[c],d:F.D[c]};};
+  const home=a=>{const c=a<0?E.cellOf(s):cell[a];return {t:FB.T[c],o:FB.O[c],u:FB.U[c],d:FB.D[c]};};
+  const margins=st=>{const h=home(st.cur),t=st.t+h.t+f.extra,o2=(st.o+h.o+f.extra*60*W_WORK/1000/KJ_PER_L)*f.o2;
+    return {t,o2,dist:st.d+h.d,unk:st.u+h.u,oL:(pp.o2L-o2)/cap*100,tL:(pp.timeMin-t)/pl*100,bL:pp.batPct*f.bat-CFG.suitPowerW*t/60/CFG.batteryWh*100};};
+  const maxSci=sciScore(T.map((_,i)=>i),T).total||1;
+  function beam(buffer,w,unkMax){let B=[{seq:[],cur:-1,t:0,o:0,u:0,d:0}],best=null;const evalS=st=>{const m=margins(st),mm=Math.min(m.oL,m.tL,m.bL);if(!isFinite(m.t)||mm<res+buffer||m.unk/Math.max(1,m.dist)*100>unkMax)return null;
+      const sc=sciScore(st.seq,T);return {...st,m,mm,sc,obj:w*sc.total/maxSci-(1-w)*m.t/pl};};
+    for(let depth=0;depth<OPT.maxStops;depth++){const nx=[];for(const st of B)for(let j=0;j<n;j++){if(st.seq.includes(j))continue;const l=leg(st.cur,j);if(!isFinite(l.t))continue;
+        const ns={seq:[...st.seq,j],cur:j,t:st.t+l.t+dw,o:st.o+l.o+dwO2,u:st.u+l.u,d:st.d+l.d};const e=evalS(ns);if(!e)continue;nx.push(e);if(!best||e.obj>best.obj)best=e;}
+      nx.sort((a,b)=>b.obj-a.obj);B=nx.slice(0,70);if(!B.length)break;}
+    return best;}
+  const w=OPT.w/100;const safe=beam(15,Math.min(w,.45),10),sci=beam(0,w,100);
+  const frontier=[0,5,10,15,20,25,30].map(b=>{const r=beam(b,1,100);return {b,pts:r?r.sc.total:0};});
+  const build=(r,label,why)=>{if(!r)return {label,why,none:true};const pts=[s];let prev=-1;const geo=[];
+    for(const j of r.seq){geo.push(...legPath(prev<0?F0:FT[prev],cell[j]));prev=j;}
+    let c=prev<0?E.cellOf(s):cell[prev];const back=[];for(;c!==-1;c=FB.prev[c])back.push(E.centre(c));geo.push(...back);
+    const path=W.simplify([s,...geo,d],3);const EL=E.grid.ELEV;let maxS=0,up=0;for(let q=1;q<geo.length;q++){const c1=E.cellOf(geo[q-1]),c2=E.cellOf(geo[q]);if(c1<0||c2<0||c1===c2||isNaN(EL[c1])||isNaN(EL[c2]))continue;const dd=dist(geo[q-1],geo[q]),de=EL[c2]-EL[c1];if(de>0)up+=de;const sd=Math.atan(Math.abs(de)/dd)/D2R;if(sd>maxS)maxS=sd;}const ls={maxS,up};
+    const st={...r,label,why,path,stops:r.seq.map(j=>T[j]),maxS:ls.maxS,up:ls.up,dose:0.64*r.m.t/1440*1000*f.rad,batWh:CFG.suitPowerW*r.m.t/60};
+    const lvl=v=>v<res?'nogo':v<res+10?'caution':'go';const items=[lvl(r.m.oL),lvl(r.m.tL),lvl(r.m.bL),st.maxS>CFG.maxSlopeDeg?'nogo':st.maxS>CFG.cautionSlopeDeg?'caution':'go',
+      100*r.m.unk/Math.max(1,r.m.dist)>CFG.unknownTerrainCautionPct?'caution':'go',st.dose>CFG.doseCautionUSv?'caution':'go'];st.verdict=W.verdictOf(items.map(x=>({s:x})));return st;};
+  RES={safe:build(safe,'Safety-first','Keeps 15 points above the reserve, ≤10% unmeasured terrain, favours short walks.'),sci:build(sci,'Science-optimised','Most science your weighting allows while keeping the mandatory reserve.'),frontier,T,maxSci,sim:Q.sim.describe(sim),start:s.name,ret:d.name,at:new Date()};
+  stale=false;busy=false;draw();drawMap();}
+function drawMap(){layers.sci.clearLayers();if(!RES)return;[['safe','#5CC98A'],['sci','#B48EF0']].forEach(([k,col],idx)=>{const r=RES[k];if(r.none)return;const on=showSel===idx;
+  L.polyline(r.path.map(p=>[p.lat,p.lon]),{color:'#121417',weight:on?9:6,opacity:.6}).addTo(layers.sci);
+  L.polyline(r.path.map(p=>[p.lat,p.lon]),{color:col,weight:on?5:3,dashArray:on?null:'2 7',opacity:on?1:.85}).bindTooltip(r.label,{className:'lbl',sticky:true}).on('click',()=>{showSel=idx;drawMap();draw();}).addTo(layers.sci);
+  if(on)r.stops.forEach((t,i)=>L.marker([t.lat,t.lon],{icon:L.divIcon({className:'',html:`<div class="scipin" style="border-color:${col}">${i+1}</div>`,iconSize:[24,24],iconAnchor:[12,12]})}).bindTooltip(`${esc(t.name)}: ${t.pts} pts`,{className:'lbl'}).addTo(layers.sci));});}
+function draw(){const el=$('#sciPane');if(!el)return;const T=targets();
+  if(!el.dataset.built){el.dataset.built=1;el.innerHTML=`<h2>Science vs survival</h2><p class="note">How much science fits in one walk without risking the way back? QUIPU builds multi-stop expeditions on the same terrain costs as the envelope. Your weighting ranks them; it can never relax the oxygen, battery, suit-time or slope limits.</p>
+     <label class="esl"><span>Priority<b id="sciWv"></b></span><input type="range" id="sciW" min="0" max="100" step="5" value="${OPT.w}"><small>Left: shortest, cheapest walk. Right: most science points.</small></label>
+     <div class="ctl2"><label>Time at each stop (min)<input type="number" id="sciDw" min="5" max="60" step="5" value="${OPT.dwell}"></label><label>Most stops<input type="number" id="sciMax" min="1" max="7" value="${OPT.maxStops}"></label></div>
+     <details class="sciT"><summary>Targets (<span id="sciN"></span>)</summary><ul id="sciList"></ul><p class="note">Add targets by placing Geological formation, Possible water ice, Experiment or Sampling site markers.</p></details>
+     <button class="btn" id="sciRun">Find expeditions</button><div id="sciOut"></div>
+     <details class="sciT"><summary>How science points are counted</summary><table class="cmp2">${Object.values(PTS).map(([p,l])=>`<tr><td>${l}</td><td>${p}</td></tr>`).join('')}
+      <tr><td>Each kind of target in the expedition (diversity)</td><td>+1</td></tr><tr><td>Each distinct rock type cored by Perseverance (needs the live NASA sample list)</td><td>+1</td></tr><tr><td>Target off rover-driven ground (new terrain, also flagged as unmeasured)</td><td>+1</td></tr></table>
+      <p class="note">Targets within 25 m are merged into one stop. Points rank options; they are not a measure of scientific truth.</p></details>`;
+    $('#sciW').oninput=e=>{OPT.w=+e.target.value;$('#sciWv').textContent=OPT.w+'% science';save();stale=true;};
+    $('#sciDw').onchange=e=>{OPT.dwell=+e.target.value||15;save();stale=true;run();};$('#sciMax').onchange=e=>{OPT.maxStops=Math.max(1,Math.min(7,+e.target.value||5));save();stale=true;run();};
+    $('#sciW').onchange=()=>run();$('#sciRun').onclick=()=>run();}
+  $('#sciWv').textContent=OPT.w+'% science';$('#sciN').textContent=`${T.filter(t=>!OPT.off[t.key]).length} of ${T.length} included`;
+  $('#sciList').innerHTML=T.map(t=>`<li><label><input type="checkbox" data-k="${esc(t.key)}" ${OPT.off[t.key]?'':'checked'}> ${esc(t.name)}<small>${t.parts.map(p=>PTS[p.kind][1].split(':')[0]).join(' + ')}${t.offRover?', new terrain':''}</small></label><b>${t.pts}</b></li>`).join('');
+  $$('#sciList input').forEach(i=>i.onchange=()=>{if(i.checked)delete OPT.off[i.dataset.k];else OPT.off[i.dataset.k]=1;save();stale=true;});
+  const o=$('#sciOut');if(!RES){o.innerHTML='<p class="note">Press “Find expeditions”.</p>';return;}
+  const A=RES.safe,B=RES.sci,cell=(r,fn)=>r.none?'—':fn(r);
+  const row=(l,fn)=>`<tr><td>${l}</td><td>${cell(A,fn)}</td><td>${cell(B,fn)}</td></tr>`;
+  o.innerHTML=`${stale?'<p class="note warnline">Settings changed since this result. Press “Find expeditions” again.</p>':''}
+   <p class="note">From ${esc(RES.start)}, back to ${esc(RES.ret)}${RES.sim.length?`. <span class="tagsim">simulation</span> ${esc(RES.sim.join(', '))}`:''}.</p>
+   <table class="cmp2 scicmp"><tr><th></th><th class="c1" data-s="0">Safety-first</th><th class="c2" data-s="1">Science-optimised</th></tr>
+    ${row('Verdict',r=>`<span class="vt ${r.verdict}">${vt[r.verdict]}</span>`)}${row('Science points',r=>`<b>${r.sc.total}</b> of ${RES.maxSci}`)}${row('Stops',r=>r.stops.length)}
+    ${row('Distance',r=>km(r.m.dist))}${row('Duration',r=>fmtT(r.m.t))}${row('O₂ used',r=>fmt1(r.m.o2)+' L')}${row('Battery used',r=>fmt1(r.batWh)+' Wh')}
+    ${row('Radiation',r=>fmt1(r.dose)+' µSv')}${row('Steepest slope',r=>fmt1(r.maxS,1)+'°')}${row('Climb',r=>'+'+fmt1(r.up)+' m')}${row('Unmeasured terrain',r=>fmt1(100*r.m.unk/Math.max(1,r.m.dist))+'%')}
+    ${row('Smallest reserve left',r=>`${fmt1(r.mm)}% <small>(need ${CFG.reservePct}%)</small>`)}
+    <tr><td></td><td>${A.none?'':'<button class="mini" data-load="safe">Load into plan</button>'}</td><td>${B.none?'':'<button class="mini" data-load="sci">Load into plan</button>'}</td></tr></table>
+   ${A.none||B.none?`<p class="note">${A.none?'No safety-first expedition fits: ':''}${B.none?'No expedition reaches any target and returns with the reserve. ':''}Lower the stop time, add oxygen in the Envelope tab or remove a simulation.</p>`:''}
+   ${[A,B].filter(r=>!r.none).map(r=>`<div class="vgroup"><h3>${r.label}: stops</h3><ol class="stops">${r.stops.map(t=>`<li>${esc(t.name)} <small>${t.pts} pts${t.offRover?', candidate on new terrain':''}</small></li>`).join('')}</ol><p class="note">${r.why}</p></div>`).join('')}
+   <div class="vgroup"><h3>Science you can buy with reserve</h3>${frontierSvg(RES.frontier)}<p class="note">Most science points reachable when you keep extra margin above the ${CFG.reservePct}% reserve. Each step right trades science for safety.</p></div>
+   ${undo?'<button class="mini ghost" id="sciUndo">Undo: restore the previous walk plan</button>':''}`;
+  $$('#sciOut th[data-s]').forEach(th=>th.onclick=()=>{showSel=+th.dataset.s;drawMap();});
+  $$('#sciOut [data-load]').forEach(b=>b.onclick=()=>load(RES[b.dataset.load]));const u=$('#sciUndo');if(u)u.onclick=()=>{stations.splice(0,stations.length,...undo);undo=null;render();draw();Q.toast('Previous walk plan restored.');};}
+function frontierSvg(F){const Wd=340,H=110,mx=Math.max(1,...F.map(x=>x.pts)),x=i=>14+i*(Wd-28)/(F.length-1),y=v=>H-24-v/mx*(H-40);
+  return `<svg class="frontier" viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Science points against extra reserve">${F.map((p,i)=>`<rect x="${x(i)-13}" y="${y(p.pts)}" width="26" height="${H-24-y(p.pts)}" rx="3" fill="${i===0?'#B48EF0':i===3?'#5CC98A':'var(--line)'}"/><text x="${x(i)}" y="${y(p.pts)-4}" text-anchor="middle">${p.pts}</text><text x="${x(i)}" y="${H-8}" text-anchor="middle">+${p.b}%</text>`).join('')}</svg>`;}
+function load(r){if(!r||r.none)return;undo=stations.map(s=>({...s}));const hab=stations[0],ret=stations[stations.length-1];
+  const ns=r.stops.map((t,i)=>({id:'sci'+i+'-'+Date.now(),name:t.name.slice(0,40),lon:t.lon,lat:t.lat,sol:null,work:OPT.dwell,user:true,fromSci:true,why:`Chosen by the ${r.label.toLowerCase()} plan: ${t.parts.map(p=>PTS[p.kind][1]).join('; ')}.`,tasks:['Describe and photograph the site','Collect a sample if the rock is new to the traverse']}));
+  stations.splice(0,stations.length,hab,...ns,ret);render();Q.toast(`${r.label} expedition loaded into the walk plan (${ns.length} stops). Undo is in the Science tab.`);logEvent(`Walk plan replaced by the ${r.label} expedition, ${ns.length} stops`,'sys');draw();}
+const mark=()=>{stale=true;if(!$('[data-p=sci]').hidden&&RES)draw();};Q.sim.on(mark);Q.onCfg(mark);if(Q.markers.on)Q.markers.on(mark);
+(Q.onSideTab=Q.onSideTab||[]).push(t=>{if(t==='sci'){draw();if(!RES||stale)run();}});
+Q.science={run,result:()=>RES&&{safe:RES.safe.none?null:{points:RES.safe.sc.total,stops:RES.safe.stops.map(t=>t.name),verdict:RES.safe.verdict,minReservePct:+RES.safe.mm.toFixed(1)},sci:RES.sci.none?null:{points:RES.sci.sc.total,stops:RES.sci.stops.map(t=>t.name),verdict:RES.sci.verdict,minReservePct:+RES.sci.mm.toFixed(1)},frontier:RES.frontier}};
+})();
+</script>
+<script>/* module: sync */
+/* QUIPU: offline mission mode and synchronisation.
+   Everything the crew creates lives on this tablet first (markers, field notes, astronaut
+   position, simulation and envelope settings). When a mission server is configured
+   (server/yarbis-worker.js, /sync route) records are exchanged by timestamp; edits made
+   on two devices since the last sync are kept side by side for the crew to resolve. */
+(function(){const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];const CFG=Q.cfg,esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ls=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},lw=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
+let device=ls('quipu-device',null);if(!device){device='tab-'+Math.random().toString(36).slice(2,8);lw('quipu-device',device);}
+const SI=Q.syncInfo={state:'idle',lastSync:ls('quipu-last-sync',0),error:'',conflicts:ls('quipu-conflicts',[]),device};
+const setState=(st,err='')=>{SI.state=st;SI.error=err;if(Q.comms&&Q.comms.renderBadge)Q.comms.renderBadge();draw();};
+
+/* ---------- local records ---------- */
+function records(){const out=[];for(const m of Q.markers.list())out.push({kind:'marker',id:m.id,updatedAt:m.updatedAt||Date.parse(m.created)||0,data:m});
+  for(const n of Q.notebook.list())out.push({kind:'note',id:n.id,updatedAt:n.updatedAt||Date.parse(n.utc)||0,data:{...n,photo:n.photo&&n.photo.length<180000?n.photo:null}});
+  const a=ls('quipu-astro',null);if(a)out.push({kind:'astro',id:'astro-'+device,updatedAt:ls('quipu-astro-at',0),data:a});
+  for(const t of ls('quipu-tomb',[]))out.push({kind:t.kind,id:t.id,updatedAt:t.updatedAt,deleted:true});return out;}
+function apply(server){const mk=Q.markers.list(),nb=Q.notebook.list();let changedM=false,changedN=false;const local=new Map(records().map(r=>[r.kind+':'+r.id,r]));const conflicts=[];
+  for(const r of server){if(r.device===device)continue;const l=local.get(r.kind+':'+r.id);
+    if(l&&l.updatedAt>SI.lastSync&&r.updatedAt>SI.lastSync&&JSON.stringify(l.data)!==JSON.stringify(r.data)&&!l.deleted&&!r.deleted){conflicts.push({kind:r.kind,id:r.id,mine:l,theirs:r});continue;}
+    if(l&&l.updatedAt>=r.updatedAt)continue;
+    if(r.kind==='marker'){const i=mk.findIndex(m=>m.id===r.id);if(r.deleted){if(i>=0){mk.splice(i,1);changedM=true;}}else{if(i>=0)mk[i]=r.data;else mk.push(r.data);changedM=true;}}
+    if(r.kind==='note'){const i=nb.findIndex(n=>n.id===r.id);if(r.deleted){if(i>=0){nb.splice(i,1);changedN=true;}}else{if(i>=0)nb[i]=r.data;else nb.push(r.data);changedN=true;}}}
+  if(changedM)Q.markers.importAll(mk);if(changedN)Q.notebook.importAll(nb);
+  if(conflicts.length){SI.conflicts=SI.conflicts.filter(c=>!conflicts.some(x=>x.kind===c.kind&&x.id===c.id)).concat(conflicts);lw('quipu-conflicts',SI.conflicts);}
+  return {changed:(changedM?1:0)+(changedN?1:0),conflicts:conflicts.length};}
+function resolve(i,keep){const c=SI.conflicts[i];if(!c)return;if(keep==='theirs'){const rec={...c.theirs,updatedAt:Date.now()};
+    if(c.kind==='marker'){const mk=Q.markers.list().filter(m=>m.id!==c.id);mk.push({...rec.data,updatedAt:rec.updatedAt});Q.markers.importAll(mk);}
+    if(c.kind==='note'){const nb=Q.notebook.list().filter(n=>n.id!==c.id);nb.push({...rec.data,updatedAt:rec.updatedAt});Q.notebook.importAll(nb);}}
+  else{if(c.kind==='marker'){const m=Q.markers.get(c.id);if(m)Q.markers.update(c.id,{});}}
+  SI.conflicts.splice(i,1);lw('quipu-conflicts',SI.conflicts);Q.sync.enqueue('resolve',{kind:c.kind,id:c.id,keep});draw();}
+
+/* ---------- exchange with the mission server ---------- */
+async function syncNow(manual){const ep=(CFG.syncEndpoint||'').replace(/\/$/,'');
+  if(!ep){setState('local');return {ok:false,reason:'no-server'};}
+  if(!navigator.onLine){setState('idle');return {ok:false,reason:'offline'};}
+  if(SI.state==='syncing')return {ok:false,reason:'busy'};setState('syncing');
+  const since=SI.lastSync,changes=records().filter(r=>r.updatedAt>since).map(r=>({...r,device}));
+  try{const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),20000);
+    const res=await fetch(ep+'/sync',{method:'POST',signal:ctl.signal,headers:{'Content-Type':'application/json','X-Mission-Key':CFG.missionKey||''},body:JSON.stringify({device,since,records:changes})});clearTimeout(to);
+    if(!res.ok)throw new Error('server answered '+res.status);const j=await res.json();const r=apply(j.records||[]);
+    SI.lastSync=j.serverTime||Date.now();lw('quipu-last-sync',SI.lastSync);
+    const q=ls('quipu-sync',[]);q.forEach(i=>i.state='synced');lw('quipu-sync',q);
+    setState('idle');if(manual||r.changed||r.conflicts)Q.toast(`Synced: sent ${changes.length}, received ${(j.records||[]).filter(x=>x.device!==device).length}${r.conflicts?`, ${r.conflicts} conflict${r.conflicts>1?'s':''} to review in Comms`:''}.`,3600);
+    logEvent(`Sync with mission server: sent ${changes.length}, ${r.conflicts} conflict(s)`,'sys');return {ok:true};}
+  catch(e){setState('failed',e.name==='AbortError'?'timed out':e.message);return {ok:false,reason:e.message};}}
+Q.sync.flush=()=>{syncNow(false);return {sent:0,reason:CFG.syncEndpoint?'syncing':'no sync server configured'};};
+Q.sync.now=syncNow;Q.sync.resolve=resolve;
+addEventListener('online',()=>setTimeout(()=>syncNow(false),1500));
+setInterval(()=>{if(navigator.onLine&&CFG.syncEndpoint&&(SI.state==='failed'||records().some(r=>r.updatedAt>SI.lastSync)))syncNow(false);},60000);
+/* astronaut position timestamp for sync */
+let lastAstro=localStorage.getItem('quipu-astro');setInterval(()=>{const a=localStorage.getItem('quipu-astro');if(a!==lastAstro){lastAstro=a;lw('quipu-astro-at',Date.now());}},2000);
+
+/* ---------- mission package: export / import (works with no network at all) ---------- */
+const KEYS=['quipu-markers','quipu-notes','quipu-astro','quipu-cfg','quipu-sim','quipu-env','quipu-env-last','quipu-sci','quipu-checklist','quipu-tomb'];
+function exportPkg(){const pkg={app:'QUIPU',version:6,exported:new Date().toISOString(),device,data:{}};for(const k of KEYS){const v=localStorage.getItem(k);if(v!=null)pkg.data[k]=v;}
+  pkg.data['quipu-stations']=JSON.stringify(stations);const b=new Blob([JSON.stringify(pkg)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`quipu-mission-${new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+function importPkg(file){const r=new FileReader();r.onload=()=>{try{const p=JSON.parse(r.result);if(p.app!=='QUIPU')throw new Error('not a QUIPU mission file');
+    for(const [k,v] of Object.entries(p.data||{}))if(KEYS.includes(k))localStorage.setItem(k,v);if(p.data['quipu-stations'])localStorage.setItem('quipu-stations',p.data['quipu-stations']);
+    Q.toast('Mission file loaded. Reloading…');setTimeout(()=>location.reload(),900);}catch(e){Q.toast('Could not read that file: '+e.message,4000);}};r.readAsText(file);}
+/* plan persistence: user changes to the station list survive a reload and an offline restart */
+try{const st=ls('quipu-stations',null);if(Array.isArray(st)&&st.length>=2&&st[0].kind==='hab'){stations.splice(0,stations.length,...st);render();}}catch(e){}
+const _r=render;render=function(){_r();lw('quipu-stations',stations);};
+
+/* ---------- panel in the Comms section ---------- */
+const ago=ms=>{if(!ms)return 'never';const s=(Date.now()-ms)/1000;if(s<60)return 'just now';if(s<3600)return Math.round(s/60)+' min ago';if(s<86400)return Math.round(s/3600)+' h ago';return new Date(ms).toLocaleString();};
+function inventory(){const env=Q.envelope&&Q.envelope.summary();const tiles=Q.offline&&Q.offline.lastCounts||null;
+  return [['Markers',Q.markers.list().length+' on this tablet'],['Field notes',Q.notebook.list().length+' on this tablet'],['Walk plan',stations.length-2+' stops, saved locally'],
+    ['Survival envelope',env?`computed ${ago(Date.parse(env.computedAt))}, recomputed locally at any time`:'not computed yet'],['Mission settings','suit, crew, limits and scenarios saved locally'],
+    ['Terrain model','rover-measured elevations built into the app: always available'],['Map imagery',navigator.serviceWorker&&navigator.serviceWorker.controller?'tiles you have viewed are cached; save the walk area below':'offline cache needs https (GitHub Pages)']];}
+function draw(){const host=$('#view-comms');if(!host)return;let el=$('#syncCard');if(!el){el=document.createElement('section');el.id='syncCard';el.className='cm-card sync-card';el.setAttribute('aria-label','Offline mission mode');(host.querySelector('.cm-pad')||host).appendChild(el);}
+  const pend=records().filter(r=>r.updatedAt>SI.lastSync).length,ep=CFG.syncEndpoint;
+  const st=!ep?['local','Local only','No mission server configured. Everything is kept on this tablet; export a mission file to move it.']:!navigator.onLine?['off','Offline','Changes are kept and sent when the connection returns.']:
+    SI.state==='syncing'?['busy','Synchronizing','']:SI.state==='failed'?['fail','Sync failed',SI.error]:['ok','Ready',''];
+  el.innerHTML=`<h2>Offline mission mode</h2><p class="cm-q">QUIPU plans, routes and computes the survival envelope on this tablet. A link to Earth is never required for the core mission tools.</p>
+   <div class="sync-grid"><div><div class="sync-state" data-s="${st[0]}"><i></i>${st[1]}</div><p class="note">${esc(st[2])}</p>
+     <dl class="sync-dl"><dt>Last successful sync</dt><dd>${SI.lastSync?new Date(SI.lastSync).toLocaleString():'never'}</dd><dt>Changes not yet sent</dt><dd>${pend}</dd><dt>This device</dt><dd>${device}</dd></dl>
+     <div class="prow"><button class="mini" id="syNow" ${ep?'':'disabled'}>Sync now</button><button class="mini ghost" id="syExp">Export mission file</button><label class="mini ghost filebtn">Import mission file<input type="file" id="syImp" accept="application/json" hidden></label>${Q.offline&&Q.offline.saveArea?'<button class="mini ghost" id="sySave">Save the walk area map for offline use</button>':''}</div>
+     <details class="sciT"><summary>Mission server</summary><label class="esl"><span>Sync address</span><input id="syEp" placeholder="https://yarbis.example.workers.dev" value="${esc(ep)}"></label><label class="esl"><span>Mission key</span><input id="syKey" type="password" value="${esc(CFG.missionKey||'')}"></label><button class="mini" id="sySet">Save</button><p class="note">Deploy server/yarbis-worker.js with a KV namespace bound as SYNC and a MISSION_KEY secret (see server/README.md).</p></details></div>
+    <div><h3>Kept on this tablet</h3><ul class="checks">${inventory().map(([k,v])=>`<li class="go"><i></i><div>${k}<br><small>${esc(v)}</small></div><b></b></li>`).join('')}</ul></div></div>
+   ${SI.conflicts.length?`<div class="vgroup"><h3>Conflicts to review</h3><p class="note">These were changed here and on another device since the last sync. Your version is still in use.</p><ul class="recs">${SI.conflicts.map((c,i)=>`<li><b>${c.kind} ${esc((c.mine.data&&(c.mine.data.name||c.mine.data.text||'')).slice(0,40))}</b> changed on ${esc(c.theirs.device||'another device')} ${ago(c.theirs.updatedAt)}<div class="prow"><button class="mini ghost" data-k="${i}" data-w="mine">Keep mine</button><button class="mini ghost" data-k="${i}" data-w="theirs">Use theirs</button></div></li>`).join('')}</ul></div>`:''}`;
+  $('#syNow')&&($('#syNow').onclick=()=>syncNow(true));$('#syExp').onclick=exportPkg;$('#syImp').onchange=e=>e.target.files[0]&&importPkg(e.target.files[0]);
+  $('#sySet').onclick=()=>{Q.setCfg({syncEndpoint:$('#syEp').value.trim(),missionKey:$('#syKey').value});draw();syncNow(true);};
+  const sv=$('#sySave');if(sv)sv.onclick=()=>{try{Q.offline.saveArea();}catch(e){Q.toast('Saving the map needs the https version of the app.');}};
+  $$('#syncCard [data-k]').forEach(b=>b.onclick=()=>resolve(+b.dataset.k,b.dataset.w));}
+(Q.view._showHooks=Q.view._showHooks||[]);addEventListener('hashchange',()=>{if(location.hash==='#comms')setTimeout(draw,50);});
+const obs=new MutationObserver(()=>{const v=$('#view-comms');if(v&&!v.hidden)draw();});const vc=$('#view-comms');if(vc)obs.observe(vc,{attributes:true,attributeFilter:['hidden']});
+addEventListener('online',draw);addEventListener('offline',draw);setTimeout(()=>{draw();if(CFG.syncEndpoint&&navigator.onLine)syncNow(false);},1200);
+Q.mission={exportPkg,importPkg,records,syncNow};
+})();
+</script>
 <script>/* module: intro */
-/* QUIPU intro: big Mars and the central question, then into the Marswalk */
+/* QUIPU intro: 3D Mars turning to Jezero crater, the mission promise, one way in. */
 (function(){const el=document.getElementById('intro');if(!el)return;
-  const params=new URLSearchParams(location.search);
-  const skip=params.has('nointro')||(location.hash&&location.hash!=='#walk'&&location.hash!=='#');
-  if(skip){el.hidden=true;return;}
-  document.body.style.overflow='hidden';
-  const close=v=>{el.classList.add('leaving');document.body.style.overflow='';setTimeout(()=>{el.hidden=true;if(window.go)go(v);if(v==='walk'&&window.map)setTimeout(()=>map.invalidateSize(),60);},420);};
-  document.getElementById('inStart').onclick=()=>close('walk');
-  document.getElementById('inGlobe').onclick=()=>close('globe');
-  addEventListener('keydown',function k(e){if(el.hidden){removeEventListener('keydown',k);return;}if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();close('walk');}});
-  setTimeout(()=>document.getElementById('inStart').focus(),50);
-  /* facts from the live plan */
-  try{const P=window.PLAN,km=(P.tl.reduce((a,x,i)=>i?a+dist(P.tl[i-1],x):0,0)/1000);
-    const f=[[km.toFixed(1)+' km','planned walk'],[Math.floor(P.total/60)+' h '+String(Math.round(P.total%60)).padStart(2,'0'),'walk duration'],[String(Math.max(0,stations.length-2)),'science stops']];
-    document.getElementById('inFacts').innerHTML=f.map(([v,l])=>`<div><dt>${l}</dt><dd>${v}</dd></div>`).join('');}catch(e){}
-  /* texture: Viking MDIM 2.1 colour mosaic, zoom 1 (4 × 2 tiles of 256 px, equirectangular) */
-  const pl=document.getElementById('inPlanet'),cv=document.createElement('canvas');cv.width=1024;cv.height=512;const g=cv.getContext('2d');let ok=0,done=0;
-  const base='https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/1/';
-  const fin=()=>{if(++done<8)return;if(ok<8){document.getElementById('inCap').textContent='Mars imagery could not be loaded (no connection to NASA Mars Trek). Shown as a plain sphere.';return;}
-    try{const url=cv.toDataURL('image/jpeg',.85);const s=pl.clientHeight||400;pl.style.backgroundImage=`url(${url})`;pl.style.backgroundSize=`${s*2}px ${s}px`;pl.style.setProperty('--tex',`-${s*2}px`);pl.classList.add('textured');}catch(e){}};
-  for(let r=0;r<2;r++)for(let c=0;c<4;c++){const im=new Image();im.crossOrigin='anonymous';im.onload=()=>{g.drawImage(im,c*256,r*256);ok++;fin();};im.onerror=fin;im.src=`${base}${r}/${c}.jpg`;}
-  addEventListener('resize',()=>{if(!pl.classList.contains('textured'))return;const s=pl.clientHeight;pl.style.backgroundSize=`${s*2}px ${s}px`;pl.style.setProperty('--tex',`-${s*2}px`);});
+  const qs=new URLSearchParams(location.search);let seen=false;try{seen=sessionStorage.getItem('quipu-intro')==='1';}catch(e){}
+  const deep=location.hash&&!/^#(walk)?$/.test(location.hash);
+  if(!qs.has('intro')&&(qs.has('nointro')||deep||seen||(Q.clock&&Q.clock.playing)||document.body.classList.contains('emergency'))){el.hidden=true;return;}
+  try{sessionStorage.setItem('quipu-intro','1');}catch(e){}
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let closing=false,dive=null;
+  const close=v=>{if(closing)return;closing=true;const done=()=>{el.classList.add('leaving');setTimeout(()=>{el.hidden=true;stop&&stop();if(window.go)go(v);if(v==='walk'&&window.map)setTimeout(()=>map.invalidateSize(),60);},480);};
+    if(dive&&!reduce&&v==='walk')dive(done);else done();};
+  document.getElementById('inStart').onclick=()=>close('walk');document.getElementById('inGlobe').onclick=()=>close('globe');
+  const key=e=>{if(el.hidden){removeEventListener('keydown',key);return;}if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();close('walk');}};addEventListener('keydown',key);
+  setTimeout(()=>document.getElementById('inStart').focus({preventScroll:true}),60);
+  try{const P=window.PLAN,dkm=P.tl.reduce((a,x,i)=>i?a+dist(P.tl[i-1],x):0,0)/1000;
+    document.getElementById('inFacts').innerHTML=`Today's plan: <b>${dkm.toFixed(1)} km</b> on foot, <b>${Math.floor(P.total/60)} h ${String(Math.round(P.total%60)).padStart(2,'0')}</b> outside, <b>${Math.max(0,stations.length-2)}</b> science stops, every one checked for the walk home.`;}catch(e){}
+  let stop=null;const TREK='https://trek.nasa.gov/tiles/Mars/EQ/',tile=(layer,z,r,c,ext)=>`${TREK}${layer}/1.0.0/default/default028mm/${z}/${r}/${c}.${ext}`;
+  function mosaic(layer,ext,z,cols,rows){return new Promise(res=>{const cv=document.createElement('canvas');cv.width=cols*256;cv.height=rows*256;const g=cv.getContext('2d');let ok=0,n=0;
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const im=new Image();im.crossOrigin='anonymous';im.onload=()=>{g.drawImage(im,c*256,r*256);ok++;if(++n===rows*cols)res(ok===n?cv:null);};im.onerror=()=>{if(++n===rows*cols)res(ok===n?cv:null);};im.src=tile(layer,z,r,c,ext);}});}
+  function procedural(){const cv=document.createElement('canvas');cv.width=1024;cv.height=512;const g=cv.getContext('2d');const gr=g.createLinearGradient(0,0,0,512);gr.addColorStop(0,'#c9a58a');gr.addColorStop(.12,'#b3623a');gr.addColorStop(.5,'#a14d2a');gr.addColorStop(.88,'#9a5a3c');gr.addColorStop(1,'#d8c3b0');g.fillStyle=gr;g.fillRect(0,0,1024,512);
+    for(let i=0;i<900;i++){g.fillStyle=`rgba(${60+Math.random()*80},${25+Math.random()*30},${15},${Math.random()*.18})`;const x=Math.random()*1024,y=60+Math.random()*392,r=4+Math.random()*40;g.beginPath();g.ellipse(x,y,r*1.6,r,0,0,7);g.fill();}return cv;}
+  (async()=>{let THREE;try{THREE=await import('three');}catch(e){el.classList.add('nogl');return;}
+    const canvas=document.getElementById('inGl');let R;try{R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});}catch(e){el.classList.add('nogl');return;}
+    R.setPixelRatio(Math.min(2,devicePixelRatio||1));R.setClearColor(0x0B0C0E);R.outputColorSpace=THREE.SRGBColorSpace;
+    const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(32,1,.1,200);cam.position.set(0,0,10.4);
+    const tilt=new THREE.Group(),spin=new THREE.Group();scene.add(tilt);tilt.add(spin);
+    const mat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,metalness:0,bumpScale:0.035});
+    const mars=new THREE.Mesh(new THREE.SphereGeometry(2,128,96),mat);spin.add(mars);
+    const tex=c=>{const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t;};
+    mat.map=tex(procedural());mat.needsUpdate=true;
+    mosaic('Mars_Viking_MDIM21_ClrMosaic_global_232m','jpg',2,8,4).then(c=>{if(c){mat.map=tex(c);mat.needsUpdate=true;}else document.getElementById('inCap').textContent='Mars imagery could not be loaded from NASA Mars Trek: a stand-in texture is shown. Phobos orbit to scale.';});
+    mosaic('Mars_MGS_MOLA_DEM_mosaic_global_463m_8','png',1,4,2).then(c=>{if(c){const t=new THREE.CanvasTexture(c);mat.bumpMap=t;mat.needsUpdate=true;}});
+    /* thin atmosphere limb */
+    const atm=new THREE.Mesh(new THREE.SphereGeometry(2.06,64,48),new THREE.ShaderMaterial({transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,
+      vertexShader:'varying vec3 n;void main(){n=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+      fragmentShader:'varying vec3 n;void main(){float i=pow(0.72-dot(n,vec3(0.,0.,1.)),3.0);gl_FragColor=vec4(0.95,0.55,0.35,1.0)*i*1.2;}'}));tilt.add(atm);
+    scene.add(new THREE.AmbientLight(0x404048,.55));const sun=new THREE.DirectionalLight(0xfff1e0,2.6);sun.position.set(-6,3,5);scene.add(sun);
+    /* graticule */
+    const gm=new THREE.LineBasicMaterial({color:0xE08A4F,transparent:true,opacity:.10});
+    for(let lat=-60;lat<=60;lat+=30){const pts=[];for(let l=0;l<=360;l+=4){const p=ll(lat,l-180,2.004);pts.push(p);}spin.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),gm));}
+    for(let lon=-180;lon<180;lon+=30){const pts=[];for(let b=-90;b<=90;b+=4)pts.push(ll(b,lon,2.004));spin.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),gm));}
+    function ll(lat,lon,r){const u=(lon+180)/360,phi=u*Math.PI*2,th=(90-lat)*Math.PI/180;return new THREE.Vector3(-r*Math.cos(phi)*Math.sin(th),r*Math.cos(th),r*Math.sin(phi)*Math.sin(th));}
+    /* Phobos orbit to scale (a = 2.76 Mars radii), with Phobos itself */
+    const orbit=new THREE.Group();orbit.rotation.x=Math.PI/2;tilt.add(orbit);const ring=new THREE.Mesh(new THREE.RingGeometry(2*2.76-.006,2*2.76+.006,256),new THREE.MeshBasicMaterial({color:0x5FB8D6,transparent:true,opacity:.35,side:THREE.DoubleSide}));orbit.add(ring);
+    const phobos=new THREE.Mesh(new THREE.IcosahedronGeometry(.07,1),new THREE.MeshStandardMaterial({color:0x8a7d70,roughness:1,flatShading:true}));phobos.scale.set(1.3,1,.9);tilt.add(phobos);
+    /* stars */
+    const sp=[];for(let i=0;i<1400;i++){const v=new THREE.Vector3().randomDirection().multiplyScalar(60+Math.random()*40);sp.push(v.x,v.y,v.z);}
+    const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(sp,3));scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xcfd6e0,size:.12,transparent:true,opacity:.7})));
+    /* Jezero to the front */
+    const J=ll(18.44,77.45,2);const yaw=Math.atan2(-J.x,J.z);const tiltX=Math.atan2(J.y,Math.hypot(J.x,J.z));tilt.rotation.x=tiltX*.85;tilt.rotation.z=-0.12;
+    const ret=document.getElementById('inRet');let w=0,h=0,offX=0;
+    function size(){w=canvas.clientWidth||innerWidth;h=canvas.clientHeight||innerHeight;R.setSize(w,h,false);cam.aspect=w/h;const narrow=innerWidth<900;cam.setViewOffset(w,h,narrow?0:-w*.2,0,w,h);cam.updateProjectionMatrix();}
+    size();addEventListener('resize',size);
+    const t0=performance.now();let raf=0,diveT=null,diveCb=null;const start=yaw-1.9;
+    dive=cb=>{diveT=performance.now();diveCb=cb;};
+    const v=new THREE.Vector3();
+    function frame(now){const t=(now-t0)/1000;const e=reduce?1:Math.min(1,t/5.5),ease=1-Math.pow(1-e,3);spin.rotation.y=start+(yaw-start)*ease+(reduce?0:Math.sin(t*.12)*.03*e);
+      const pa=t*.35;phobos.position.set(Math.cos(pa)*5.52,0,Math.sin(pa)*5.52);phobos.rotation.y=t;
+      if(diveT){const d=Math.min(1,(now-diveT)/900),de=d*d*(3-2*d);cam.position.z=10.4-de*6.2;cam.fov=32-de*10;cam.updateProjectionMatrix();if(d>=1&&diveCb){const c=diveCb;diveCb=null;c();}}
+      R.render(scene,cam);mars.localToWorld(v.copy(J));const nrm=v.clone().normalize();const facing=nrm.dot(cam.position.clone().sub(v).normalize());
+      v.project(cam);const x=(v.x*.5+.5)*w,y=(-v.y*.5+.5)*h;ret.style.transform=`translate(${x}px,${y}px)`;ret.classList.toggle('on',facing>.35&&e>.75&&!diveT);
+      raf=requestAnimationFrame(frame);}
+    raf=requestAnimationFrame(frame);
+    stop=()=>{cancelAnimationFrame(raf);removeEventListener('resize',size);R.dispose();};})();
 })();
 </script>
 </body>
