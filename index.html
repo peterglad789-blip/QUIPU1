@@ -1224,6 +1224,31 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
 @media (prefers-reduced-motion:reduce){.yb-typing i,.yb-rec i,.yb-alarm{animation:none}.yb-timer i{transition:none}}
 @media (max-width:600px){.yb-drawer{right:8px;left:8px;top:8px;bottom:8px;width:auto}.yb-fab{right:12px;bottom:12px}}
 @media print{.yb-fab,.yb-drawer,.yb-alarm{display:none!important}}
+.intro{position:fixed;inset:0;z-index:5000;background:radial-gradient(120% 90% at 70% 50%,#1d1612 0%,#0e0f11 60%);color:#ECEAE6;display:flex;flex-direction:column;justify-content:center;overflow:auto;transition:opacity .45s ease,transform .45s ease}
+.intro[hidden]{display:none}
+.intro.leaving{opacity:0;transform:scale(1.04);pointer-events:none}
+.in-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 12% 22%,#fff8 50%,transparent 51%),radial-gradient(1px 1px at 33% 71%,#fff6 50%,transparent 51%),radial-gradient(1.5px 1.5px at 58% 14%,#fff9 50%,transparent 51%),radial-gradient(1px 1px at 81% 83%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 91% 31%,#fff7 50%,transparent 51%),radial-gradient(1px 1px at 6% 88%,#fff6 50%,transparent 51%),radial-gradient(1px 1px at 46% 47%,#fff4 50%,transparent 51%);pointer-events:none}
+.in-wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:center;max-width:1240px;margin:0 auto;padding:40px 48px;width:100%}
+.in-team{color:#A2A9B2;font-size:14px;margin:0 0 14px}
+.intro h1{font:800 clamp(56px,9vw,120px)/.9 var(--font);letter-spacing:.04em;margin:0;color:#E08A4F;font-stretch:125%}
+.in-sub{font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:#D8D4CE;max-width:30ch;margin:18px 0 0}
+.in-q{font:650 clamp(20px,2.2vw,28px)/1.25 var(--font);margin:26px 0 0;color:#fff}
+.in-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.in-cta .btn{min-height:52px;padding:0 24px;font-size:16.5px}
+.in-facts{display:grid;grid-template-columns:repeat(3,auto);gap:6px 28px;margin:34px 0 0;justify-content:start}
+.in-facts div{display:flex;flex-direction:column-reverse}
+.in-facts dt{color:#A2A9B2;font-size:12.5px;margin-top:2px}
+.in-facts dd{margin:0;font:700 19px var(--font);color:#ECEAE6}
+.in-mars{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px}
+.in-planet{position:relative;width:min(44vw,560px);aspect-ratio:1;border-radius:50%;background:#B4532A radial-gradient(circle at 35% 35%,#D9824F,#9C3F1E 60%,#5A2210);background-size:auto 100%;background-repeat:repeat-x;box-shadow:0 0 90px rgba(224,138,79,.22),0 0 0 1px rgba(255,200,160,.08);animation:in-spin 90s linear infinite;overflow:hidden}
+.in-shade{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 30%,rgba(255,235,210,.22),transparent 38%),radial-gradient(circle at 70% 70%,transparent 35%,rgba(0,0,0,.72) 75%);box-shadow:inset -30px -20px 60px rgba(0,0,0,.6),inset 8px 6px 30px rgba(255,220,190,.08)}
+.in-pin{position:absolute;width:12px;height:12px;border-radius:50%;left:54%;top:40%;background:#5FB8D6;box-shadow:0 0 0 4px rgba(95,184,214,.3);opacity:0;transition:opacity .3s}
+.in-planet.textured .in-pin{opacity:1}
+.in-mars figcaption{color:#737B86;font-size:12px;text-align:center;max-width:44ch}
+.in-note{position:relative;text-align:center;color:#737B86;font-size:12.5px;margin:0 0 18px}
+@keyframes in-spin{from{background-position-x:0}to{background-position-x:var(--tex,-1120px)}}
+@media (max-width:900px){.in-wrap{grid-template-columns:1fr;padding:28px 22px;gap:24px}.in-mars{order:-1}.in-planet{width:min(70vw,360px)}.in-facts{grid-template-columns:repeat(3,auto);gap:6px 18px}}
+@media (prefers-reduced-motion:reduce){.in-planet{animation:none}.intro{transition:none}}
 </style>
 </head>
 <body>
@@ -1709,6 +1734,27 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
 <div id="report"></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+<div id="intro" class="intro" role="dialog" aria-modal="true" aria-labelledby="inTitle">
+  <div class="in-stars" aria-hidden="true"></div>
+  <div class="in-wrap">
+    <div class="in-text">
+      <p class="in-team">NASA Space Apps Challenge 2026 · Kervin Espaze Program</p>
+      <h1 id="inTitle">QUIPU</h1>
+      <p class="in-sub">Interplanetary Survival Guide for a crewed walk across Jezero crater, Mars.</p>
+      <p class="in-q">Can the astronaut get back safely?</p>
+      <div class="in-cta">
+        <button class="btn" id="inStart">Start the Marswalk</button>
+        <button class="btn ghost" id="inGlobe">Explore the Mars globe</button>
+      </div>
+      <dl class="in-facts" id="inFacts"></dl>
+    </div>
+    <figure class="in-mars">
+      <div class="in-planet" id="inPlanet"><i class="in-shade"></i></div>
+      <figcaption id="inCap">Viking Orbiter colour mosaic, NASA/USGS via Mars Trek. Rotation speeded up.</figcaption>
+    </figure>
+  </div>
+  <p class="in-note">A demonstration and decision-support concept, not a certified flight system.</p>
+</div>
 <div id="helmet" class="hm" hidden role="dialog" aria-modal="true" aria-label="Helmet view">
   <header class="hm-top">
     <div class="hm-title"><b>Helmet view</b><span id="hmWhere">Marswalk 1</span></div>
@@ -4963,6 +5009,31 @@ Qn.yarbis={open,close,tab,ask(text){open('chat');$q('#yb-in').value=text;send();
   notify(){const dot=$q('#yb-fab-dot');if(dot&&$q('#yb-drawer').hidden)dot.hidden=false;}};
 W.openYarbis=open;
 if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',mount);else mount();
+})();
+</script>
+<script>/* module: intro */
+/* QUIPU intro: big Mars and the central question, then into the Marswalk */
+(function(){const el=document.getElementById('intro');if(!el)return;
+  const params=new URLSearchParams(location.search);
+  const skip=params.has('nointro')||(location.hash&&location.hash!=='#walk'&&location.hash!=='#');
+  if(skip){el.hidden=true;return;}
+  document.body.style.overflow='hidden';
+  const close=v=>{el.classList.add('leaving');document.body.style.overflow='';setTimeout(()=>{el.hidden=true;if(window.go)go(v);if(v==='walk'&&window.map)setTimeout(()=>map.invalidateSize(),60);},420);};
+  document.getElementById('inStart').onclick=()=>close('walk');
+  document.getElementById('inGlobe').onclick=()=>close('globe');
+  addEventListener('keydown',function k(e){if(el.hidden){removeEventListener('keydown',k);return;}if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();close('walk');}});
+  setTimeout(()=>document.getElementById('inStart').focus(),50);
+  /* facts from the live plan */
+  try{const P=window.PLAN,km=(P.tl.reduce((a,x,i)=>i?a+dist(P.tl[i-1],x):0,0)/1000);
+    const f=[[km.toFixed(1)+' km','planned walk'],[Math.floor(P.total/60)+' h '+String(Math.round(P.total%60)).padStart(2,'0'),'walk duration'],[String(Math.max(0,stations.length-2)),'science stops']];
+    document.getElementById('inFacts').innerHTML=f.map(([v,l])=>`<div><dt>${l}</dt><dd>${v}</dd></div>`).join('');}catch(e){}
+  /* texture: Viking MDIM 2.1 colour mosaic, zoom 1 (4 × 2 tiles of 256 px, equirectangular) */
+  const pl=document.getElementById('inPlanet'),cv=document.createElement('canvas');cv.width=1024;cv.height=512;const g=cv.getContext('2d');let ok=0,done=0;
+  const base='https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/1/';
+  const fin=()=>{if(++done<8)return;if(ok<8){document.getElementById('inCap').textContent='Mars imagery could not be loaded (no connection to NASA Mars Trek). Shown as a plain sphere.';return;}
+    try{const url=cv.toDataURL('image/jpeg',.85);const s=pl.clientHeight||400;pl.style.backgroundImage=`url(${url})`;pl.style.backgroundSize=`${s*2}px ${s}px`;pl.style.setProperty('--tex',`-${s*2}px`);pl.classList.add('textured');}catch(e){}};
+  for(let r=0;r<2;r++)for(let c=0;c<4;c++){const im=new Image();im.crossOrigin='anonymous';im.onload=()=>{g.drawImage(im,c*256,r*256);ok++;fin();};im.onerror=fin;im.src=`${base}${r}/${c}.jpg`;}
+  addEventListener('resize',()=>{if(!pl.classList.contains('textured'))return;const s=pl.clientHeight;pl.style.backgroundSize=`${s*2}px ${s}px`;pl.style.setProperty('--tex',`-${s*2}px`);});
 })();
 </script>
 </body>
