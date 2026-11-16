@@ -1335,8 +1335,8 @@ ol.stops2 .leg2.unv{color:var(--caution);border-left-style:dashed}
 #view-walk #scale{bottom:calc(var(--clockH,64px) + 6px)!important}
 #view-globe .g-lod{top:56px;bottom:auto}
 @media (max-width:900px){#view-walk .sidetoggle{display:none}}
-.guide{position:fixed;inset:0;z-index:5200;background:rgba(8,9,11,.72);display:grid;place-items:center;padding:20px}
-.guide[hidden]{display:none}
+.qguide{position:fixed;inset:0;z-index:5200;background:rgba(8,9,11,.72);display:grid;place-items:center;padding:20px}
+.qguide[hidden]{display:none}
 .gd-box{width:min(1080px,100%);height:min(760px,100%);background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .gd-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .gd-h h1{margin:0;font-size:20px}.gd-hb{display:flex;gap:8px;flex-wrap:wrap}
@@ -5892,7 +5892,7 @@ const EX=[['Plan',()=>{go('walk');Q.sideTab('plan');},'Open Marswalk. The Plan t
  ['Walk',()=>{go('walk');Q.sideTab('plan');Q.clock.restart();Q.clock.play();},'Press play under the map. Open Sky over Jezero with “Follow the walk clock” on: the Sun and moons move with the crew.'],
  ['Ask',()=>Q.yarbis&&Q.yarbis.open(),'Ask Yarbis: “¿Qué tan lejos puedo ir con lo que tengo?”']];
 let el=null,cur='start';
-function build(){el=document.createElement('div');el.id='guide';el.className='guide';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','gdTitle');el.hidden=true;
+function build(){el=document.createElement('div');el.id='guide';el.className='qguide';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','gdTitle');el.hidden=true;
   el.innerHTML=`<div class="gd-box"><header class="gd-h"><h1 id="gdTitle">Mission guide</h1><div class="gd-hb"><button class="btn ghost" id="gdTour">Take the guided tour</button><button class="btn" id="gdClose">Close guide</button></div></header>
    <div class="gd-body"><nav class="gd-nav" aria-label="Guide topics">${T.map(t=>`<button data-id="${t.id}">${t.t}</button>`).join('')}</nav><article class="gd-main" id="gdMain" tabindex="-1"></article></div></div>`;
   document.body.appendChild(el);el.querySelectorAll('.gd-nav button').forEach(b=>b.onclick=()=>show(b.dataset.id));
