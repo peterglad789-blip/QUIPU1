@@ -704,6 +704,8 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
 @media (prefers-reduced-motion:reduce){#view-globe *{transition:none!important}}
 #view-globe .g-jz.g-flip{transform:translate(calc(-100% - 14px),-50%)}
 #view-globe .g-legend .g-src{display:block;color:var(--faint);font-size:11.5px;margin-top:4px}
+
+#view-globe .g-lod{position:absolute;left:12px;top:56px;z-index:3;font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:4px 9px;border-radius:6px;pointer-events:none;max-width:60%}
 /* ===== Sky over Jezero (fork: sky) — all selectors scoped to #view-sky ===== */
 #view-sky .sky3{display:grid;gap:12px;padding:6px 24px 24px;color:var(--text);font-family:var(--font)}
 #view-sky .sky3-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
@@ -1039,6 +1041,10 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
   #view-solar #solMap{aspect-ratio:1/1}#view-solar .sol-time output{min-width:0;flex-basis:100%}#view-solar .sol-list button{grid-template-columns:96px 70px 1fr}
   #view-solar .sol-moonwrap{min-height:340px}#view-solar .sol-gnote{right:12px;bottom:62px}}
 @media (prefers-reduced-motion:reduce){#view-solar *{transition:none!important;animation:none!important}}
+
+#view-solar .sol-pdgrid{display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:20px;align-items:start}
+#view-solar .sol-pdsvg{width:100%;height:auto}#view-solar .sol-pdsvg .t1{font:700 11px var(--font);fill:#fff}#view-solar .sol-pdsvg .t2{font:650 13px var(--font);fill:var(--text)}#view-solar .sol-pdsvg .t3{font:500 10.5px var(--font);fill:var(--faint)}
+@media (max-width:900px){#view-solar .sol-pdgrid{grid-template-columns:1fr}}
 /* ===== Helmet view (first-person) ===== */
 #helmet.hm{position:fixed;inset:0;z-index:2100;background:var(--bg);color:var(--text);font-family:var(--font);display:grid;grid-template-rows:auto auto 1fr auto}
 #helmet[hidden]{display:none}
@@ -1126,6 +1132,9 @@ body.emergency #view-walk .dock,body.emergency #view-walk .side,body.emergency #
 }
 @media (max-width:520px){#helmet .hm-seg button{padding:0 9px}#helmet #hmRecenter{display:none}}
 @media (prefers-reduced-motion:reduce){#helmet *{transition:none!important}}
+
+#helmet .hm-spd{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}#helmet .hm-spd select{background:var(--raised);color:var(--text);border:1px solid var(--line);border-radius:8px;min-height:40px;padding:0 6px;font:500 13px var(--font)}
+#helmet .hm-hold{font-size:12.5px;color:var(--sel)}#helmet .hm-hold[hidden]{display:none}
 /* ================= Yarbis (scoped with .yb- prefix) ================= */
 .yb-fab{position:fixed;right:20px;bottom:20px;z-index:1500;display:flex;align-items:center;gap:10px;min-height:var(--tap);
   background:var(--text);color:var(--bg);border:0;border-radius:999px;padding:8px 18px 8px 10px;font:700 15px var(--font);cursor:pointer;
@@ -1279,6 +1288,77 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
 .sync-dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px;margin:10px 0}.sync-dl dt{color:var(--muted)}.sync-dl dd{margin:0;font-variant-numeric:tabular-nums}
 .filebtn{display:inline-flex;align-items:center;cursor:pointer}
 @media (max-width:900px){.sync-grid{grid-template-columns:1fr}}
+/* Marswalk layout: map first, contextual panels */
+#view-walk.side-min{grid-template-columns:minmax(0,1fr) 0}
+#view-walk.side-min .side{display:none}
+#view-walk .sidetoggle{position:absolute;right:10px;top:58px;z-index:500}
+#view-walk .resbadge{position:absolute;left:10px;bottom:30px;z-index:450;font-size:11.5px;color:var(--muted);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:3px 8px;border-radius:6px;pointer-events:none;max-width:60%}
+#view-walk .status{padding:6px 10px;gap:6px}
+#view-walk .status .chip{flex:1 0 150px;padding:5px 10px;min-height:0}
+#view-walk .status .chip .k{font-size:11.5px}
+#view-walk .status .chip .v{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#view-walk .status .chip .d{display:none}
+@media (min-width:1600px){#view-walk .status .chip .d{display:block}}
+.stopnow{font-size:12.5px;color:var(--muted);margin-top:2px}.stopnow b{color:var(--text)}
+ol.stops2{list-style:none;margin:8px 0;padding:0;display:flex;flex-direction:column;gap:0}
+ol.stops2 .stop{border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow:hidden}
+ol.stops2 .stop.sel{border-color:var(--sel);box-shadow:0 0 0 1px var(--sel)}
+ol.stops2 .stop.now .num{background:var(--sel);color:#0b1a20}
+ol.stops2 .srow{all:unset;box-sizing:border-box;display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;width:100%;padding:9px 10px;cursor:pointer;min-height:48px}
+ol.stops2 .srow:focus-visible{outline:2px solid var(--sel);outline-offset:-2px}
+ol.stops2 .num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:750;font-size:13px}
+ol.stops2 .hab .num{background:var(--raised);color:var(--text);border:1px solid var(--line)}
+ol.stops2 .nm b{display:block;font-size:14px;font-weight:650;color:var(--text)}
+ol.stops2 .nm small{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+ol.stops2 .spare{font-size:12px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--raised)}
+ol.stops2 .spare.go{color:var(--go)}ol.stops2 .spare.caution{color:var(--caution)}ol.stops2 .spare.nogo{color:var(--abort)}
+ol.stops2 .sdet{padding:0 12px 12px 50px;font-size:13px}
+ol.stops2 .sdet .why{color:var(--muted);margin:0 0 6px}ol.stops2 .sdet ul{margin:0 0 8px;padding-left:18px;color:var(--muted)}
+ol.stops2 .sedit{display:grid;grid-template-columns:1fr 130px;gap:8px;margin:8px 0}
+ol.stops2 .sedit label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
+ol.stops2 .sedit input{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:8px;font:500 14px var(--font);min-height:38px}
+ol.stops2 .leave{margin:4px 0 8px;color:var(--muted)}ol.stops2 .leave b{color:var(--abort)}
+ol.stops2 .pov{width:100%;border-radius:8px;margin-top:8px}
+ol.stops2 .leg2{font-size:12px;color:var(--faint);padding:4px 0 4px 24px;border-left:2px solid var(--line);margin-left:23px}
+ol.stops2 .leg2.unv{color:var(--caution);border-left-style:dashed}
+.mini.danger{border-color:color-mix(in srgb,var(--abort) 60%,transparent);color:var(--abort);background:transparent}
+.snack{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:4000;display:flex;align-items:center;gap:12px;background:var(--raised);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px 10px 16px;box-shadow:0 8px 30px rgba(0,0,0,.4);font-size:14px;max-width:92vw}
+.snack[hidden]{display:none}
+.leaflet-container{background:#0E0C0B}
+#view-walk .clock #stopNow{grid-column:1/-1;margin:0}
+#view-walk .clock .read{text-align:right}
+#view-walk .leaflet-bottom{bottom:var(--clockH,64px)}
+#view-walk .resbadge{top:58px;left:56px;bottom:auto}
+#view-walk .leaflet-control-attribution{font-size:10px;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#view-walk .leaflet-control-attribution:hover{white-space:normal}
+#view-walk .locbox{bottom:calc(var(--clockH,64px) + 26px)!important}
+#view-walk #scale{bottom:calc(var(--clockH,64px) + 6px)!important}
+#view-globe .g-lod{top:56px;bottom:auto}
+@media (max-width:900px){#view-walk .sidetoggle{display:none}}
+.guide{position:fixed;inset:0;z-index:5200;background:rgba(8,9,11,.72);display:grid;place-items:center;padding:20px}
+.guide[hidden]{display:none}
+.gd-box{width:min(1080px,100%);height:min(760px,100%);background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.gd-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.gd-h h1{margin:0;font-size:20px}.gd-hb{display:flex;gap:8px;flex-wrap:wrap}
+.gd-body{display:grid;grid-template-columns:220px 1fr;min-height:0;flex:1}
+.gd-nav{display:flex;flex-direction:column;padding:10px;gap:2px;border-right:1px solid var(--line);overflow:auto}
+.gd-nav button{all:unset;cursor:pointer;padding:10px 12px;border-radius:8px;font-size:14.5px;color:var(--muted);min-height:24px}
+.gd-nav button:hover{background:var(--raised);color:var(--text)}.gd-nav button[aria-current=true]{background:var(--raised);color:var(--text);font-weight:650;box-shadow:inset 3px 0 0 var(--sel)}
+.gd-nav button:focus-visible{outline:2px solid var(--sel)}
+.gd-main{padding:22px 28px;overflow:auto;max-width:760px}
+.gd-main h2{margin:0 0 6px;font-size:24px}.gd-sum{font-size:16.5px;line-height:1.5;color:var(--text);margin:0 0 14px}
+.gd-steps{padding-left:20px;margin:12px 0;display:grid;gap:10px;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.gd-main h3{margin:22px 0 8px;font-size:16px}
+.gd-ex{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.gd-ex li{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;padding:10px 12px;background:var(--bg);border:1px solid var(--line);border-radius:10px;font-size:14px;line-height:1.4}
+.gd-ex b{color:var(--accent)}.gd-ex span{color:var(--muted)}
+.gsvg{width:100%;max-width:420px;height:auto;margin:6px 0 4px;display:block}.gsvg text{font:600 11.5px var(--font);fill:var(--muted)}
+.tour{position:fixed;inset:0;z-index:5300;pointer-events:none}.tour[hidden]{display:none}
+.tour-hole{position:fixed;border-radius:10px;box-shadow:0 0 0 9999px rgba(8,9,11,.62),0 0 0 2px var(--sel);transition:all .25s ease}
+.tour-card{position:fixed;pointer-events:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.tour-card b{font-size:16px}.tour-card p{margin:6px 0 10px;font-size:14px;line-height:1.5;color:var(--muted)}.tour-card small{color:var(--faint)}
+@media (max-width:760px){.gd-body{grid-template-columns:1fr;grid-template-rows:auto 1fr}.gd-nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}.gd-nav button{white-space:nowrap}.gd-main{padding:16px}.gd-ex li{grid-template-columns:1fr auto}.gd-ex b{grid-column:1/-1}}
+@media (prefers-reduced-motion:reduce){.tour-hole{transition:none}}
 .intro{position:fixed;inset:0;z-index:5000;background:#0B0C0E;color:#ECEAE6;overflow:auto;transition:opacity .5s ease}
 .intro[hidden]{display:none}.intro.leaving{opacity:0;pointer-events:none}
 .in-gl{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -1617,29 +1697,25 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
   <div class="sol-card"><h2>Fastest eruptions in the last 30 days</h2><div class="sol-list" id="solList"></div></div>
 </div>
 
-<section class="sol-moon" aria-labelledby="solMoonH">
-  <div class="sol-head"><div><h2 id="solMoonH">For comparison: the Moon's south pole</h2>
-    <p>The same planning ideas at the Artemis destination. Gravity is 16% of Earth's, the Sun never climbs more than about 1.5° above the horizon at the pole, and some crater floors have not seen sunlight in billions of years.</p></div></div>
-  <div class="sol-grid">
-    <div class="sol-moonwrap"><canvas id="solMoongl" aria-label="Interactive 3D Moon, south pole facing you"></canvas><div class="sol-gtip" id="solMtip" hidden></div>
-      <div class="sol-gnote" id="solMoonNote">The Moon globe loads when this section opens.</div>
-      <div class="sol-gbase"><button id="solWac" aria-pressed="true">Surface</button><button id="solLola" aria-pressed="false">Elevation</button></div></div>
-    <div class="sol-card">
-      <h3>Marswalk vs moonwalk</h3>
-      <table class="sol-cmp"><thead><tr><th></th><th>Jezero, Mars</th><th>South pole, Moon</th></tr></thead><tbody>
-        <tr><td>Gravity</td><td>3.71 m/s² (38%)</td><td>1.62 m/s² (16%)</td></tr>
-        <tr><td>Suited weight, 125 kg</td><td>464 N</td><td>203 N</td></tr>
-        <tr><td>Walk-to-run switch</td><td>1.3 m/s</td><td>0.85 m/s</td></tr>
-        <tr><td>Signal to Earth, one way</td><td id="solCmpMars">computing…</td><td>about 1.3 s</td></tr>
-        <tr><td>Day length</td><td>24 h 40 min</td><td>about 29.5 Earth days</td></tr>
-        <tr><td>Highest Sun</td><td id="solCmpSun">computing…</td><td>about 1.5°: long, raking shadows</td></tr></tbody></table>
-      <h3>On the globe</h3>
-      <ul class="sol-plain"><li><b>Shackleton crater</b>: 21 km wide; its rim gets near-constant sunlight while its floor stays permanently dark.</li>
-        <li><b>LCROSS impact, Cabeus crater</b>: in 2009 NASA crashed a rocket stage here and detected water in the plume.</li><li><b>South pole</b>.</li></ul>
-      <h3>Artemis III candidate regions</h3>
-      <p class="sol-note">NASA's October 2024 list: Peak near Cabeus B, Haworth, Malapert Massif, Mons Mouton Plateau, Mons Mouton, Nobile Rim 1, Nobile Rim 2, de Gerlache Rim 2 and Slater Plain. All lie within about 6° of the pole. They are listed, not pinned, because we could not verify their exact outlines.</p>
-    </div>
+<section class="sol-moon sol-pd" aria-labelledby="solPdH">
+  <div class="sol-head"><div><h2 id="solPdH">The moons of Mars: Phobos and Deimos</h2>
+    <p class="sol-note">Mars has two small, dark, irregular moons. Both are tidally locked and orbit close to Mars's equator. In the sky over Jezero they are drawn from JPL Horizons (ephemeris MAR099).</p></div></div>
+  <div class="sol-pdgrid">
+    <svg class="sol-pdsvg" viewBox="0 0 420 420" role="img" aria-label="Orbits of Phobos and Deimos around Mars, distances to scale">
+      <circle cx="210" cy="210" r="27.6" fill="#B4532A"/><text x="210" y="214" text-anchor="middle" class="t1">Mars</text>
+      <circle cx="210" cy="210" r="76.2" fill="none" stroke="#C9C5BF" stroke-width="1.5"/><circle cx="286.2" cy="210" r="5" fill="#9C8F80"/><text x="294" y="200" class="t2">Phobos</text>
+      <circle cx="210" cy="210" r="190.8" fill="none" stroke="#7A8088" stroke-width="1.5" stroke-dasharray="5 5"/><circle cx="210" cy="19.2" r="3.5" fill="#B9AE9F"/><text x="218" y="16" class="t2">Deimos</text>
+      <text x="10" y="410" class="t3">Orbit distances to scale with Mars; moon dots enlarged about 50×. Positions shown are illustrative.</text></svg>
+    <table class="sol-cmp"><thead><tr><th></th><th>Phobos (Mars I, NAIF 401)</th><th>Deimos (Mars II, NAIF 402)</th></tr></thead><tbody>
+      <tr><td>Mean radius</td><td>11.08 km</td><td>6.2 km</td></tr>
+      <tr><td>Approximate shape</td><td>27 × 22 × 18 km</td><td>15 × 12 × 11 km</td></tr>
+      <tr><td>Distance from Mars's centre</td><td>about 9,377 km (about 6,000 km above the surface)</td><td>about 23,460 km</td></tr>
+      <tr><td>Orbital period</td><td>7 h 39 min</td><td>30.3 h</td></tr>
+      <tr><td>Mean density</td><td>1.87 g/cm³</td><td>1.47 g/cm³</td></tr>
+      <tr><td>Seen from Jezero</td><td>Rises in the west, crosses the sky in about 4 h, rises again roughly every 11 h</td><td>Rises in the east and takes about 2.7 days to set</td></tr>
+      <tr><td>Future</td><td>Spiralling slowly inward by tides</td><td>Slowly receding</td></tr></tbody></table>
   </div>
+  <p class="sol-note">Sources: JPL Solar System Dynamics, planetary satellite physical parameters (radius, density, MAR097 GM) and satellite ephemerides (MAR099; Brozović, Jacobson and Park 2025); JPL Horizons for the sky positions; NASA Science, Mars moons pages. Values rounded.</p>
 </section>
 </div>
 <div class="view" data-view="ready" id="view-ready" hidden><div class="rd">
@@ -1808,11 +1884,14 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
       <div><dt>Understand</dt><dd>Sun, moons, comms, space weather</dd></div>
       <div><dt>Return</dt><dd>Survival envelope and emergency return</dd></div>
     </dl>
-    <div class="in-cta"><button class="btn" id="inStart">Begin mission</button><button class="btn ghost" id="inGlobe">Explore the Mars globe</button></div>
+    <div class="in-cta"><button class="btn" id="inStart">Begin mission</button><button class="btn ghost" id="inGlobe">Explore the Mars globe</button><button class="btn ghost" id="inGuide">How QUIPU works</button></div>
     <p class="in-facts" id="inFacts"></p>
   </div>
   <p class="in-foot"><span>NASA Space Apps Challenge 2026, Kervin Espaze Program</span><span id="inCap">Mars: Viking Orbiter colour mosaic and MOLA relief, NASA/USGS via Mars Trek. Phobos orbit to scale.</span><span>Demonstration concept, not a certified flight system.</span></p>
 </div>
+<script>/* decide before anything else runs, so the start screen never flashes or vanishes on its own */
+(function(){var q=new URLSearchParams(location.search),h=location.hash.replace('#','');var deep=h&&h!=='walk'&&['globe','sky','comms','solar','ready','sources'].indexOf(h)>=0;
+ if(!q.has('intro')&&(q.has('nointro')||deep)){document.getElementById('intro').hidden=true;}else{document.documentElement.classList.add('intro-open');}})();</script>
 <div id="helmet" class="hm" hidden role="dialog" aria-modal="true" aria-label="Helmet view">
   <header class="hm-top">
     <div class="hm-title"><b>Helmet view</b><span id="hmWhere">Marswalk 1</span></div>
@@ -1844,8 +1923,8 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
       <div class="hm-photo" id="hmPhoto">
         <img id="hmImg" alt="" draggable="false">
         <div class="hm-empty" id="hmEmpty">Loading rover images…</div>
-        <button class="hm-btn hm-pl" id="hmPrevF" aria-label="Look left">‹</button>
-        <button class="hm-btn hm-pr" id="hmNextF" aria-label="Look right">›</button>
+        <button class="hm-btn hm-pl" id="hmPrevF" aria-label="Previous image">‹</button>
+        <button class="hm-btn hm-pr" id="hmNextF" aria-label="Next image">›</button>
       </div>
       <div class="hm-gcap" id="hmGcap"></div>
       <div class="hm-strip" id="hmStrip" role="listbox" aria-label="Rover frames by direction"></div>
@@ -1857,7 +1936,7 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:18px 0}
     <button class="hm-btn hm-play" id="hmPlay" aria-label="Play the walk"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path id="hmPlayIco" d="M7 5l12 7-12 7z" fill="currentColor"/></svg></button>
     <button class="hm-btn" id="hmFwd" aria-label="Step forward along the route"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M13 6l6 6-6 6M5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button>
     <input type="range" id="hmProg" min="0" max="1000" value="0" aria-label="Position along the walk">
-    <span class="hm-time" id="hmTime"></span>
+    <span class="hm-time" id="hmTime"></span><label class="hm-spd">Pace<select id="hmSpeed" aria-label="Helmet view playback pace"><option value="0.5">Slow (0.75 min/s)</option><option value="1" selected>Normal (1.5 min/s)</option><option value="2">Fast (3 min/s)</option><option value="4">Very fast (6 min/s)</option></select></label><span class="hm-hold" id="hmHold" hidden></span>
     <button class="hm-btn" id="hmRecenter">Face route</button>
   </footer>
 </div>
@@ -2569,7 +2648,8 @@ window.Q=window.Q||{};
   const subs=[];let raf=null,last=0;
   const C=Q.clock={t:0,playing:false,speed:1,previewSec:30,
     get total(){return ((typeof PLAN!=='undefined'&&PLAN)&&PLAN.total)||1;},
-    rate(){return this.total/this.previewSec*this.speed;},          // sim minutes per real second
+    rateOverride:null,
+    rate(){return (this.rateOverride?this.rateOverride:this.total/this.previewSec)*this.speed;},          // sim minutes per real second
     ltst(t=this.t){return (typeof PLAN!=='undefined'&&PLAN)?PLAN.ltstAt(t):12;},           // local solar time (h) at Jezero
     dateMs(t=this.t){const p=(typeof PLAN!=='undefined'&&PLAN);if(!p)return Date.now();     // absolute UTC ms of sim time t
       const day=p.day;const s=marsSun(day);const start=p.ltstAt(0);   // find UTC of egress on the chosen date
@@ -3133,11 +3213,27 @@ go(location.hash.slice(1)||'walk');
     catch(e){ui.note.textContent='3D library could not load (no connection to the CDN). The globe needs it the first time.';return;}
     renderer=new T.WebGLRenderer({canvas:ui.cv,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=T.SRGBColorSpace;
     scene=new T.Scene();camera=new T.PerspectiveCamera(32,1,.005,100);camera.position.copy(v3(T,22,40,5.0));
-    controls=new OC(camera,ui.cv);Object.assign(controls,{enableDamping:true,dampingFactor:.08,enablePan:false,minDistance:1.08,maxDistance:7,rotateSpeed:.55,zoomSpeed:.8,autoRotate:!reduce,autoRotateSpeed:.25});
+    controls=new OC(camera,ui.cv);Object.assign(controls,{enableDamping:true,dampingFactor:.08,enablePan:false,minDistance:1.012,maxDistance:7,rotateSpeed:.55,zoomSpeed:.8,autoRotate:!reduce,autoRotateSpeed:.25});
     controls.addEventListener('change',()=>{const d=camera.position.length();controls.rotateSpeed=Math.max(.06,.55*(d-1)/3);});
     ro=new ResizeObserver(resize);ro.observe(ui.stage);resize();
     mat=new T.MeshStandardMaterial({color:0xB8693F,roughness:1,metalness:0});
     planet=new T.Mesh(new T.SphereGeometry(1,192,96),mat);scene.add(planet);
+    /* level of detail: closer in, a sharper Viking patch (up to zoom 7, about 230 m per pixel, the mosaic's native resolution)
+       is loaded for the area under the camera. Nothing is upscaled beyond what the tiles hold. */
+    const lod={mesh:null,key:'',busy:false,t:0};
+    async function lodUpdate(){const d=camera.position.length();const z=d<1.03?7:d<1.07?6:d<1.15?5:d<1.4?4:0;const badge=document.getElementById('gLod');
+      if(!z){if(lod.mesh){lod.mesh.visible=false;}lod.key='';if(badge)badge.textContent='Imagery: global Viking mosaic, about 10 km per pixel at this distance';return;}
+      const p=camera.position.clone().normalize(),lat=Math.asin(p.y)/D,lon=Math.atan2(-p.z,p.x)/D,dpt=180/2**z,cols=2**(z+1),rows=2**z;
+      const c0=Math.floor((lon+180)/dpt)-1,r0=Math.max(0,Math.min(rows-3,Math.floor((90-lat)/dpt)-1)),key=z+'/'+r0+'/'+c0;if(key===lod.key||lod.busy)return;lod.busy=true;
+      const cv=document.createElement('canvas');cv.width=cv.height=768;const g=cv.getContext('2d');let ok=0;
+      await Promise.all([0,1,2].flatMap(dr=>[0,1,2].map(async dc=>{const cc=((c0+dc)%cols+cols)%cols,rr=r0+dr;const im=await img(`${TREK}Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/${z}/${rr}/${cc}.jpg`);if(im){g.drawImage(im,dc*256,dr*256);ok++;}})));
+      lod.busy=false;if(ok<6){if(badge)badge.textContent='Sharper imagery could not be loaded here (no connection to NASA Mars Trek)';return;}
+      const lonW=c0*dpt-180,latN=90-r0*dpt;const geo=new T.SphereGeometry(1.0009,64,64,(lonW+180)*D,3*dpt*D,(90-latN)*D,3*dpt*D);
+      const m=new T.MeshStandardMaterial({map:asTex(cv,true),roughness:1,metalness:0});if(lod.mesh){planet.remove(lod.mesh);lod.mesh.geometry.dispose();lod.mesh.material.map.dispose();lod.mesh.material.dispose();}
+      lod.mesh=new T.Mesh(geo,m);planet.add(lod.mesh);lod.key=key;const mpx=3389.5e3*Math.PI/(2**z*256);
+      if(badge)badge.textContent=`Imagery: Viking colour mosaic, zoom ${z}, about ${mpx>=1000?(mpx/1000).toFixed(1)+' km':Math.round(mpx)+' m'} per pixel for the area in view`;}
+    controls.addEventListener('change',()=>{clearTimeout(lod.t);lod.t=setTimeout(lodUpdate,350);});
+    {const b=document.createElement('div');b.id='gLod';b.className='g-lod';b.textContent='Imagery: global Viking mosaic, about 10 km per pixel at this distance';(ui.cv.parentElement||document.body).appendChild(b);}
     haze=new T.Mesh(new T.SphereGeometry(1.03,96,48),new T.ShaderMaterial({transparent:true,side:T.BackSide,depthWrite:false,blending:T.AdditiveBlending,
       uniforms:{c:{value:new T.Color(0xE9B275)},s:{value:new T.Vector3(1,0,0)}},
       vertexShader:'varying vec3 n;varying vec3 v;varying vec3 w;void main(){n=normalize(normalMatrix*normal);w=normalize((modelMatrix*vec4(position,1.)).xyz);vec4 mv=modelViewMatrix*vec4(position,1.);v=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}',
@@ -3318,7 +3414,7 @@ go(location.hash.slice(1)||'walk');
       else{homeCard();inspectRing.visible=false;}});
     ui.cv.tabIndex=0;ui.cv.addEventListener('keydown',e=>{const step=e.shiftKey?10:3;const s=new T.Spherical().setFromVector3(camera.position);
       if(e.key==='ArrowLeft')s.theta-=step*D;else if(e.key==='ArrowRight')s.theta+=step*D;else if(e.key==='ArrowUp')s.phi=Math.max(.1,s.phi-step*D);else if(e.key==='ArrowDown')s.phi=Math.min(Math.PI-.1,s.phi+step*D);
-      else if(e.key==='+'||e.key==='=')s.radius=Math.max(1.1,s.radius*.9);else if(e.key==='-')s.radius=Math.min(7,s.radius*1.1);else return;e.preventDefault();controls.autoRotate=false;camera.position.setFromSpherical(s);camera.lookAt(0,0,0);});}
+      else if(e.key==='+'||e.key==='=')s.radius=Math.max(1.012,s.radius*.9);else if(e.key==='-')s.radius=Math.min(7,s.radius*1.1);else return;e.preventDefault();controls.autoRotate=false;camera.position.setFromSpherical(s);camera.lookAt(0,0,0);});}
 
   /* ---------------- camera fly ---------------- */
   const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
@@ -3720,6 +3816,26 @@ go(location.hash.slice(1)||'walk');
 
   /* ===================== ENVIRONMENT ===================== */
   function seasonName(l){return l<90?'northern spring':l<180?'northern summer':l<270?'northern autumn':'northern winter';}
+  /* Temperature: Perseverance MEDA daily weather reports, the feed behind NASA's Mars 2020 weather page.
+     Latest available sol, min/max air temperature in °C, with the sol and Earth date it was measured. */
+  const MEDA_URL='https://mars.nasa.gov/rss/api/?feed=weather&category=mars2020&feedtype=json&ver=1.0';
+  let MEDA={state:'loading'};try{const c=JSON.parse(localStorage.getItem('quipu-meda')||'null');if(c&&c.rec)MEDA={state:'cached',...c};}catch(e){}
+  const num=v=>{const n=parseFloat(v);return Number.isFinite(n)?n:null;};
+  function parseMeda(j){const list=Array.isArray(j)?j:Array.isArray(j&&j.sols)?j.sols:j&&typeof j==='object'?Object.values(j).find(Array.isArray)||[]:[];
+    const ok=list.map(r=>({sol:num(r.sol),date:r.terrestrial_date||r.earth_date||r.date||'',min:num(r.min_temp??r.min_air_temp??r.minTemp),max:num(r.max_temp??r.max_air_temp??r.maxTemp),p:num(r.pressure),ls:r.ls??r.season??null}))
+      .filter(r=>r.sol!=null&&(r.min!=null||r.max!=null)).sort((a,b)=>b.sol-a.sol);return ok[0]||null;}
+  async function loadMeda(){try{const j=typeof getJSON==='function'?await getJSON(MEDA_URL,8000):await (await fetch(MEDA_URL)).json();const rec=parseMeda(j);
+      if(!rec)throw new Error('the feed answered but held no temperature values');MEDA={state:'live',rec,fetchedAt:Date.now()};try{localStorage.setItem('quipu-meda',JSON.stringify({rec,fetchedAt:MEDA.fetchedAt}));}catch(e){}
+      if(typeof srcRow==='function')srcRow('meda','Jezero air temperature','<a href="https://mars.nasa.gov/mars2020/weather/">Perseverance MEDA weather reports (NASA/JPL, CAB)</a>','Readiness: latest daily min and max at the rover','live',new Date().toISOString().slice(0,16).replace('T',' ')+' UTC');}
+    catch(e){MEDA=MEDA.state==='cached'?{...MEDA,error:e.message}:{state:'failed',error:e.name==='AbortError'?'no answer within 8 s':e.message||'network error'};
+      if(typeof srcRow==='function')srcRow('meda','Jezero air temperature','Perseverance MEDA weather reports (NASA/JPL, CAB)','Readiness: latest daily min and max at the rover',MEDA.state==='cached'?'snap':'fail',MEDA.state==='cached'?new Date(MEDA.fetchedAt).toISOString().slice(0,10):'unreachable');}
+    drawEnv();}
+  function medaCard(){const r=MEDA.rec,src='Perseverance MEDA daily weather report (NASA/JPL, Centro de Astrobiología)';
+    if(MEDA.state==='loading')return {k:'Temperature',v:'Loading…',d:'Asking NASA for the latest MEDA weather report from Perseverance.',tag:'snapshot',src};
+    if(r&&(MEDA.state==='live'||MEDA.state==='cached')){const range=`${r.min!=null?Math.round(r.min):'?'} to ${r.max!=null?Math.round(r.max):'?'} °C`;
+      return {k:'Temperature',v:range,d:`Daily minimum and maximum air temperature measured at Perseverance in Jezero on sol ${r.sol}${r.date?` (${r.date})`:''}${r.p!=null?`, pressure ${Math.round(r.p)} Pa`:''}. This is the latest report available, not the temperature right now: reports reach Earth days later. ${MEDA.state==='cached'?`Archived copy fetched ${new Date(MEDA.fetchedAt).toLocaleString()}; NASA could not be reached now.`:`Fetched ${new Date(MEDA.fetchedAt).toLocaleString()}.`}`,tag:MEDA.state==='live'?'measured':'snapshot',src};}
+    return {k:'Temperature',v:'Not available',d:`Could not load Perseverance's MEDA weather reports (${MEDA.error||'unknown error'}). No temperature is shown rather than a guess. Full MEDA data is in NASA's Planetary Data System, Atmospheres node.`,tag:'missing',src};}
+  setTimeout(loadMeda,500);
   function drawEnv(){const el=qs('#rdEnv');if(!el)return;const now=Date.now();let s=null;try{s=marsSun(now);}catch(e){}
     const sunEl=s?sunElev(s.dec,s.ltst):NaN;const P=610*Math.exp(-SITE_ELEV/11100);
     const dust=s?(s.Ls>=180&&s.Ls<=330):false;let lt=null;try{lt=lightMinutes(now);}catch(e){}
@@ -3730,7 +3846,7 @@ go(location.hash.slice(1)||'walk');
       {k:'Air pressure',v:`≈ ${fmt(P)} Pa`,d:`Barometric model 610 Pa·e^(−h/11.1 km) at ${fmt(SITE_ELEV)} m. Varies roughly ±15% through the year as CO₂ freezes onto and returns from the poles. About 0.8% of Earth's sea-level pressure.`,tag:'modelled',src:'Standard Mars atmosphere scale height'},
       {k:'Surface radiation',v:'≈ 0.64 mSv per day',d:'Galactic cosmic rays at the surface, measured by Curiosity\'s RAD in Gale crater (a different site at −4.4 km; Jezero sits higher, so slightly less air shielding). Solar storms add short spikes.',tag:'measured',src:'Hassler et al., Science, 2014'},
       {k:'Dust-storm season',v:s?(dust?'In season':'Out of season'):'—',d:'Large dust storms usually start in southern spring and summer, around Ls 180–330°. This is a seasonal pattern, not a live storm report.',tag:'modelled',src:'Martian climatology; Ls from Mars24'},
-      {k:'Temperature',v:'Not available',d:'MEDA, Perseverance\'s weather station, is not connected to QUIPU yet. Its data is public in NASA\'s Planetary Data System (Atmospheres node).',tag:'missing',src:'PDS Atmospheres node (not integrated)'},
+      medaCard(),
       {k:'Elevation along the walk',v:Number.isFinite(eMin)?`${fmt(eMin)} to ${fmt(eMax)} m`:'—',d:'Below the Mars datum (areoid). From Perseverance\'s own waypoint measurements along the planned walk.',tag:'snapshot',src:'MMGIS M20_waypoints.json (NASA JPL)'},
       {k:'Signal delay to Earth',v:lt?`${fmt(lt.min,1)} min one way`:'—',d:'Light travel time from today\'s Earth–Mars distance. The crew must act without real-time help from Earth.',tag:'modelled',src:'JPL approximate planetary positions'},
       {k:'Geology of the delta front',v:'Sedimentary rock from an ancient lake',d:'Layered sandstones and mudstones at Amalik and Hidden Harbor; at Wildcat Ridge, mudstone from an evaporating lake where SHERLOC found organic-molecule signals. Perseverance left 10 sealed sample tubes at the Three Forks depot.',tag:'measured',src:'Mars 2020 sample record (NASA)'}];
@@ -4354,7 +4470,7 @@ go(location.hash.slice(1)||'walk');
   /* ---------------- Moon south pole (v5 module 9, ids prefixed sol-) ---------------- */
   const moon={started:false,running:false};
   async function moonStart(){if(moon.started){moon.running=true;moon.kick&&moon.kick();return;}moon.started=true;moon.running=true;
-    const host=$s('#view-solar .sol-moonwrap'),cv=$s('#solMoongl'),tip=$s('#solMtip'),note=$s('#solMoonNote');
+    const host=$s('#view-solar .sol-moonwrap'),cv=$s('#solMoongl'),tip=$s('#solMtip'),note=$s('#solMoonNote');if(!cv||!host){moon.started=false;moon.running=false;return;}
     let THREE,OrbitControls;try{THREE=await import('three');({OrbitControls}=await import('three/addons/controls/OrbitControls.js'));}
     catch(e){note.textContent='3D library unavailable offline: the Moon globe could not load.';return;}
     const v3=(lat,lon,r=1)=>new THREE.Vector3(r*Math.cos(lat*D)*Math.cos(lon*D),r*Math.sin(lat*D),-r*Math.cos(lat*D)*Math.sin(lon*D));
@@ -4572,8 +4688,13 @@ go(location.hash.slice(1)||'walk');
   function showEmpty(msg){el('#hmImg').removeAttribute('src');el('#hmImg').alt='';el('#hmEmpty').hidden=false;el('#hmEmpty').textContent=msg;}
   function pickFrameForHeading(){if(!frames.length)return;lastShownHdg=S.hdg;
     let cand=frames.map((f,i)=>({i,d:Math.abs(dAng(S.hdg,f.caz)),f}));const hor=cand.filter(c=>c.f.el>-40&&c.f.el<25&&c.d<45);
-    const best=(hor.length?hor:cand).sort((a,b)=>a.d-b.d)[0];if(best.i!==frameIdx)show(best.i);}
-  function show(i){frameIdx=i;const f=frames[i];const img=el('#hmImg');img.src=f.src;img.alt=`Perseverance ${f.ins.replace('_LEFT','').replace('MCZ','Mastcam-Z').replace('NAVCAM','Navcam')} image looking ${dirName(f.caz)}`;
+    const best=(hor.length?hor:cand).sort((a,b)=>a.d-b.d)[0];if(best.i!==frameIdx)show(best.i,true);}
+  /* playback pacing: hold each new rover view on screen for at least 5 s while the walk plays */
+  let hold=null;const HOLD_MS=5000,HPACE=1.5;/* walk minutes per real second at 1×: a 4.5 h walk takes about 3 min */
+  function holdView(){if(!S.open||!Q.clock||!Q.clock.playing)return;Q.clock.pause();clearTimeout(hold);const b=el('#hmHold');if(b){b.hidden=false;b.textContent='Holding on this view for 5 s. Press play to skip.';}
+    hold=setTimeout(()=>{hold=null;const b2=el('#hmHold');if(b2)b2.hidden=true;if(S.open)Q.clock.play();},HOLD_MS);}
+  Q.helmetHold={cancel(){clearTimeout(hold);hold=null;const b=el('#hmHold');if(b)b.hidden=true;}};
+  function show(i,auto){if(auto&&i!==frameIdx)holdView();frameIdx=i;const f=frames[i];const img=el('#hmImg');img.src=f.src;img.alt=`Perseverance ${f.ins.replace('_LEFT','').replace('MCZ','Mastcam-Z').replace('NAVCAM','Navcam')} image looking ${dirName(f.caz)}`;
     el('#hmEmpty').hidden=true;el('#hmStrip').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',+b.dataset.i===i));
     const sel=el(`#hmStrip button[data-i="${i}"]`);if(sel)sel.scrollIntoView({block:'nearest',inline:'center'});updateCaption();}
   function updateCaption(){if(frameIdx<0||!frames[frameIdx]||!solInfo)return;const f=frames[frameIdx];
@@ -4604,8 +4725,8 @@ go(location.hash.slice(1)||'walk');
     ph.addEventListener('pointerup',()=>gs=null);ph.addEventListener('pointercancel',()=>gs=null);
     el('#hmPrevF').onclick=()=>{if(frames.length)faceFrame((frameIdx-1+frames.length)%frames.length);};
     el('#hmNextF').onclick=()=>{if(frames.length)faceFrame((frameIdx+1)%frames.length);};
-    el('#hmBack').onclick=()=>step(-1);el('#hmFwd').onclick=()=>step(1);
-    el('#hmPlay').onclick=()=>Q.clock&&Q.clock.toggle();
+    el('#hmBack').onclick=()=>step(-1);const hs=el('#hmSpeed');if(hs)hs.onchange=()=>Q.clock&&Q.clock.setSpeed(+hs.value);el('#hmFwd').onclick=()=>step(1);
+    el('#hmPlay').onclick=()=>{if(!Q.clock)return;if(hold){Q.helmetHold.cancel();Q.clock.play();return;}Q.clock.toggle();};
     el('#hmRecenter').onclick=()=>{S.look=0;};
     el('#hmProg').addEventListener('input',e=>{if(Q.clock){Q.clock.pause();Q.clock.seek(+e.target.value/1000*PLAN.total,'helmet');}});
     el('#hmClose').onclick=close;
@@ -4621,14 +4742,14 @@ go(location.hash.slice(1)||'walk');
 
   /* ---------- open / close ---------- */
   let lastFocus=null;
-  function open(){if(!PL()){alertMsg();return;}lastFocus=document.activeElement;build();const h=document.getElementById('helmet');h.hidden=false;S.open=true;
+  function open(){if(!PL()){alertMsg();return;}lastFocus=document.activeElement;build();const h=document.getElementById('helmet');h.hidden=false;S.open=true;if(Q.clock){S.prevSpeed=Q.clock.speed;Q.clock.rateOverride=HPACE;Q.clock.setSpeed(+(el('#hmSpeed')||{}).value||1);}
     document.documentElement.classList.add('hm-open');
     requestAnimationFrame(()=>{layout();S.planRef=null;update(Q.clock?Q.clock.t:0);S.hdg=S.travelHdg;applyTransform();cancelAnimationFrame(S.raf);loop();
       const sun=sunElev(PLAN.sun.dec,PLAN.ltstAt(Q.clock?Q.clock.t:0));if(typeof marsSky==='function')el('#hmClip').style.setProperty('--sky',marsSky(sun).bg);
       el('#hmGesture').focus({preventScroll:true});});
     if(typeof logEvent==='function')logEvent('Helmet view opened','sys');}
   function alertMsg(){console.warn('Helmet view needs a planned walk (PLAN).');}
-  function close(){const h=document.getElementById('helmet');if(!h)return;h.hidden=true;S.open=false;cancelAnimationFrame(S.raf);
+  function close(){const h=document.getElementById('helmet');if(!h)return;h.hidden=true;S.open=false;if(Q.clock){Q.clock.rateOverride=null;Q.clock.setSpeed(S.prevSpeed||1);}Q.helmetHold&&Q.helmetHold.cancel();cancelAnimationFrame(S.raf);
     document.documentElement.classList.remove('hm-open');try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
     if(lastFocus&&lastFocus.focus)lastFocus.focus();}
   /* keep the sky colour in step with the sun while open */
@@ -4940,7 +5061,60 @@ function extAnswer(n){const fm=(x,d=0)=>Number(x).toFixed(d);
     return {segs:[seg('sim',T(`Escenario activo: ${Q.sim.describe().join(', ')}. El plan pasa de <b>${V[B.verdict]}</b> a <b>${V[S.verdict]}</b>: O₂ al final ${fm(S.o2L)}% (antes ${fm(B.o2L)}%), batería ${fm(S.bL)}%, margen de regreso ${fm(S.worstM)} min.`,`Active scenario: ${Q.sim.describe().join(', ')}. The plan goes from <b>${V[B.verdict]}</b> to <b>${V[S.verdict]}</b>: O₂ at the end ${fm(S.o2L)}% (was ${fm(B.o2L)}%), battery ${fm(S.bL)}%, walkback margin ${fm(S.worstM)} min.`))],sugg:[]};}
   if(Q.syncInfo&&/(sincroniz|sync|offline|sin conexion|sin internet)/.test(n)){const s=Q.syncInfo;return {segs:[seg('verified',T(`${navigator.onLine?'Hay red':'Sin red'}. Última sincronización: ${s.lastSync?new Date(s.lastSync).toLocaleString():'nunca'}. ${Q.cfg.syncEndpoint?'':'No hay servidor de misión configurado: todo queda en esta tableta.'} Las rutas, la envolvente y el plan se calculan aquí mismo sin conexión.`,`${navigator.onLine?'Online':'Offline'}. Last sync: ${s.lastSync?new Date(s.lastSync).toLocaleString():'never'}. ${Q.cfg.syncEndpoint?'':'No mission server configured: everything stays on this tablet.'} Routes, the envelope and the plan are computed here with no connection.`))],sugg:[]};}
   return null;}
-function offlineAnswer(q){const n=norm(q);const ext=extAnswer(n);if(ext)return ext;
+/* ---------- Yarbis local core: arithmetic, identity, the app itself, Mars facts, follow-ups.
+   Runs on the tablet with no AI model. It says so, and says when a question needs one. ---------- */
+let LASTK=null;
+const KB=[
+ {k:'moons',re:/(lunas? de marte|moons? of mars|satelites? de marte|mars'?s? moons|martian moons)/,es:'Marte tiene dos lunas pequeñas e irregulares: Fobos y Deimos. Fobos es la más grande y cercana (radio medio 11.08 km, a unos 9,377 km del centro de Marte, una órbita cada 7 h 39 min). Deimos es más pequeña y lejana (6.2 km, unos 23,460 km, 30.3 h).',en:'Mars has two small, irregular moons: Phobos and Deimos. Phobos is larger and closer (mean radius 11.08 km, about 9,377 km from Mars’s centre, one orbit every 7 h 39 min). Deimos is smaller and farther (6.2 km, about 23,460 km, 30.3 h).',
+  moreEs:'Las dos son oscuras y de baja densidad (1.87 y 1.47 g/cm³ según JPL). Desde Jezero, Fobos sale por el oeste y cruza el cielo en unas 4 horas; Deimos sale por el este y tarda unos 2.7 días en ponerse. En Sky over Jezero sus posiciones salen de JPL Horizons (efemérides MAR099).',moreEn:'Both are dark and low in density (1.87 and 1.47 g/cm³ per JPL). From Jezero, Phobos rises in the west and crosses the sky in about 4 hours; Deimos rises in the east and takes about 2.7 days to set. In Sky over Jezero their positions come from JPL Horizons (ephemeris MAR099).'},
+ {k:'phobos',re:/\b(fobos|phobos)\b/,es:'Fobos (Mars I, NAIF 401) es la luna interior: radio medio 11.08 km, unos 27 × 22 × 18 km, a unos 9,377 km del centro de Marte (unos 6,000 km sobre la superficie). Da una vuelta cada 7 h 39 min, más rápido de lo que gira Marte, por eso sale por el oeste.',en:'Phobos (Mars I, NAIF 401) is the inner moon: mean radius 11.08 km, about 27 × 22 × 18 km, about 9,377 km from Mars’s centre (about 6,000 km above the surface). It orbits every 7 h 39 min, faster than Mars turns, so it rises in the west.',
+  moreEs:'Las mareas lo acercan poco a poco a Marte. Su cráter más grande es Stickney. En QUIPU aparece en Sky over Jezero con su propia trayectoria y etiqueta.',moreEn:'Tides are slowly drawing it inward. Its largest crater is Stickney. In QUIPU it appears in Sky over Jezero with its own path and label.'},
+ {k:'deimos',re:/\bdeimos\b/,es:'Deimos (Mars II, NAIF 402) es la luna exterior: radio medio 6.2 km, unos 15 × 12 × 11 km, a unos 23,460 km del centro de Marte. Da una vuelta cada 30.3 h, apenas más lento que el giro de Marte, así que cruza el cielo muy despacio.',en:'Deimos (Mars II, NAIF 402) is the outer moon: mean radius 6.2 km, about 15 × 12 × 11 km, about 23,460 km from Mars’s centre. It orbits every 30.3 h, just slower than Mars turns, so it crawls across the sky.',
+  moreEs:'Sale por el este y tarda unos 2.7 días en ponerse. Su superficie se ve más lisa que la de Fobos porque el polvo rellenó muchos cráteres.',moreEn:'It rises in the east and takes about 2.7 days to set. Its surface looks smoother than Phobos’s because dust has filled many craters.'},
+ {k:'jezero',re:/(que es|what is|explain|explica|hablame de|tell me about)\s+(el crater\s+|the crater\s+)?jezero|^jezero$/,es:'Jezero es un cráter de unos 45 km en el borde de Isidis Planitia (18.4°N, 77.5°E). Hace más de 3,500 millones de años tuvo un lago y un delta de río. Perseverance aterrizó ahí el 18 de febrero de 2021 y sigue explorando el delta y el borde.',en:'Jezero is a crater about 45 km wide on the edge of Isidis Planitia (18.4°N, 77.5°E). More than 3.5 billion years ago it held a lake and a river delta. Perseverance landed there on 18 February 2021 and is still exploring the delta and rim.'},
+ {k:'perseverance',re:/(que es|what is|who is|quien es|tell me about|hablame de)\s+(el rover\s+|the rover\s+)?(perseverance|percy)/,es:'Perseverance es el rover de la NASA en Jezero. Busca señales de vida antigua y guarda muestras de roca en tubos sellados para traerlas a la Tierra. QUIPU usa su trayecto, sus puntos de muestreo y sus elevaciones medidas.',en:'Perseverance is NASA’s rover in Jezero. It looks for signs of ancient life and seals rock samples in tubes for return to Earth. QUIPU uses its drive, its sample sites and its measured elevations.'},
+ {k:'gps',tag:'guide',re:/\b(gps|sin gps|without gps|navegar sin|navigate without|navigation without)\b/,es:'Marte no tiene GPS. En QUIPU navegas con: el mapa de imágenes orbitales y el trayecto del rover, coordenadas que escribes tú (posición del astronauta), puntos de referencia del terreno, el rumbo y la distancia a cada parada, y la dirección del Sol (Sky over Jezero da su azimut a cualquier hora) como brújula. Un equipo real sumaría navegación inercial y referencias desde el hábitat.',en:'Mars has no GPS. In QUIPU you navigate with the orbital imagery and the rover’s drive, coordinates you type in (astronaut position), terrain landmarks, the heading and distance to each stop, and the Sun’s direction (Sky over Jezero gives its azimuth at any time) as a compass. A real crew would add inertial navigation and fixes from the habitat.'},
+ {k:'return',tag:'guide',re:/(por que|why).*(regreso|vuelta|return)|(calcular|calculate).*(regreso|vuelta|return)|camino de vuelta|way back/,es:'Porque el aire se gasta en los dos sentidos. Si solo verificas que llegas, puedes quedarte sin oxígeno, batería o tiempo de traje a medio regreso. Además el regreso suele ser más lento (cansancio, terreno cuesta arriba) y hay que llegar con una reserva para emergencias. Por eso QUIPU calcula ida, trabajo en el sitio y vuelta, y marca el punto donde hay que dar la vuelta.',en:'Because air is spent both ways. If you only check that you can get there, you can run out of oxygen, battery or suit time halfway back. The return is often slower (fatigue, uphill ground), and you must arrive with an emergency reserve. That is why QUIPU computes out, work on site and back, and marks the point where you must turn around.'},
+ {k:'commloss',tag:'guide',re:/(pierdo|perder|perdida|lose|losing|lost).*(comunicacion|comunicaciones|communication|contact|contacto|radio|senal|signal)|sin comunicacion|no communication/,es:'QUIPU sigue funcionando sin conexión: mapa guardado, rutas, envolvente, plan y simulación se calculan en la tableta. Lo que se pierde: datos en vivo de la NASA y la sincronización. Protocolo sugerido: acordar antes una hora límite para dar la vuelta, mantener línea de vista con la antena del hábitat, y si falta contacto más de lo acordado, regresar. En Simulate puedes probar “Lose the orbiter relay”.',en:'QUIPU keeps working offline: saved map, routes, envelope, plan and simulation are computed on the tablet. What you lose: live NASA data and sync. Suggested protocol: agree a hard turnaround time before leaving, stay in line of sight of the habitat mast, and if contact is lost for longer than agreed, head back. In Simulate you can try “Lose the orbiter relay”.'},
+ {k:'sol',re:/\b(que es un sol|what is a sol|sol marciano|martian day)\b/,es:'Un sol es un día solar marciano: 24 h 39 min 35 s.',en:'A sol is a Martian solar day: 24 h 39 min 35 s.'},
+ {k:'regolith',re:/\b(regolito|regolith)\b/,es:'El regolito es la capa suelta de polvo, arena y rocas rotas que cubre la superficie. En Readiness se usa como blindaje del hábitat contra la radiación.',en:'Regolith is the loose layer of dust, sand and broken rock covering the surface. In Readiness it is used to shield the habitat from radiation.'},
+ {k:'ls',re:/\b(ls|solar longitude|longitud solar)\b/,es:'Ls (longitud solar) mide la estación en Marte: 0° es el equinoccio de primavera del norte, 90° el solsticio de verano del norte, 180° el otoño y 270° el invierno.',en:'Ls (solar longitude) measures the Martian season: 0° is the northern spring equinox, 90° northern summer solstice, 180° autumn, 270° winter.'},
+ {k:'mars',re:/(que es|what is|explain|explica|hablame de|tell me about|describe)\s+(el planeta\s+)?(marte|mars)\b(?!walk)|^(marte|mars)$/,es:'Marte es el cuarto planeta del Sol. Radio medio 3,389.5 km, gravedad 3.71 m/s² (38% de la Tierra). Un día solar, el sol, dura 24 h 39 min 35 s y el año 687 días terrestres. La atmósfera es casi toda CO₂ y muy delgada: unos 600 Pa en promedio, menos del 1% de la presión en la Tierra.',en:'Mars is the fourth planet from the Sun. Mean radius 3,389.5 km, gravity 3.71 m/s² (38% of Earth’s). A solar day, the sol, lasts 24 h 39 min 35 s and a year 687 Earth days. The air is mostly CO₂ and very thin: about 600 Pa on average, under 1% of Earth’s surface pressure.',
+  moreEs:'Temperatura media cercana a −60 °C, con grandes cambios entre el día y la noche. Sin campo magnético global ni capa de ozono, así que la radiación en la superficie es alta (unos 0.64 mSv al día medidos por Curiosity).',moreEn:'Mean temperature is near −60 °C with large day–night swings. There is no global magnetic field or ozone layer, so surface radiation is high (about 0.64 mSv per day measured by Curiosity).'}];
+const APP=[['start',/(esta app|this app|esta aplicacion|this application|que es quipu|what is quipu|para que sirve|what is this (app|tool|application))/],['walk',/(marswalk|planear|planeo|plan (a|my|the) (walk|route)|como (planeo|hago|creo).*(ruta|caminata)|how (do|can) i plan|planificar)/],
+ ['env',/(survival envelope|envolvente|envelope|zona segura|safe zone)/],['sim',/(simulacion|simulate|simulation|escenario|scenario|contingenc)/],['sci',/(science vs|ciencia vs|science tab|pestana science|cientific.*supervivencia)/],
+ ['globe',/(globo|globe)/],['sky',/(sky over|cielo sobre|sky section|seccion del cielo)/],['comms',/(comms|comunicaciones|communications|satelites? relay|relay)/],['solar',/(sistema solar|solar system)/],
+ ['ready',/(readiness|preparacion|mission readiness|habitat builder|movilidad|mobility)/],['offline',/(offline|sin conexion|sin internet|sincroniz|sync)/],['yarbis',/(yarbis|asistente|assistant|como te uso|how do i use you)/]];
+function evalMath(src){let s=src.replace(/×|x(?=\s*\d)/g,'*').replace(/÷/g,'/').replace(/,(?=\d{3}\b)/g,'').replace(/\^/g,'**');if(!/^[\d\s+\-*/().%*]+$/.test(s)||!/\d/.test(s))return null;
+  let i=0;const t=s.replace(/\s+/g,'');const num=()=>{const m=/^\d*\.?\d+(e[+-]?\d+)?/i.exec(t.slice(i));if(!m)throw 0;i+=m[0].length;return parseFloat(m[0]);};
+  const atom=()=>{if(t[i]==='('){i++;const v=add();if(t[i++]!==')')throw 0;return v;}if(t[i]==='-'){i++;return -atom();}if(t[i]==='+'){i++;return atom();}return num();};
+  const pow=()=>{let v=atom();if(t.slice(i,i+2)==='**'){i+=2;v=Math.pow(v,pow());}return v;};
+  const mul=()=>{let v=pow();for(;;){if(t[i]==='*'&&t[i+1]!=='*'){i++;v*=pow();}else if(t[i]==='/'){i++;v/=pow();}else if(t[i]==='%'){i++;v%=pow();}else return v;}};
+  const add=()=>{let v=mul();for(;;){if(t[i]==='+'){i++;v+=mul();}else if(t[i]==='-'){i++;v-=mul();}else return v;}};
+  try{const v=add();if(i!==t.length||!isFinite(v))return null;return v;}catch(e){return null;}}
+function localCore(raw,n){const q=n.replace(/[¿?¡!]/g,' ').trim();const fm=v=>Number.isInteger(v)?v.toLocaleString():(+v.toPrecision(10)).toLocaleString(undefined,{maximumFractionDigits:8});
+  /* arithmetic */
+  const ex=q.replace(/^(cuanto es|cuanto da|calcula|calculate|what is|whats|what's|compute|resuelve|solve|cuanto|how much is)\s+/,'').replace(/\s*(=|igual a)?\s*$/,'').replace(/\bmas\b|\bplus\b/g,'+').replace(/\bmenos\b|\bminus\b/g,'-').replace(/\bpor\b|\btimes\b/g,'*').replace(/\bentre\b|\bdivided by\b/g,'/');
+  const mv=evalMath(ex);if(mv!=null){LASTK=null;return {segs:[seg('calc',`${esc(ex.replace(/\*\*/g,'^').replace(/\*/g,'×'))} = <b>${fm(mv)}</b>`)],sugg:[]};}
+  /* identity and courtesy */
+  if(/(como te llamas|cual es tu nombre|tu nombre|what('?s| is) your name|who are you|quien eres|que eres|what are you)/.test(q)){LASTK='yarbis';return {segs:[seg('guide',T(`Me llamo Yarbis, el asistente de QUIPU, hecho por el equipo Kervin Espaze Program (Sebastián Palacios, Maximiliano Rutiaga y Petr Gladskiy) para NASA Space Apps 2026. ${endpoint()?'Estoy conectado a un modelo de IA a través del servidor de la misión.':'Ahora mismo funciono en esta tableta sin un modelo de IA: hago cálculos, explico la app y uso el estado de la misión y mis notas sobre Marte. Las preguntas generales necesitan el modelo de IA (pestaña Settings).'}`,
+    `I’m Yarbis, QUIPU’s assistant, built by team Kervin Espaze Program (Sebastián Palacios, Maximiliano Rutiaga and Petr Gladskiy) for NASA Space Apps 2026. ${endpoint()?'I’m connected to an AI model through the mission server.':'Right now I run on this tablet without an AI model: I do arithmetic, explain the app and use the mission state and my Mars notes. General questions need the AI model (Settings tab).'}`))],sugg:T(['¿Qué puedes hacer?','¿Qué es el Survival Envelope?'],['What can you do?','What is the Survival Envelope?'])};}
+  if(/^(gracias|thanks|thank you|thx|ok gracias)\b/.test(q))return {segs:[seg('guide',T('De nada. Aquí estoy si necesitas algo más.','You’re welcome. I’m here if you need anything else.'))],sugg:[]};
+  if(/(que puedes hacer|que sabes hacer|what can you do|what can you help|en que me ayudas|how can you help|capabilities)/.test(q)){LASTK='yarbis';return {segs:[seg('guide',T('Puedo: calcular si llegas a un punto y vuelves con tu oxígeno; decirte qué tan lejos puedes ir (envolvente); simular fallas (“¿y si la batería baja 20%?”); comparar ciencia contra seguridad; explicar cada sección de la app; contestar datos de Marte, Fobos y Deimos; hacer cuentas; y abrir secciones o iniciar la caminata (“abre el cielo”, “play”). '+(endpoint()?'Con el modelo de IA conectado también contesto preguntas generales.':'Sin modelo de IA conectado no contesto preguntas generales fuera de esto, y te lo digo.'),
+    'I can: check whether you can reach a point and come back on your oxygen; tell you how far you can go (envelope); simulate failures (“what if the battery drops 20%?”); weigh science against safety; explain every section of the app; answer Mars, Phobos and Deimos facts; do arithmetic; and open sections or start the walk (“open the sky”, “play”). '+(endpoint()?'With the AI model connected I also answer general questions.':'Without an AI model I can’t answer general questions outside this, and I’ll say so.')))],sugg:T(['¿Qué tan lejos puedo ir?','¿Cómo planeo una ruta?','¿Cuáles son las lunas de Marte?'],['How far can I go?','How do I plan a route?','What are the moons of Mars?'])};}
+  if(/(que hora es|what time is it|que dia es|what('?s| is) the date|fecha de hoy)/.test(q)){let lt='';try{const s=marsSun(Date.now());lt=fmtL(s.ltst);}catch(e){}return {segs:[seg('verified',T(`En la Tierra: ${new Date().toLocaleString()}. En Jezero son las ${lt||'—'} hora solar local (modelo Mars24).`,`On Earth: ${new Date().toLocaleString()}. In Jezero it is ${lt||'—'} local solar time (Mars24 model).`))],sugg:[]};}
+  /* follow-ups: “and Deimos?”, “tell me more”, “why?” */
+  const follow=/^(y|and|tambien|also)\b|\b(mas detalle|cuentame mas|tell me more|more detail|explain more|explica mas|elabora|go on|sigue)\b/.test(q)||q.split(' ').length<=3&&/\b(eso|that|it|esa|ese)\b/.test(q);
+  for(const e of KB)if(e.re.test(q)){const again=LASTK===e.k&&/(mas|more|detalle|detail)/.test(q);LASTK=e.k;return {segs:[seg(e.tag||'verified',T(again?e.moreEs||e.es:e.es,again?e.moreEn||e.en:e.en))],sugg:e.moreEn?T(['Cuéntame más','¿Y cómo lo veo en la app?'],['Tell me more','How do I see it in the app?']):[]};}
+  if(follow&&LASTK){const e=KB.find(x=>x.k===LASTK);if(e&&e.moreEn)return {segs:[seg('verified',T(e.moreEs,e.moreEn))],sugg:[]};const g=Q.guide&&Q.guide.topics.find(t=>t.id===LASTK);if(g)return {segs:[seg('guide',g.steps.slice(2).map(s=>esc(s)).join('<br>'))],sugg:[]};}
+  if(follow&&/(como lo veo|how do i see it|donde lo veo|where (do|can) i see)/.test(q)&&LASTK){const map={moons:'sky',phobos:'sky',deimos:'sky',jezero:'walk',mars:'globe',perseverance:'walk'};const v=map[LASTK];if(v){go(v);return {segs:[seg('guide',T('Abrí la sección correspondiente.','I opened the matching section.'))],sugg:[]};}}
+  /* the app itself, from the same text as the Mission guide */
+  if(Q.guide){for(const [id,re] of APP)if(re.test(q)&&!/(que pasa si|what if|y si )/.test(q)){const g=Q.guide.topics.find(t=>t.id===id);if(!g)continue;
+      if(id==='env'&&/(que tan lejos|how far)/.test(q))break;LASTK=id;return {segs:[seg('guide',`<b>${esc(g.title)}.</b> ${esc(g.summary)}`),seg('guide',`<ul>${g.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`)],sugg:T(['Ábrelo','Cuéntame más'],['Open it','Tell me more'])};}}
+  if(/^(abrelo|open it|llevame|take me there)$/.test(q)&&LASTK){const g=Q.guide&&Q.guide.topics.find(t=>t.id===LASTK);const v={walk:'walk',env:'walk',sim:'walk',sci:'walk',globe:'globe',sky:'sky',comms:'comms',offline:'comms',solar:'solar',ready:'ready',moons:'sky',phobos:'sky',deimos:'sky'}[LASTK];
+    if(v){go(v);if(['env','sim','sci'].includes(LASTK))Q.sideTab(LASTK);return {segs:[seg('guide',T('Listo, abierto.','Done, it’s open.'))],sugg:[]};}}
+  return null;}
+function offlineAnswer(q){const n=norm(q);const ext=localCore(q,n)||extAnswer(n);if(ext)return ext;
   if(/^(hola|hi|hello|buenas|hey)\b|que puedes|what can you|ayuda$|^help$/.test(n))return {segs:[seg('guide',T('Soy Yarbis. Puedo calcular si llegas y vuelves con tu oxígeno, simular escenarios ("¿y si la batería baja 20%?"), revisar el estado, explicar datos y fuentes, y mover la app. Pregunta con tus palabras.','I\'m Yarbis. I can work out whether you can reach a place and return on your oxygen, simulate scenarios ("what if the battery drops 20%?"), review status, explain data and sources, and drive the app. Ask in your own words.'))],
     sugg:T(['¿Puedo llegar a Wildcat Ridge y volver con mi oxígeno?','¿Qué pasa si la batería baja 20%?','¿Qué reviso antes de salir?'],['Can I reach Wildcat Ridge and return on my oxygen?','What if the battery drops 20%?','What should I check before starting?'])};
   if(/(que pasa si|y si|que tal si|what if|suppose|supon)/.test(n)){const r=whatIf(q);if(r)return r;}
@@ -5565,22 +5739,222 @@ addEventListener('online',draw);addEventListener('offline',draw);setTimeout(()=>
 Q.mission={exportPkg,importPkg,records,syncNow};
 })();
 </script>
+<script>/* module: marswalk-ux */
+/* QUIPU Marswalk: whole-planet basemap, stop editing, playback length, panel layout */
+(function(){const W=Q._w;if(!W)return;const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];const C=Q.clock,esc=W.esc,km=W.km;
+
+/* ---------- 1. Whole-planet basemap: Viking MDIM 2.1 colour mosaic (equirectangular tiles from
+   NASA Mars Trek) reprojected tile by tile into the map's Mercator grid, so zooming out never
+   goes blank. Images are only drawn, never read back, so no CORS permission is needed. ---------- */
+const VIK='https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/',VMAX=7;
+const imgs=new Map();const img=(z,r,c)=>{const k=z+'/'+r+'/'+c;if(!imgs.has(k))imgs.set(k,new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>res(null);i.src=`${VIK}${z}/${r}/${c}.jpg`;}));return imgs.get(k);};
+const merLat=(y,n)=>Math.atan(Math.sinh(Math.PI*(1-2*y/n)))*180/Math.PI;
+const Planet=L.GridLayer.extend({createTile(co,done){const cv=document.createElement('canvas');cv.width=cv.height=256;const g=cv.getContext('2d');
+  const z=co.z,n=2**z,x=((co.x%n)+n)%n,y=co.y;if(y<0||y>=n){setTimeout(()=>done(null,cv),0);return cv;}
+  const zq=Math.max(0,Math.min(VMAX,z-1)),dpt=180/2**zq,rows=2**zq,lon0=-180+360*x/n,lon1=lon0+360/n,latT=merLat(y,n),latB=merLat(y+1,n);
+  const c0=Math.floor((lon0+180)/dpt),c1=Math.floor((lon1+180-1e-9)/dpt),r0=Math.max(0,Math.floor((90-latT)/dpt)),r1=Math.min(rows-1,Math.floor((90-latB)/dpt));
+  const need=[];for(let r=r0;r<=r1;r++)for(let c=c0;c<=c1;c++)need.push(img(zq,r,c).then(im=>[r,c,im]));
+  Promise.all(need).then(list=>{const T=new Map(list.map(([r,c,im])=>[r+'/'+c,im]));let any=false;
+    for(let py=0;py<256;py+=2){const gA=(90-merLat(y+py/256,n))/dpt*256,gB=(90-merLat(y+(py+2)/256,n))/dpt*256,gy=gA,r=Math.floor((gA+gB)/2/256),sy=gy-r*256,sh=Math.max(.25,gB-gA);
+      for(let c=c0;c<=c1;c++){const im=T.get(r+'/'+c);if(!im)continue;any=true;const tl0=c*dpt-180,a=Math.max(lon0,tl0),b=Math.min(lon1,tl0+dpt);if(b<=a)continue;
+        const dx=(a-lon0)/(lon1-lon0)*256,dw=(b-a)/(lon1-lon0)*256,sx=(a-tl0)/dpt*256,sw=(b-a)/dpt*256;g.drawImage(im,sx,Math.max(0,Math.min(255.75,sy)),sw,Math.min(sh,256-Math.max(0,sy)),dx,py,dw,2);}}
+    if(!any){g.fillStyle='#2a1a14';g.fillRect(0,0,256,256);}done(null,cv);});
+  return cv;}});
+const planet=new Planet({minZoom:0,maxZoom:19,maxNativeZoom:9,zIndex:0,attribution:'Viking MDIM 2.1, NASA/USGS Mars Trek'});planet.addTo(map);
+map.setMinZoom(1);map.options.worldCopyJump=true;
+const resB=document.createElement('div');resB.className='resbadge';resB.setAttribute('aria-live','polite');$('#view-walk .mapwrap').appendChild(resB);
+const tag=()=>{const z=map.getZoom();resB.textContent=z>=15?'Imagery: HiRISE, 25 cm/px':z>=10?'Imagery: HRSC/CTX ~5–12 m/px; Viking 232 m/px elsewhere':'Imagery: Viking mosaic, 232 m/px (whole planet)';};
+map.on('zoomend',tag);tag();
+const tp=document.createElement('button');tp.className='tool';tp.id='tPlanet';tp.textContent='Whole Mars';$('#tFit').after(tp);
+tp.onclick=()=>{map.flyTo([10,77.4],2,{duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:1.4});logEvent('Map zoomed out to the whole planet','sys');};
+const jz=L.layerGroup().addTo(map);const jm=L.circleMarker([18.4447,77.4508],{radius:8,color:'#5FB8D6',weight:3,fillColor:'#121417',fillOpacity:1}).bindTooltip('Jezero crater, Marswalk area',{className:'lbl',direction:'right',permanent:true});
+const syncJ=()=>{const z=map.getZoom();if(z<9){if(!jz.hasLayer(jm))jz.addLayer(jm);}else jz.clearLayers();};map.on('zoomend',syncJ);syncJ();
+jm.on('click',()=>{if(typeof fit==='function')fit();});
+
+/* ---------- 2. Panels: map first ---------- */
+const vw=$('#view-walk');const sideBtn=document.createElement('button');sideBtn.className='tool sidetoggle';sideBtn.id='tSide';$('#view-walk .mapwrap').appendChild(sideBtn);
+let sideMin=false;try{sideMin=localStorage.getItem('quipu-side')==='min';}catch(e){}
+const setSide=m=>{sideMin=m;vw.classList.toggle('side-min',m);sideBtn.textContent=m?'Show plan panel':'Hide panel';sideBtn.setAttribute('aria-expanded',!m);try{localStorage.setItem('quipu-side',m?'min':'open');}catch(e){}setTimeout(()=>map.invalidateSize(),80);};
+sideBtn.onclick=()=>setSide(!sideMin);setSide(sideMin);
+const _st=Q.sideTab;Q.sideTab=t=>{if(sideMin)setSide(false);_st(t);};$$('.sidetabs button').forEach(b=>b.onclick=()=>Q.sideTab(b.dataset.t));
+if(innerHeight<900||innerWidth<1100){$('.dock').classList.add('min');$('#dockMin').textContent='▴';}
+const lb=$('#locBox');if(lb&&!lb.classList.contains('min')){lb.classList.add('min');const t=$('#locToggle');t&&t.setAttribute('aria-expanded','false');}
+
+/* ---------- 3. Science overlay only while the Science tab is open ---------- */
+(Q.onSideTab=Q.onSideTab||[]).push(t=>{if(!layers.sci)return;const cb=$('#legend input[data-l=sci]');if(t==='sci'){map.addLayer(layers.sci);if(cb)cb.checked=true;}else{map.removeLayer(layers.sci);if(cb)cb.checked=false;}});
+setTimeout(()=>{if(layers.sci&&$('[data-p=sci]').hidden){map.removeLayer(layers.sci);const cb=$('#legend input[data-l=sci]');if(cb)cb.checked=false;}},0);
+
+/* ---------- 4. Stop list: select, edit, reorder, delete with undo ---------- */
+let SEL=null,UNDO=null;const ring=L.layerGroup().addTo(map);
+function drawStops(){const ol=$('#stations');if(!ol||!PLAN)return;const pl=PLAN;ol.innerHTML='';ol.classList.add('stops2');
+  stations.forEach((st,i)=>{const a=pl.arr[i],isRet=st.id==='ret',isHab=st.kind==='hab',sel=SEL===st.id;
+    const spare=!isHab&&a?a.turn-a.leave:null;const li=document.createElement('li');li.className='stop'+(isHab?' hab':'')+(sel?' sel':'');li.dataset.id=st.id;
+    li.innerHTML=`<button class="srow" aria-expanded="${sel}"><span class="num">${isHab?'H':i}</span><span class="nm"><b>${esc(st.name)}${isRet?' (return)':''}</b>
+      <small>${i===0?'Leave':'Arrive'} ${fmtL(pl.ltstAt(a.arrive))}${i?`, ${fmtT(a.arrive)} in`:''}${st.work?`, ${st.work} min on site`:''}</small></span>
+      ${spare!=null?`<span class="spare ${spare<0?'nogo':spare<20?'caution':'go'}" title="Spare before the leave-by time">${spare<0?'late':Math.round(spare)+' min'}</span>`:''}</button>
+     ${sel?`<div class="sdet"><p class="why">${st.why||''}</p>${st.tasks&&st.tasks.length?`<ul>${st.tasks.map(t=>`<li>${t}</li>`).join('')}</ul>`:''}
+${!isHab?`<div class="sedit"><label>Name<input data-f="name" value="${esc(st.name)}"></label><label>Time on site (min)<input data-f="work" type="number" min="0" max="180" step="5" value="${st.work||0}"></label></div>
+      <p class="leave">Leave by <b>${fmtL(pl.ltstAt(a.turn))}</b> local (${fmtT(a.turn)} into the walk) to keep the reserve.</p>
+      <div class="prow"><button class="mini ghost" data-a="up" ${i<=1?'disabled':''}>Move earlier</button><button class="mini ghost" data-a="down" ${i>=stations.length-2?'disabled':''}>Move later</button><button class="mini ghost" data-a="fly">Show on map</button><button class="mini danger" data-a="del">Delete stop</button></div>`:
+      `<div class="prow"><button class="mini ghost" data-a="fly">Show on map</button></div>`}
+      ${st.sol?`<img class="pov" alt="" data-sol="${st.sol}" loading="lazy"><div class="cap" data-cap="${st.sol}">Rover view from this spot, sol ${st.sol}. Loading…</div>`:''}</div>`:''}`;
+    ol.appendChild(li);
+    if(i<pl.legs.length){const leg=pl.legs[i],d=leg.pts.reduce((s,q,k)=>k?s+dist(leg.pts[k-1],q):0,0);const lg=document.createElement('li');lg.className='leg2'+(leg.verified?'':' unv');
+      lg.textContent=`${Math.round(d)} m ${leg.verified?'on rover tracks':'over ground no rover has driven'}`;ol.appendChild(lg);}});
+  ol.querySelectorAll('.srow').forEach(b=>b.onclick=()=>{const id=b.parentElement.dataset.id;SEL=SEL===id?null:id;drawStops();if(SEL)highlight();else ring.clearLayers();});
+  ol.querySelectorAll('[data-f]').forEach(inp=>inp.onchange=()=>{const st=stations.find(s=>s.id===SEL);if(!st)return;if(inp.dataset.f==='work')st.work=Math.max(0,+inp.value||0);else st.name=inp.value.trim().slice(0,60)||st.name;render();});
+  ol.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const i=stations.findIndex(s=>s.id===SEL);if(i<0)return;const a=b.dataset.a;
+    if(a==='fly'){highlight(true);return;}
+    if(a==='up'&&i>1){[stations[i-1],stations[i]]=[stations[i],stations[i-1]];render();return;}
+    if(a==='down'&&i<stations.length-2){[stations[i+1],stations[i]]=[stations[i],stations[i+1]];render();return;}
+    if(a==='del'){const st=stations[i];UNDO={st,i};stations.splice(i,1);SEL=null;ring.clearLayers();render();logEvent(`Stop deleted: ${st.name}`,'sys');snack(`Deleted “${st.name}”. The rest of the plan is unchanged.`,()=>{stations.splice(Math.min(UNDO.i,stations.length-1),0,UNDO.st);UNDO=null;render();});}});
+  if(typeof loadPOV==='function')try{loadPOV();}catch(e){}
+}
+function highlight(fly){const st=stations.find(s=>s.id===SEL);ring.clearLayers();if(!st)return;L.circleMarker([st.lat,st.lon],{radius:20,color:'#5FB8D6',weight:3,fill:false}).addTo(ring);if(fly)map.flyTo([st.lat,st.lon],Math.max(map.getZoom(),17.5));}
+function snack(msg,undo){let s=$('#snack');if(!s){s=document.createElement('div');s.id='snack';s.className='snack';s.setAttribute('role','status');document.body.appendChild(s);}
+  s.innerHTML=`<span>${esc(msg)}</span>${undo?'<button class="mini" id="snackUndo">Undo</button>':''}`;s.hidden=false;clearTimeout(snack.h);snack.h=setTimeout(()=>s.hidden=true,9000);
+  if(undo)$('#snackUndo').onclick=()=>{s.hidden=true;undo();};}
+Q.snack=snack;
+
+/* ---------- 5. Playback length follows the plan; current and next stop ---------- */
+const rd=$('#readout');const now=document.createElement('div');now.id='stopNow';now.className='stopnow';rd.after(now);
+function retime(){if(!PLAN)return;const n=Math.max(0,stations.length-2);C.previewSec=Math.round(Math.min(180,Math.max(30,6*n+PLAN.total/30)));
+  const sp=$('#speed');if(sp)[...sp.options].forEach(o=>o.textContent=`${o.value}× (${Math.round(C.previewSec/+o.value)} s)`);}
+function stopNow(t){if(!PLAN)return;const pl=PLAN;let at=-1,next=-1;for(let i=0;i<stations.length;i++){const a=pl.arr[i];if(!a)continue;if(t>=a.arrive-0.01&&t<=a.leave+0.01){at=i;break;}if(a.arrive>t){next=i;break;}}
+  const nm=i=>stations[i].kind==='hab'?(i===0?'habitat':'habitat (return)'):`stop ${i}, ${stations[i].name}`;
+  if(at>=0){const nx=stations[at+1];now.innerHTML=`<b>At ${esc(nm(at))}</b>${nx?`, then ${esc(nm(at+1))}`:''}`;}
+  else if(next>=0)now.innerHTML=`<b>Walking to ${esc(nm(next))}</b>, arrive in ${Math.max(0,Math.round(pl.arr[next].arrive-t))} min`;
+  else now.innerHTML='<b>Walk complete</b>, back at the habitat';
+  $$('#stations .stop').forEach((li,k)=>li.classList.toggle('now',stations[k]&&(stations[k].id===(stations[at]||{}).id)));
+  now.insertAdjacentHTML('beforeend',` · ${fmtT(t)} of ${fmtT(pl.total)}`);}
+C.on(t=>stopNow(t));
+const ck=$('#view-walk .clock'),mw=$('#view-walk .mapwrap');const setCk=()=>mw.style.setProperty('--clockH',(ck.offsetHeight+4)+'px');if(window.ResizeObserver)new ResizeObserver(setCk).observe(ck);setCk();
+const _r=render;render=function(){_r();drawStops();retime();stopNow(C.t);};render();
+
+/* ---------- 6. Brand opens the intro again ---------- */
+const brand=$('header.app .brand');if(brand){brand.style.cursor='pointer';brand.title='Back to the start screen';brand.addEventListener('click',e=>{if(Q.intro){e.preventDefault();Q.intro.open();}});}
+})();
+</script>
+<script>/* module: guide */
+/* QUIPU Mission guide: what every section does, an example mission, and a guided tour of the real controls. */
+(function(){const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SVG={
+ envelope:`<svg viewBox="0 0 320 150" class="gsvg" role="img" aria-label="Round trip versus straight-line radius"><circle cx="90" cy="78" r="58" fill="none" stroke="var(--faint)" stroke-dasharray="4 5"/><text x="34" y="146">Radius: wrong</text>
+   <path d="M228 30 C262 26 300 52 296 82 C292 104 262 112 252 132 C236 142 206 138 196 116 C184 94 168 96 172 70 C176 44 202 34 228 30Z" fill="rgba(92,201,138,.25)" stroke="#5CC98A" stroke-width="2"/><path d="M196 84 L214 86 L218 70" fill="none" stroke="#F0544F" stroke-width="3"/><text x="214" y="64" style="fill:#F0544F">steep</text>
+   <circle cx="232" cy="84" r="5" fill="var(--accent)"/><text x="186" y="146">Round trip on terrain: QUIPU</text></svg>`,
+ clock:`<svg viewBox="0 0 320 120" class="gsvg" role="img" aria-label="One mission clock drives every section"><rect x="110" y="44" width="100" height="34" rx="8" fill="var(--sel)"/><text x="160" y="66" text-anchor="middle" style="fill:#0b1a20;font-weight:700">Mission clock</text>
+   ${['Marswalk','Sky','Timeline','Helmet'].map((t,i)=>`<line x1="160" y1="${i<2?44:78}" x2="${40+i*80}" y2="${i<2?14:106}" stroke="var(--line)" stroke-width="2"/><text x="${40+i*80}" y="${i<2?12:118}" text-anchor="middle">${t}</text>`).join('')}</svg>`,
+ comms:`<svg viewBox="0 0 320 120" class="gsvg" role="img" aria-label="Three separate things"><g text-anchor="middle"><rect x="6" y="20" width="96" height="70" rx="8" fill="var(--raised)"/><text x="54" y="48" style="font-weight:700">Signal delay</text><text x="54" y="68">light time,</text><text x="54" y="82">4 to 24 min</text>
+   <rect x="112" y="20" width="96" height="70" rx="8" fill="var(--raised)"/><text x="160" y="48" style="font-weight:700">Relay pass</text><text x="160" y="68">is an orbiter</text><text x="160" y="82">overhead?</text>
+   <rect x="218" y="20" width="96" height="70" rx="8" fill="var(--raised)"/><text x="266" y="48" style="font-weight:700">Data fresh</text><text x="266" y="68">when did this</text><text x="266" y="82">tablet sync?</text></g></svg>`};
+const T=[
+ {id:'start',t:'Start here',sec:'walk',sum:'QUIPU helps a crew plan a walk in Jezero crater and answers one question before every step: can the astronaut still get back safely?',
+  steps:['Marswalk is the home screen: the map, the walk plan and the safety checks.','The header holds the six sections, the connection light, Sunlight mode (high contrast), Helmet view, Emergency return and this Guide.','Yarbis, the assistant, is in the lower-right corner of every screen.','Every number is labelled: measured, calculation, estimate, simulation or snapshot. Missing data says so.'],
+  ex:true},
+ {id:'walk',t:'Marswalk',sec:'walk',tab:'plan',sum:'An interactive map of Jezero crater with Perseverance’s drive, a planned walk and its go/no-go checks.',
+  steps:['Drag to pan, pinch or scroll to zoom. Zoom out far enough and the map becomes the whole planet; tap the Jezero marker or “Fit route” to come back.','Tap anywhere for coordinates (copyable), elevation, ground type and the round-trip check for that spot.','The Plan tab lists the stops. Tap a stop to edit its name or time on site, move it, show it on the map or delete it. Deleting offers Undo.','“Add station” then tap the map to add a stop. Markers come from the row under the map: drag one onto the map, or tap it and then tap the map.','Press play under the map: the crew marker walks the whole plan. The preview length grows with the number of stops (30 s to 3 min) and shows the current and next stop. Drag the bar to scrub.'],
+  go:['Open Marswalk',()=>{go('walk');Q.sideTab('plan');}]},
+ {id:'env',t:'Survival envelope',sec:'walk',tab:'env',sum:'The coloured area on the map is every place the astronaut can reach and walk back from with the oxygen, battery and suit time left, keeping the reserve.',
+  svg:'envelope',steps:['It is computed as a round trip over the terrain, never as a radius: slopes over the limit, hazard markers and missing data bend the edge.','Green: safe, every reserve kept and terrain measured. Solid amber: reachable, but within 10 points of the reserve. Striped amber: resources are fine but the ground has no elevation data, so slopes are not confirmed. Red: no safe return.','Move the oxygen, battery, time, speed or reserve sliders and the boundary grows or shrinks. “Use what is left on the walk clock” starts from where the crew is mid-walk.','Tap any spot for the outbound time, return time, oxygen, battery and the reason it is restricted. Choose the return point: the habitat or any habitat marker.'],
+  go:['Open the envelope',()=>{go('walk');Q.sideTab('env');}]},
+ {id:'sim',t:'Mission simulation',sec:'walk',tab:'sim',sum:'Test what goes wrong before leaving: battery loss, extra oxygen use, slower walking, extra sampling, delays, a radiation event, losing the relay, or a blocked path.',
+  steps:['Pick a preset (dust storm, suit power fault, solar storm…) or move the controls.','Every calculation reruns with the scenario: the walk plan, the route, the envelope and the science options.','A table compares the planned mission with the scenario, and QUIPU lists actions with the numbers behind them (cut minutes, drop a stop, set a turnaround).','“Reset to the planned mission” clears the scenario. Scenarios never change your mission settings.'],
+  go:['Open Simulate',()=>{go('walk');Q.sideTab('sim');}]},
+ {id:'sci',t:'Science vs survival',sec:'walk',tab:'sci',sum:'Builds multi-stop expeditions and compares a safety-first plan with a science-optimised plan, both on the same terrain costs and limits as the envelope.',
+  steps:['Targets are Perseverance sample sites, plan stations and your geology, ice, experiment and sampling markers. Points follow a visible table; ice markers are candidates, not discoveries.','The priority slider ranks options from shortest walk to most science. It can never relax the oxygen, battery, suit-time or slope limits.','Both expeditions appear on the map only while the Science tab is open. “Load into plan” replaces the walk stops and can be undone.','The bar chart shows how much science you give up for each extra margin of reserve.'],
+  go:['Open Science',()=>{go('walk');Q.sideTab('sci');}]},
+ {id:'globe',t:'Mars globe',sec:'globe',sum:'A 3D Mars with NASA layers. Tap any point for what is known there; zoom in for sharper imagery around the view.',
+  steps:['Drag to turn, scroll or pinch to zoom. Closer in, QUIPU loads a sharper image patch for the area in view (down to about 330 m per pixel from the Viking global mosaic; higher-resolution data covers only parts of Mars and is not loaded here).','Layers: water-ice evidence, the 7 Arsia Mons cave candidates, landing sites, rover drives, regional slope, orbiters.','The inspect panel gives coordinates, MOLA elevation (8-bit tiles, about ±60 m), a pressure model, sunlight and season. Values that no layer covers say “not available”.','“Descend to Jezero” opens Marswalk.'],
+  go:['Open the globe',()=>go('globe')]},
+ {id:'sky',t:'Sky over Jezero',sec:'sky',sum:'The sky the crew will see: Sun, Earth, Phobos and Deimos, from JPL Horizons for this mission’s window.',
+  svg:'clock',steps:['Phobos (inner, larger, about 7 h 39 min per orbit) rises in the west and crosses the sky in hours. Deimos (outer, smaller, about 30.3 h) drifts slowly. Each keeps its own label and path.','Inside the Horizons snapshot (15–16 November 2026) the moons come straight from Horizons; outside it a fitted orbit model is used and labelled.','“Follow the walk clock” plays the sky with the walk: press play here or in Marswalk and both move together.','Free mode lets you pick any date and time, run time forward or backward, and see sunrise, sunset and twilight.'],
+  go:['Open the sky',()=>go('sky')]},
+ {id:'comms',t:'Communications',sec:'comms',sum:'Can the crew talk to the habitat, the orbiters and Earth, and how old is the data on this tablet?',
+  svg:'comms',steps:['Signal delay is physics: light time to Earth, 4 to 24 minutes one way.','Relay availability is whether an orbiter is overhead; the relay windows shown are a simulation, labelled as such.','Data freshness is when this tablet last downloaded or synced. The light in the header says Online, Offline, Synchronizing, Sync failed or Data may be outdated.','DSN Now shows which Deep Space Network dishes are talking to Mars spacecraft, live when online.'],
+  go:['Open Comms',()=>go('comms')]},
+ {id:'offline',t:'Offline mission mode',sec:'comms',sum:'The core tools run on the tablet with no connection.',
+  steps:['Works offline: map areas you have viewed or saved, routes, the envelope, the simulation, science options, markers, notes, the plan and settings.','Needs a connection: live NASA feeds (DSN, space weather, rover photos, MEDA weather), new map areas, and the AI mode of Yarbis.','“Save the walk area map” downloads the imagery around the route. Export a mission file to move everything to another tablet.','With the optional mission server, markers and notes sync on reconnect; edits made on two tablets are shown as conflicts for the crew to resolve.'],
+  go:['Open offline mode',()=>{go('comms');setTimeout(()=>{const c=$('#syncCard');c&&c.scrollIntoView({behavior:'smooth'});},300);}]},
+ {id:'solar',t:'Solar system',sec:'solar',sum:'Where Mars is relative to Earth and the other planets, from JPL orbital elements, and what that means for communication.',
+  steps:['Orbits are to scale; planet sizes are enlarged and the map says so.','Tap a planet for its distance from the Sun, Earth and Mars and its light time to Mars.','The time slider runs from 45 days ago to about two years ahead, and shows the next solar conjunction, when Earth–Mars radio is blocked by the Sun.','Phobos and Deimos facts, with JPL sources, are in the panel beside the map.'],
+  go:['Open Solar system',()=>go('solar')]},
+ {id:'ready',t:'Mission readiness',sec:'ready',sum:'The pre-departure reference: environment, suit and crew settings, mobility, habitat and acoustics.',
+  steps:['Environment: each card says whether it is measured, modelled, a snapshot or not available. Temperature comes from Perseverance’s MEDA weather reports when NASA’s feed answers, with the sol and date shown.','Preparation: suit, load, battery, reserve and slope limits. These settings drive every safety check in the app.','Mobility: how a suited astronaut walks and jumps on Mars against Earth, with the assumptions listed.','Habitat: a 3D regolith habitat that changes shape with every input, with volume and shielding estimates.'],
+  go:['Open Readiness',()=>go('ready')]},
+ {id:'yarbis',t:'Yarbis',sec:null,sum:'The assistant in the lower-right corner. Type or dictate a question in English or Spanish.',
+  steps:['Without an AI server Yarbis runs on this tablet: it does arithmetic, explains every section, answers Mars and moon facts from its built-in notes, and reads the live mission state (route, envelope, scenario, resources). It says when a question needs a real AI model.','With an AI server configured (Settings tab in Yarbis), questions go to that model with the mission context; the key stays on the server.','Commands work too: “open the sky”, “play the walk”, “emergency return”.','Microphone: tap it, speak, check the text in the box, then send. Nothing is sent automatically.'],
+  go:['Open Yarbis',()=>Q.yarbis&&Q.yarbis.open()]}];
+const EX=[['Plan',()=>{go('walk');Q.sideTab('plan');},'Open Marswalk. The Plan tab shows four stops from the Habitat; tap stop 2 and change its time on site to 30 min.'],
+ ['Check',()=>{go('walk');Q.sideTab('env');},'Open Envelope. The green band shows where a round trip keeps every reserve; set oxygen to 150 L and watch it shrink.'],
+ ['Stress',()=>{go('walk');Q.sideTab('sim');},'Open Simulate and press “Dust storm”. Read the verdict and the recommended actions, then reset.'],
+ ['Choose',()=>{go('walk');Q.sideTab('sci');},'Open Science and press “Find expeditions”. Compare the two plans; load one into the walk if you like it.'],
+ ['Walk',()=>{go('walk');Q.sideTab('plan');Q.clock.restart();Q.clock.play();},'Press play under the map. Open Sky over Jezero with “Follow the walk clock” on: the Sun and moons move with the crew.'],
+ ['Ask',()=>Q.yarbis&&Q.yarbis.open(),'Ask Yarbis: “¿Qué tan lejos puedo ir con lo que tengo?”']];
+let el=null,cur='start';
+function build(){el=document.createElement('div');el.id='guide';el.className='guide';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','gdTitle');el.hidden=true;
+  el.innerHTML=`<div class="gd-box"><header class="gd-h"><h1 id="gdTitle">Mission guide</h1><div class="gd-hb"><button class="btn ghost" id="gdTour">Take the guided tour</button><button class="btn" id="gdClose">Close guide</button></div></header>
+   <div class="gd-body"><nav class="gd-nav" aria-label="Guide topics">${T.map(t=>`<button data-id="${t.id}">${t.t}</button>`).join('')}</nav><article class="gd-main" id="gdMain" tabindex="-1"></article></div></div>`;
+  document.body.appendChild(el);el.querySelectorAll('.gd-nav button').forEach(b=>b.onclick=()=>show(b.dataset.id));
+  $('#gdClose').onclick=close;$('#gdTour').onclick=()=>{close();tour(0);};el.addEventListener('keydown',e=>{if(e.key==='Escape')close();});}
+function show(id){cur=id;const t=T.find(x=>x.id===id);el.querySelectorAll('.gd-nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.id===id?'true':'false'));
+  $('#gdMain').innerHTML=`<h2>${t.t}</h2><p class="gd-sum">${t.sum}</p>${t.svg?SVG[t.svg]:''}<ol class="gd-steps">${t.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+   ${t.ex?`<h3>Example mission, about five minutes</h3><ol class="gd-ex">${EX.map(([k,,d],i)=>`<li><b>${k}</b><span>${d}</span><button class="mini ghost" data-ex="${i}">Go</button></li>`).join('')}</ol>`:''}
+   ${t.go?`<div class="prow"><button class="btn" id="gdGo">${t.go[0]}</button></div>`:''}`;
+  const g=$('#gdGo');if(g)g.onclick=()=>{close();t.go[1]();};$$('#gdMain [data-ex]').forEach(b=>b.onclick=()=>{close();EX[+b.dataset.ex][1]();});$('#gdMain').scrollTop=0;}
+function open(id){if(!el)build();el.hidden=false;show(id||cur);setTimeout(()=>$('#gdClose').focus(),30);}
+function close(){if(el)el.hidden=true;}
+
+/* ---------- guided tour over the real interface ---------- */
+const TOUR=[
+ {s:'.nav6',t:'Six sections',d:'Marswalk is home. The others add the globe, the sky, communications, the solar system and readiness.',pre:()=>go('walk')},
+ {s:'#map',t:'The map',d:'Pan and zoom down to 25 cm imagery or out to the whole planet. Tap any spot for coordinates, elevation and the round-trip check.'},
+ {s:'.sidetabs',t:'Plan, route, envelope, science, simulate',d:'The side panel holds the walk plan and the four survival tools. “Hide panel” on the map gives the map the whole width.',pre:()=>Q.sideTab('plan')},
+ {s:'#stations',t:'Stops',d:'Tap a stop to edit, move, show or delete it. Deleting can be undone.'},
+ {s:'.clock',t:'Walk preview',d:'Play, pause, restart, change speed or drag the bar. The line under the time says which stop the crew is at and which is next.'},
+ {s:'#envPane',t:'Survival envelope',d:'Every coloured cell is a full round trip with reserve. Change oxygen, battery or time and watch the edge move.',pre:()=>Q.sideTab('env')},
+ {s:'#simPane',t:'What if?',d:'Apply a failure or delay and every calculation reruns, with the planned mission beside it.',pre:()=>Q.sideTab('sim')},
+ {s:'.dock',t:'Markers and notes',d:'Ten marker types to drag onto the map, the field notebook, the mission timeline and the elevation profile.',pre:()=>{Q.sideTab('plan');const d=$('.dock');if(d.classList.contains('min'))$('#dockMin').click();}},
+ {s:'#commStatus',t:'Connection',d:'Online, offline, synchronizing, sync failed or data outdated. Tap Comms for details.'},
+ {s:'#emerBtn',t:'Emergency return',d:'One tap: the safest known path to the nearest habitat, with heading, time and oxygen. Science is dropped.'},
+ {s:'#yb-fab',t:'Yarbis',d:'Ask anything about the mission or the app, by text or voice.'},
+ {s:'#guideBtn',t:'This guide',d:'Reopen the guide or this tour at any time.'}];
+let tEl=null;
+function tour(i){if(!tEl){tEl=document.createElement('div');tEl.className='tour';tEl.innerHTML='<div class="tour-hole"></div><div class="tour-card" role="dialog" aria-live="polite"><b></b><p></p><div class="prow"><button class="mini ghost" data-t="prev">Back</button><button class="mini" data-t="next">Next</button><button class="mini ghost" data-t="end">End tour</button></div><small></small></div>';document.body.appendChild(tEl);
+    tEl.querySelector('[data-t=prev]').onclick=()=>tour(tEl._i-1);tEl.querySelector('[data-t=next]').onclick=()=>tour(tEl._i+1);tEl.querySelector('[data-t=end]').onclick=()=>{tEl.hidden=true;};
+    addEventListener('resize',()=>{if(!tEl.hidden)place();});}
+  if(i<0)i=0;if(i>=TOUR.length){tEl.hidden=true;Q.toast&&Q.toast('Tour finished. The guide is under “Guide” in the header.');return;}
+  tEl._i=i;tEl.hidden=false;const st=TOUR[i];if(st.pre)st.pre();setTimeout(place,260);}
+function place(){const st=TOUR[tEl._i],tg=$(st.s),hole=tEl.querySelector('.tour-hole'),card=tEl.querySelector('.tour-card');
+  card.querySelector('b').textContent=st.t;card.querySelector('p').textContent=st.d;card.querySelector('small').textContent=`${tEl._i+1} of ${TOUR.length}`;card.querySelector('[data-t=next]').textContent=tEl._i===TOUR.length-1?'Finish':'Next';
+  if(!tg||!tg.getClientRects().length){hole.style.cssText='left:50%;top:50%;width:0;height:0';card.style.left='50%';card.style.top='40%';card.style.transform='translateX(-50%)';return;}
+  const r=tg.getBoundingClientRect(),p=6,x=Math.max(4,r.left-p),y=Math.max(4,r.top-p),w=Math.min(innerWidth-8,r.width+2*p),h=Math.min(innerHeight-8,r.height+2*p);
+  hole.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`;card.style.transform='';const cw=Math.min(340,innerWidth-24);
+  let cx=Math.min(innerWidth-cw-12,Math.max(12,x)),cy=y+h+12;if(cy+170>innerHeight)cy=Math.max(12,y-180);if(h>innerHeight*.6){cy=Math.min(innerHeight-190,y+24);cx=Math.min(innerWidth-cw-12,x+24);}
+  card.style.left=cx+'px';card.style.top=cy+'px';card.style.width=cw+'px';card.querySelector('[data-t=next]').focus({preventScroll:true});}
+
+/* header button */
+const hb=document.createElement('button');hb.className='hbtn';hb.id='guideBtn';hb.textContent='Guide';hb.setAttribute('aria-haspopup','dialog');hb.onclick=()=>open();
+const th=$('#themeBtn');if(th)th.before(hb);
+Q.guide={open,close,tour:()=>tour(0),topics:T.map(t=>({id:t.id,title:t.t,summary:t.sum,steps:t.steps}))};
+})();
+</script>
 <script>/* module: intro */
 /* QUIPU intro: 3D Mars turning to Jezero crater, the mission promise, one way in. */
 (function(){const el=document.getElementById('intro');if(!el)return;
-  const qs=new URLSearchParams(location.search);let seen=false;try{seen=sessionStorage.getItem('quipu-intro')==='1';}catch(e){}
-  const deep=location.hash&&!/^#(walk)?$/.test(location.hash);
-  if(!qs.has('intro')&&(qs.has('nointro')||deep||seen||(Q.clock&&Q.clock.playing)||document.body.classList.contains('emergency'))){el.hidden=true;return;}
-  try{sessionStorage.setItem('quipu-intro','1');}catch(e){}
-  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let closing=false,dive=null;
-  const close=v=>{if(closing)return;closing=true;const done=()=>{el.classList.add('leaving');setTimeout(()=>{el.hidden=true;stop&&stop();if(window.go)go(v);if(v==='walk'&&window.map)setTimeout(()=>map.invalidateSize(),60);},480);};
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let closing=false,dive=null,stop=null;
+  /* the start screen only closes on an explicit choice: no timer, no keyboard shortcut, no routing side effect */
+  const close=v=>{if(closing)return;closing=true;const done=()=>{el.classList.add('leaving');setTimeout(()=>{el.hidden=true;el.classList.remove('leaving');document.documentElement.classList.remove('intro-open');stop&&stop();stop=null;closing=false;
+      if(v&&window.go)go(v);if(v==='walk'&&window.map)setTimeout(()=>map.invalidateSize(),60);if(v==='guide'&&Q.guide)Q.guide.open('start');},480);};
     if(dive&&!reduce&&v==='walk')dive(done);else done();};
-  document.getElementById('inStart').onclick=()=>close('walk');document.getElementById('inGlobe').onclick=()=>close('globe');
-  const key=e=>{if(el.hidden){removeEventListener('keydown',key);return;}if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();close('walk');}};addEventListener('keydown',key);
-  setTimeout(()=>document.getElementById('inStart').focus({preventScroll:true}),60);
-  try{const P=window.PLAN,dkm=P.tl.reduce((a,x,i)=>i?a+dist(P.tl[i-1],x):0,0)/1000;
-    document.getElementById('inFacts').innerHTML=`Today's plan: <b>${dkm.toFixed(1)} km</b> on foot, <b>${Math.floor(P.total/60)} h ${String(Math.round(P.total%60)).padStart(2,'0')}</b> outside, <b>${Math.max(0,stations.length-2)}</b> science stops, every one checked for the walk home.`;}catch(e){}
-  let stop=null;const TREK='https://trek.nasa.gov/tiles/Mars/EQ/',tile=(layer,z,r,c,ext)=>`${TREK}${layer}/1.0.0/default/default028mm/${z}/${r}/${c}.${ext}`;
+  document.getElementById('inStart').onclick=()=>close('walk');document.getElementById('inGlobe').onclick=()=>close('globe');document.getElementById('inGuide').onclick=()=>close('guide');
+  function facts(){try{const P=window.PLAN,dkm=P.tl.reduce((a,x,i)=>i?a+dist(P.tl[i-1],x):0,0)/1000;
+    document.getElementById('inFacts').innerHTML=`Today's plan: <b>${dkm.toFixed(1)} km</b> on foot, <b>${Math.floor(P.total/60)} h ${String(Math.round(P.total%60)).padStart(2,'0')}</b> outside, <b>${Math.max(0,stations.length-2)}</b> science stops, every one checked for the walk home.`;}catch(e){}}
+  function open(){el.hidden=false;closing=false;document.documentElement.classList.add('intro-open');facts();if(!stop)start();setTimeout(()=>document.getElementById('inStart').focus({preventScroll:true}),60);}
+  Q.intro={open,close};
+  if(el.hidden)return;facts();setTimeout(()=>document.getElementById('inStart').focus({preventScroll:true}),60);start();
+  function start(){
+const TREK='https://trek.nasa.gov/tiles/Mars/EQ/',tile=(layer,z,r,c,ext)=>`${TREK}${layer}/1.0.0/default/default028mm/${z}/${r}/${c}.${ext}`;
   function mosaic(layer,ext,z,cols,rows){return new Promise(res=>{const cv=document.createElement('canvas');cv.width=cols*256;cv.height=rows*256;const g=cv.getContext('2d');let ok=0,n=0;
     for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const im=new Image();im.crossOrigin='anonymous';im.onload=()=>{g.drawImage(im,c*256,r*256);ok++;if(++n===rows*cols)res(ok===n?cv:null);};im.onerror=()=>{if(++n===rows*cols)res(ok===n?cv:null);};im.src=tile(layer,z,r,c,ext);}});}
   function procedural(){const cv=document.createElement('canvas');cv.width=1024;cv.height=512;const g=cv.getContext('2d');const gr=g.createLinearGradient(0,0,0,512);gr.addColorStop(0,'#c9a58a');gr.addColorStop(.12,'#b3623a');gr.addColorStop(.5,'#a14d2a');gr.addColorStop(.88,'#9a5a3c');gr.addColorStop(1,'#d8c3b0');g.fillStyle=gr;g.fillRect(0,0,1024,512);
@@ -5628,6 +6002,7 @@ Q.mission={exportPkg,importPkg,records,syncNow};
       raf=requestAnimationFrame(frame);}
     raf=requestAnimationFrame(frame);
     stop=()=>{cancelAnimationFrame(raf);removeEventListener('resize',size);R.dispose();};})();
+}
 })();
 </script>
 </body>
