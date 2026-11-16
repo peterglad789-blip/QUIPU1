@@ -29,6 +29,12 @@ Live: https://peterglad789-blip.github.io/QUIPU1/
 - `sw.js`: offline cache (must sit next to `index.html`)
 - `server/`: optional Cloudflare Worker for Yarbis AI mode
 
+## Mission guide
+Press **Guide** in the header (or “How QUIPU works” on the start screen) for an explanation of every section, a five-minute example mission and a guided tour of the real controls.
+
+## Yarbis
+Without a server, Yarbis runs on the tablet: arithmetic, the app’s own guide text, Mars/Phobos/Deimos facts (JPL SSD values), and the live mission state (route, envelope, scenario, resources). It says when a question needs a general AI model. For full conversation, deploy `server/yarbis-worker.js` with an `ANTHROPIC_API_KEY` secret and paste its URL in Yarbis → Settings.
+
 ## Known limits
 - Elevations exist only within about 150 m of Perseverance's waypoints. Elsewhere QUIPU has no terrain data, walks it at 85% speed and never calls it safe. A HiRISE DTM would make the envelope much sharper.
 - O₂ uses the Pandolf load-carriage model scaled to Mars gravity; battery assumes a constant suit draw. Both are estimates.
